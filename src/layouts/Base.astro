@@ -64,6 +64,8 @@ const fullTitle = titleIncludesSiteName ? title : `${title} — ${siteTitle}`;
 
 const menu = menuResult.data;
 const menuItems = menu?.items ?? [];
+const footerMenuResult = await getMenuWithCacheHint("footer");
+const footerMenuItems = footerMenuResult.data?.items ?? menuItems;
 
 // Build public page context for plugin contributions
 // SEO data is passed here and rendered securely by EmDashHead
@@ -282,13 +284,13 @@ const year = new Date().getFullYear();
 					{siteTagline && <p class="site-footer__tagline">{siteTagline}</p>}
 				</div>
 				{
-					menuItems.length > 0 && (
+					footerMenuItems.length > 0 && (
 						<nav class="site-footer__col" aria-labelledby="footer-navigate">
 							<h2 id="footer-navigate" class="eyebrow">
 								メニュー
 							</h2>
 							<ul class="site-footer__links">
-								{menuItems.map((item) => (
+								{footerMenuItems.map((item) => (
 									<li>
 										<a
 											href={item.url}

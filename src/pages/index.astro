@@ -24,9 +24,12 @@ const [{ entries: posts, cacheHint }, settings] = await Promise.all([
 const { siteTitle, siteTagline } = resolveBlogSiteIdentity(settings);
 
 const catResult = await getTaxonomyTermsWithCacheHint("category", {
-	includeCounts: false,
+	includeCounts: true,
 });
-const categories = catResult.data;
+// 記事が1本以上あるカテゴリーだけ、トップに出す（空のカテゴリーは出さない）
+const categories = catResult.data.filter(
+	(c) => c.count === undefined || c.count > 0,
+);
 
 if (Astro.cache?.enabled) {
 	Astro.cache.set(cacheHint);
