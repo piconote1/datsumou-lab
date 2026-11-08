@@ -285,3 +285,61 @@ header.site-header.site-header {
 	backdrop-filter: none;
 	-webkit-backdrop-filter: none;
 }
+
+
+/* ---- ヒーロー再設計: 写真＋紺のオーバーレイ、運営者、チェック帯 ---- */
+.home-hero {
+	padding: clamp(2.5rem, 6vw, 4.5rem) 0 clamp(4rem, 8vw, 6rem);
+	background:
+		linear-gradient(100deg, rgb(23 38 65 / 0.92) 0%, rgb(23 38 65 / 0.78) 45%, rgb(23 38 65 / 0.5) 100%),
+		var(--color-navy) url("/brand/hero-photo.webp") center / cover no-repeat;
+	color: #fff;
+	border-bottom: 0;
+}
+.home-hero__grid { align-items: center; }
+@media (min-width: 900px) {
+	.home-hero__grid { grid-template-columns: 1fr; }
+}
+.home-hero__title { color: #fff; }
+.home-hero__lead { color: rgb(255 255 255 / 0.82); }
+.sp-only { display: none; }
+@media (max-width: 520px) { .sp-only { display: inline; } }
+.btn--on-dark { background: var(--color-accent); color: var(--color-on-accent); border-color: var(--color-accent); }
+.btn--ghost-dark { background: transparent; color: #fff; border: 1px solid rgb(255 255 255 / 0.55); }
+.btn--ghost-dark:hover { background: rgb(255 255 255 / 0.12); }
+.home-hero__person { text-align: center; }
+.home-hero__person img {
+	width: clamp(120px, 18vw, 200px);
+	height: auto;
+	border-radius: 50%;
+	border: 4px solid var(--color-accent);
+	background: #fff;
+	box-shadow: 0 16px 40px -12px rgb(0 0 0 / 0.5);
+}
+.home-hero__person-name { margin: var(--spacing-3) 0 0; font-weight: 800; }
+.home-hero__person-note { margin: 2px 0 0; font-size: var(--font-size-xs); color: rgb(255 255 255 / 0.75); }
+
+.check-strip { margin-top: calc(-1 * clamp(2rem, 4vw, 3rem)); position: relative; z-index: 1; padding: 0; }
+.check-strip__box {
+	padding: var(--spacing-5) var(--spacing-6);
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-xl);
+	background: var(--color-surface);
+	box-shadow: 0 16px 40px -20px var(--color-shadow-strong);
+}
+.check-strip__title { margin: 0 0 var(--spacing-3); font-size: var(--font-size-lg); }
+.check-strip__list {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+	gap: var(--spacing-2) var(--spacing-4);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+.check-strip__list li { display: flex; align-items: center; gap: var(--spacing-3); padding: var(--spacing-2) 0; font-weight: 600; }
+@media (min-width: 1000px) {
+	.check-strip__list { grid-template-columns: repeat(5, auto); justify-content: space-between; }
+}
+
+.home-hero__lead { max-width: 36em; }
+.home-hero { padding-block: clamp(3rem, 7vw, 5.5rem) clamp(4rem, 8vw, 6rem); }

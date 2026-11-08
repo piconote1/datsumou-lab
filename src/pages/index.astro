@@ -80,28 +80,33 @@ const gridPostsWithTags = gridPosts.map((post) => ({
 			<div>
 				<span class="home-hero__tag">契約前のチェック</span>
 				<h1 class="home-hero__title">
-					脱毛クリニックは、<br />料金表の前に「確認する順番」を。
+					脱毛クリニックは、<br />料金表の前に<br class="sp-only" />「確認する順番」を。
 				</h1>
 				<p class="home-hero__lead">
-					通える距離、総額、解約・返金、肌トラブルの対応。運営者のまいかが、公式に公開されている情報をもとに整理しています。
+					通える距離、総額、解約・返金、肌トラブルの対応。公式に公開されている情報をもとに、契約前に確認したいことを整理しています。
 				</p>
 				<div class="home-hero__actions">
-					<a href="/posts" class="btn">記事一覧を見る</a>
-					<a href="#categories" class="btn btn--ghost">悩み別に探す</a>
+					<a href="/posts" class="btn btn--on-dark">記事一覧を見る</a>
+					<a href="#check" class="btn btn--ghost-dark">確認する5つを見る</a>
 				</div>
 			</div>
-			<aside class="check-card" aria-labelledby="check-title">
-				<h2 id="check-title" class="check-card__title">契約の前に確認する5つ</h2>
-				<ol>
+		</div>
+	</header>
+
+	<section class="band check-strip" id="check" aria-labelledby="check-title">
+		<div class="frame">
+			<div class="check-strip__box">
+				<h2 id="check-title" class="check-strip__title">契約の前に確認する5つ</h2>
+				<ol class="check-strip__list">
 					<li><span class="check-card__num">1</span>通える距離</li>
 					<li><span class="check-card__num">2</span>総額と追加費用</li>
 					<li><span class="check-card__num">3</span>解約・返金のルール</li>
 					<li><span class="check-card__num">4</span>肌トラブルのときの対応</li>
 					<li><span class="check-card__num">5</span>診察する医師の体制</li>
 				</ol>
-			</aside>
+			</div>
 		</div>
-	</header>
+	</section>
 
 	{
 		categories.length > 0 && (
