@@ -1,0 +1,109 @@
+---
+/**
+ * 記事のリスト表示（カードなし。1記事ごとに区切り線）。
+ * ラベル（カテゴリー）・日付・タイトル・1行の説明。公開から14日以内は「NEW」。
+ */
+import type { ContentEntry, InferCollectionData } from "emdash";
+import { formatDate } from "../utils/locale";
+
+interface Props {
+	post: ContentEntry<InferCollectionData<"posts">>;
+	labels?: Array<{ slug: string; label: string }>;
+	headingLevel?: 2 | 3;
+}
+
+const { post, labels = [], headingLevel = 3 } = Astro.props;
+const Heading = `h${headingLevel}` as const;
+const href = `/posts/${post.id}`;
+const title = post.data.title || "無題";
+const publishedAt = post.data.publishedAt ?? null;
+const isNew =
+	publishedAt != null &&
+	Date.now() - publishedAt.getTime() < 14 * 24 * 60 * 60 * 1000;
+const shown = labels.slice(0, 2);
+---
+
+<article class="post-row">
+	<a href={href} class="post-row__link">
+		<span class="post-row__meta">
+			{shown.map((l) => <span class="post-row__chip">{l.label}</span>)}
+			{
+				publishedAt && (
+					<time datetime={publishedAt.toISOString()}>
+						{formatDate(publishedAt, "long")}
+					</time>
+				)
+			}
+		</span>
+		<Heading class="post-row__title" {...post.edit.title}>
+			{title}
+			{isNew && <span class="post-row__new">NEW</span>}
+		</Heading>
+		{
+			post.data.excerpt && (
+				<p class="post-row__excerpt" {...post.edit.excerpt}>
+					{post.data.excerpt}
+				</p>
+			)
+		}
+	</a>
+</article>
+
+<style>
+	.post-row {
+		border-bottom: 1px solid var(--color-border);
+	}
+	.post-row__link {
+		display: block;
+		padding: var(--spacing-5) var(--spacing-4) var(--spacing-5) var(--spacing-5);
+		border-left: 4px solid transparent;
+		color: var(--color-text);
+		text-decoration: none;
+		transition:
+			border-color var(--transition-fast),
+			background var(--transition-fast);
+	}
+	.post-row__link:hover {
+		border-left-color: var(--color-accent);
+		background: var(--color-fill);
+	}
+	.post-row__meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--spacing-2) var(--spacing-3);
+		margin-bottom: var(--spacing-1);
+		color: var(--color-muted);
+		font-size: var(--font-size-xs);
+	}
+	.post-row__chip {
+		padding: 1px 9px;
+		border-radius: var(--radius-sm);
+		background: var(--color-accent-soft);
+		color: var(--color-text);
+		font-weight: 700;
+	}
+	.post-row__title {
+		margin: 0 0 var(--spacing-1);
+		font-size: var(--font-size-xl);
+		font-weight: 800;
+		line-height: var(--leading-snug);
+	}
+	.post-row__new {
+		margin-left: var(--spacing-3);
+		padding: 2px 7px;
+		border-radius: var(--radius-sm);
+		background: var(--color-navy);
+		color: #fff;
+		font-size: 0.6875rem;
+		font-weight: 700;
+		letter-spacing: 0.05em;
+		vertical-align: middle;
+	}
+	.post-row__excerpt {
+		margin: 0;
+		color: var(--color-muted);
+		font-size: var(--font-size-sm);
+		line-height: var(--leading-normal);
+	}
+</style>

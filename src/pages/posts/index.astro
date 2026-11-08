@@ -1,6 +1,7 @@
 ---
 import { getEmDashCollection, getTermsForEntries } from "emdash";
 import Base from "../../layouts/Base.astro";
+import PostRow from "../../components/PostRow.astro";
 import PostCard from "../../components/PostCard.astro";
 import Pagination from "../../components/Pagination.astro";
 
@@ -25,7 +26,7 @@ if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
 const tagsByEntry = await getTermsForEntries(
 	"posts",
 	posts.map((p) => p.data.id),
-	"tag",
+	"category",
 );
 
 const postsWithTags = posts.map((post) => ({
@@ -65,10 +66,10 @@ const postsWithTags = posts.map((post) => ({
 					</div>
 				) : (
 					<>
-						<ol class="archive__list">
+						<ol class="post-list">
 							{postsWithTags.map(({ post, tags }) => (
 								<li>
-									<PostCard post={post} tags={tags} variant="row" />
+									<PostRow post={post} labels={tags} />
 								</li>
 							))}
 						</ol>

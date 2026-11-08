@@ -1,26 +1,27 @@
 /*
-  theme.css -- 脱毛研究室（datsumou-lab）のデザイン設定
+  theme.css -- 脱毛研究室（datsumou-lab）のデザイン設定（2026-11-08 方向B: 白地・紺・ミントは差し色）
   tokens.css の既定値を、ここで上書きする（theme.css は layer 外なので常に優先される）。
 
-  設計メモ（2026-11-08）
-  - 配色の根拠: まいかのアイコンの色。ミント #7CDABA / 濃い紺 #172641 / クリーム #FDE9D8。
-  - ミントは白い文字と組むと読めない（コントラスト比 1.68）。ボタン・リンクは「紺」、ミントは面と目印にだけ使う。
+  設計メモ
+  - 配色の根拠: まいかのアイコンの色。紺 #172641 / ミント #7CDABA / クリーム #FDE9D8。
+  - 地は白。文字・ボタン・リンクは紺。ミントは「小さな目印」（タグ・番号・下線）にだけ使う。
+  - ミントは白い文字と組むと読めない（コントラスト比 1.68）。ミントの上の文字は紺にする。
   - 文字: 日本語のゴシック体（端末の標準フォント）。Webフォントを増やさず、表示の負担を増やさない。
   - 見出しの字間: 英語用の詰めた字間は日本語で読みにくいので 0 に戻す。
 */
 
 :root {
 	/* ---- Colors（light, dark） ---- */
-	--color-bg: light-dark(#f3fbf8, #0e1a2e); /* ごく淡いミント / 深い紺 */
+	--color-bg: light-dark(#ffffff, #0e1a2e);
 	--color-surface: light-dark(#ffffff, #162540);
-	--color-fill: light-dark(#e4f6ef, #1f3150);
-	--color-fill-strong: light-dark(#cdeee2, #2a4166);
+	--color-fill: light-dark(#f3f6f9, #1f3150);
+	--color-fill-strong: light-dark(#e6ecf2, #2a4166);
 	--color-text: light-dark(#172641, #eaf4f1);
 	--color-text-secondary: light-dark(#3a4862, #b9c7d6);
 	--color-muted: light-dark(#566480, #93a4b8);
-	--color-border: light-dark(#d2e8df, #26385a);
-	--color-border-subtle: light-dark(#e2f1ea, #1e2f4d);
-	--color-border-strong: light-dark(#b4d8ca, #38507a);
+	--color-border: light-dark(#dde5ec, #26385a);
+	--color-border-subtle: light-dark(#ebf0f4, #1e2f4d);
+	--color-border-strong: light-dark(#c2cfdb, #38507a);
 	--color-ring: light-dark(rgb(23 38 65 / 0.08), rgb(255 255 255 / 0.1));
 	--color-media-outline: light-dark(rgb(23 38 65 / 0.1), rgb(255 255 255 / 0.1));
 	--color-shadow: light-dark(rgb(23 38 65 / 0.06), rgb(0 0 0 / 0.4));
@@ -32,10 +33,11 @@
 	--color-on-brand: light-dark(#ffffff, #0e1a2e);
 
 	/* このサイト独自の色 */
-	--color-accent: #7cdaba; /* アイコンのミント。面・目印用（文字は紺を載せる） */
-	--color-accent-soft: light-dark(#d5f3e8, #1d3a40);
-	--color-warm: light-dark(#fdeee2, #2a2a3a); /* アイコンのクリーム。注意・PR表記・引用の面 */
+	--color-accent: #7cdaba; /* アイコンのミント。小さな目印用（文字は紺を載せる） */
+	--color-accent-soft: light-dark(#e4f6ef, #1d3a40);
+	--color-warm: light-dark(#fdeee2, #2a2a3a); /* アイコンのクリーム。注意・PR表記の面 */
 	--color-on-accent: #172641;
+	--color-navy: #172641;
 
 	/* ---- Typography ---- */
 	--font-body:
@@ -43,13 +45,13 @@
 		Meiryo, system-ui, sans-serif;
 	--font-heading: var(--font-body);
 	--font-weight-heading: 700;
-	--font-weight-display: 700;
+	--font-weight-display: 800;
 
-	--font-size-display: clamp(1.75rem, 1.3rem + 2vw, 2.5rem);
+	--font-size-display: clamp(1.75rem, 1.2rem + 2.4vw, 2.6rem);
 	--font-size-3xl: 1.75rem;
 	--font-size-4xl: 2.1rem;
 
-	--leading-tight: 1.35;
+	--leading-tight: 1.4;
 	--leading-snug: 1.5;
 	--leading-normal: 1.75;
 	--leading-relaxed: 1.9;
@@ -59,17 +61,17 @@
 	--tracking-wide: 0.04em;
 	--tracking-wider: 0.04em;
 
-	/* ---- Shape: 角丸は役割ごとに変える（全部同じ大きさにしない） ---- */
+	/* ---- Shape: 角丸は役割ごとに変える ---- */
 	--radius-sm: 6px;
 	--radius: 8px;
 	--radius-lg: 10px;
 	--radius-xl: 14px;
 
 	/* ---- Layout ---- */
-	--content-width: 40rem; /* 本文の幅。日本語は1行 35〜40字程度が読みやすい */
+	--content-width: 40rem;
 }
 
-/* ---- 日本語の改行: 文節で折り返す（「選ぶ前／に確認」のような途中切れを防ぐ） ---- */
+/* ---- 日本語の改行: 文節で折り返す ---- */
 body {
 	line-break: strict;
 	word-break: auto-phrase;
@@ -79,4 +81,195 @@ h2,
 h3,
 h4 {
 	text-wrap: balance;
+}
+
+/* ---- ヘッダーのロゴ（アイコン画像） ---- */
+.brand__icon {
+	width: 36px;
+	height: 36px;
+	border-radius: var(--radius-lg);
+	flex-shrink: 0;
+	object-fit: cover;
+}
+
+/* ---- 上部の注意帯（紺） ---- */
+.top-note {
+	margin: 0;
+	padding: 6px var(--frame-padding);
+	background: var(--color-navy);
+	color: #fff;
+	font-size: var(--font-size-xs);
+	line-height: 1.6;
+	text-align: center;
+}
+
+/* ---- トップページ: ヒーロー ---- */
+.home-hero {
+	padding: clamp(2.5rem, 6vw, 4.5rem) 0;
+	background: linear-gradient(180deg, color-mix(in srgb, var(--color-accent) 7%, var(--color-bg)) 0%, var(--color-bg) 100%);
+}
+.home-hero__grid {
+	display: grid;
+	gap: clamp(1.5rem, 4vw, 3rem);
+	align-items: center;
+}
+@media (min-width: 900px) {
+	.home-hero__grid {
+		grid-template-columns: 1.1fr 0.9fr;
+	}
+}
+.home-hero__tag {
+	display: inline-block;
+	margin-bottom: var(--spacing-4);
+	padding: 3px 10px;
+	border-radius: var(--radius-sm);
+	background: var(--color-accent);
+	color: var(--color-on-accent);
+	font-size: var(--font-size-xs);
+	font-weight: 800;
+}
+.home-hero__title {
+	margin: 0 0 var(--spacing-4);
+	font-size: var(--font-size-display);
+	font-weight: var(--font-weight-display);
+	line-height: var(--leading-tight);
+}
+.home-hero__lead {
+	margin: 0 0 var(--spacing-6);
+	max-width: 34em;
+	color: var(--color-text-secondary);
+}
+.home-hero__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--spacing-3);
+}
+
+/* チェックリストのカード */
+.check-card {
+	padding: var(--spacing-6);
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-xl);
+	background: var(--color-surface);
+	box-shadow: 0 12px 32px -16px var(--color-shadow-strong);
+}
+.check-card__title {
+	margin: 0 0 var(--spacing-3);
+	font-size: var(--font-size-lg);
+}
+.check-card ol {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+.check-card li {
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-3);
+	padding: var(--spacing-3) 0;
+	border-top: 1px solid var(--color-border-subtle);
+}
+.check-card__num {
+	flex: none;
+	display: grid;
+	place-items: center;
+	width: 1.7rem;
+	height: 1.7rem;
+	border-radius: 50%;
+	background: var(--color-accent);
+	color: var(--color-on-accent);
+	font-size: var(--font-size-xs);
+	font-weight: 800;
+}
+
+/* ---- トップページ: 悩み別カード ---- */
+.cat-grid {
+	display: grid;
+	gap: var(--spacing-4);
+	grid-template-columns: 1fr;
+}
+@media (min-width: 640px) {
+	.cat-grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+@media (min-width: 960px) {
+	.cat-grid {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+.cat-card {
+	display: block;
+	padding: var(--spacing-5);
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-lg);
+	background: var(--color-surface);
+	color: var(--color-text);
+	text-decoration: none;
+	transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+.cat-card:hover {
+	border-color: var(--color-accent);
+	box-shadow: 0 8px 24px -14px var(--color-shadow-strong);
+}
+.cat-card__name {
+	display: block;
+	font-weight: 700;
+}
+.cat-card__desc {
+	display: block;
+	margin-top: 2px;
+	color: var(--color-muted);
+	font-size: var(--font-size-sm);
+}
+.home-section-title {
+	margin: 0 0 var(--spacing-5);
+	padding-left: var(--spacing-3);
+	border-left: 5px solid var(--color-accent);
+	font-size: var(--font-size-2xl);
+}
+
+/* ---- フッター（紺） ---- */
+.site-footer,
+.site-footer.band {
+	--color-bg: #172641;
+	--color-surface: #1e2f4d;
+	--color-text: #eef3f9;
+	--color-text-secondary: #c3cfdd;
+	--color-muted: #9fb0c4;
+	--color-border: #2c3f63;
+	--color-border-subtle: #2c3f63;
+	--color-brand: #7cdaba;
+	background: #172641;
+	color: #eef3f9;
+}
+.site-footer .band {
+	background: transparent;
+}
+
+/* ---- テンプレートの「縦の線」と「十字の目印」をなくす（方向B: すっきりした白地） ---- */
+html body::before {
+	border-inline: 0;
+}
+html .band {
+	border-top: 0;
+}
+html .band::before,
+html .band::after {
+	content: none;
+}
+
+/* ---- 記事リスト（PostRow.astro） ---- */
+.post-list {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	border-top: 1px solid var(--color-border);
+}
+
+/* ---- 見出しの形をそろえる（左にミントの細い線） ---- */
+.section-head__title {
+	padding-left: var(--spacing-3);
+	border-left: 5px solid var(--color-accent);
+	font-size: var(--font-size-2xl);
 }

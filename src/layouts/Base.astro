@@ -119,6 +119,7 @@ const year = new Date().getFullYear();
 		<Font cssVariable="--font-body" preload />
 		<Font cssVariable="--font-mono" />
 		<title>{fullTitle}</title>
+		<link rel="icon" href="/favicon.png" type="image/png" />
 		<EmDashHead page={pageCtx} />
 		<link
 			rel="alternate"
@@ -143,6 +144,7 @@ const year = new Date().getFullYear();
 	<body>
 		<EmDashBodyStart page={pageCtx} />
 		<a href="#main" class="skip-link">本文へ移動</a>
+		<p class="top-note">契約の前に、必ず、公式の情報をご確認ください。</p>
 		{SHOW_PR_NOTICE && <PrNotice />}
 		<header class="site-header">
 			<div class="frame site-header__inner">
@@ -156,11 +158,7 @@ const year = new Date().getFullYear();
 							/>
 						) : (
 							<>
-								{monogram && (
-									<span class="brand__mark" aria-hidden="true">
-										{monogram}
-									</span>
-								)}
+								<img src="/brand/icon-96.webp" alt="" class="brand__icon" width="36" height="36" />
 								<span class="brand__name">{siteTitle}</span>
 							</>
 						)
@@ -275,11 +273,7 @@ const year = new Date().getFullYear();
 								/>
 							) : (
 								<>
-									{monogram && (
-										<span class="brand__mark" aria-hidden="true">
-											{monogram}
-										</span>
-									)}
+									<img src="/brand/icon-96.webp" alt="" class="brand__icon" width="36" height="36" />
 									<span class="brand__name">{siteTitle}</span>
 								</>
 							)

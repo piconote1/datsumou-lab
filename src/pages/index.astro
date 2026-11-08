@@ -3,9 +3,11 @@ import {
 	getEmDashCollection,
 	getTermsForEntries,
 	getSiteSettings,
+	getTaxonomyTermsWithCacheHint,
 } from "emdash";
 import Base from "../layouts/Base.astro";
 import PostCard from "../components/PostCard.astro";
+import PostRow from "../components/PostRow.astro";
 import { resolveBlogSiteIdentity } from "../utils/site-identity";
 
 // Limit to what we render (1 featured + 6 grid). The DB does the slicing
@@ -21,20 +23,28 @@ const [{ entries: posts, cacheHint }, settings] = await Promise.all([
 ]);
 const { siteTitle, siteTagline } = resolveBlogSiteIdentity(settings);
 
-if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
+const catResult = await getTaxonomyTermsWithCacheHint("category", {
+	includeCounts: false,
+});
+const categories = catResult.data;
+
+if (Astro.cache?.enabled) {
+	Astro.cache.set(cacheHint);
+	Astro.cache.set(catResult.cacheHint);
+}
 
 // Trim the lookahead post used to detect overflow
 const visiblePosts = posts.slice(0, POSTS_PER_PAGE);
 const hasMorePosts = posts.length > POSTS_PER_PAGE;
 
 // Find the first post with a featured image for the hero
-const featuredPost = visiblePosts.find((p) => p.data.featured_image);
+const featuredPost = null; // リスト型にしたので、大きな特集カードは使わない
 const featuredIndex = featuredPost ? visiblePosts.indexOf(featuredPost) : -1;
 
 // Get remaining posts (exclude featured if found, limit to 6 for grid)
 const gridPosts = visiblePosts
 	.filter((_, i) => i !== featuredIndex)
-	.slice(0, 6);
+	.slice(0, 7);
 
 // Single batched query for tags across the featured post + grid posts.
 // Avoids the N+1 pattern of calling getEntryTerms() per entry.
@@ -43,7 +53,7 @@ const tagEntryIds = [
 	...(featuredPost ? [featuredPost.data.id] : []),
 	...gridPosts.map((p) => p.data.id),
 ];
-const tagsByEntry = await getTermsForEntries("posts", tagEntryIds, "tag");
+const tagsByEntry = await getTermsForEntries("posts", tagEntryIds, "category");
 
 const featuredTags = featuredPost
 	? (tagsByEntry.get(featuredPost.data.id) ?? []).map((t) => ({
@@ -62,38 +72,51 @@ const gridPostsWithTags = gridPosts.map((post) => ({
 ---
 
 <Base title={siteTitle} description={siteTagline}>
-	<header class="band intro">
-		<div class="frame home-intro">
+	<header class="home-hero">
+		<div class="frame home-hero__grid">
 			<div>
-				<h1 class="intro__title">{siteTitle}</h1>
-				{siteTagline && <p class="intro__subtitle">{siteTagline}</p>}
-				<div class="mt-6 flex flex-wrap items-center gap-3">
+				<span class="home-hero__tag">契約前のチェック</span>
+				<h1 class="home-hero__title">
+					脱毛クリニックは、<br />料金表の前に「確認する順番」を。
+				</h1>
+				<p class="home-hero__lead">
+					通える距離、総額、解約・返金、肌トラブルの対応。運営者のまいかが、公式に公開されている情報をもとに整理しています。
+				</p>
+				<div class="home-hero__actions">
 					<a href="/posts" class="btn">記事一覧を見る</a>
-					<span class="chip">契約の前に確認したいことを整理</span>
+					<a href="#categories" class="btn btn--ghost">悩み別に探す</a>
 				</div>
 			</div>
-			<a
-				href="/rss.xml"
-				type="application/rss+xml"
-				class="btn btn--ghost btn--sm home-intro__rss"
-			>
-				<svg
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="1.75"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					aria-hidden="true"
-				>
-					<path d="M4 11a9 9 0 0 1 9 9"></path>
-					<path d="M4 4a16 16 0 0 1 16 16"></path>
-					<circle cx="5" cy="19" r="1"></circle>
-				</svg>
-				RSSフィード
-			</a>
+			<aside class="check-card" aria-labelledby="check-title">
+				<h2 id="check-title" class="check-card__title">契約の前に確認する5つ</h2>
+				<ol>
+					<li><span class="check-card__num">1</span>通える距離</li>
+					<li><span class="check-card__num">2</span>総額と追加費用</li>
+					<li><span class="check-card__num">3</span>解約・返金のルール</li>
+					<li><span class="check-card__num">4</span>肌トラブルのときの対応</li>
+					<li><span class="check-card__num">5</span>診察する医師の体制</li>
+				</ol>
+			</aside>
 		</div>
 	</header>
+
+	{
+		categories.length > 0 && (
+			<section class="band section" id="categories" aria-labelledby="categories-title">
+				<div class="frame">
+					<h2 id="categories-title" class="home-section-title">悩み別に探す</h2>
+					<div class="cat-grid">
+						{categories.map((c) => (
+							<a class="cat-card" href={`/category/${c.slug}`}>
+								<span class="cat-card__name">{c.label}</span>
+								{c.description && <span class="cat-card__desc">{c.description}</span>}
+							</a>
+						))}
+					</div>
+				</div>
+			</section>
+		)
+	}
 
 	{
 		posts.length === 0 ? (
@@ -153,16 +176,13 @@ const gridPostsWithTags = gridPosts.map((post) => ({
 									</a>
 								)}
 							</div>
-							<div class="post-grid">
+							<ol class="post-list">
 								{gridPostsWithTags.map(({ post, tags }) => (
-									<PostCard
-										post={post}
-										tags={tags}
-										variant="card"
-										headingLevel={3}
-									/>
+									<li>
+										<PostRow post={post} labels={tags} />
+									</li>
 								))}
-							</div>
+							</ol>
 						</div>
 					</section>
 				)}

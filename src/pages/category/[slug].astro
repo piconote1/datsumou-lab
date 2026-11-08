@@ -6,6 +6,7 @@ import {
 	decodeSlug,
 } from "emdash";
 import Base from "../../layouts/Base.astro";
+import PostRow from "../../components/PostRow.astro";
 import PostCard from "../../components/PostCard.astro";
 import Pagination from "../../components/Pagination.astro";
 
@@ -83,14 +84,16 @@ const filteredPosts = posts.map((post) => ({
 			{
 				filteredPosts.length > 0 ? (
 					<>
-						<div class="post-grid">
+						<ol class="post-list">
 							{filteredPosts.map(({ post, tags }) => (
-								<PostCard
-									post={post}
-									tags={tags.map((t) => ({ slug: t.slug, label: t.label }))}
-								/>
+								<li>
+									<PostRow
+										post={post}
+										labels={tags.map((t) => ({ slug: t.slug, label: t.label }))}
+									/>
+								</li>
 							))}
-						</div>
+						</ol>
 						<Pagination
 							basePath={`/category/${term.slug}`}
 							cursor={cursor}
