@@ -1,0 +1,9 @@
+/*
+  tailwind.css -- Tailwind CSS v4（preflight なし）
+  preflight（全体のリセット）を読み込まないので、テンプレートの既存の見た目は変わらない。
+  使えるのは「ユーティリティ（class="px-4 rounded-lg" など）」と「テーマ値」だけ。
+  色は、theme.css のトークン（--color-brand など）を、そのまま参照する。
+*/
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);

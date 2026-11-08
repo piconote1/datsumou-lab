@@ -34,12 +34,11 @@ const postsWithTags = posts.map((post) => ({
 }));
 ---
 
-<Base title="All Posts" description="Browse all blog posts">
+<Base title="記事一覧" description="記事の一覧です">
 	<header class="band intro">
 		<div class="frame">
-			<p class="eyebrow">Archive</p>
-			<h1 class="intro__title">All Posts</h1>
-			<p class="intro__lead">Every post, newest first.</p>
+			<h1 class="intro__title">記事一覧</h1>
+			<p class="intro__lead">新しい順に、すべての記事を並べています。</p>
 		</div>
 	</header>
 
@@ -49,17 +48,17 @@ const postsWithTags = posts.map((post) => ({
 				posts.length === 0 ? (
 					<div class="empty-state">
 						<h2 class="empty-state__title">
-							{cursor ? "No more posts" : "No posts yet"}
+							{cursor ? "これ以上、記事はありません" : "記事は、まだありません"}
 						</h2>
 						<p class="empty-state__text">
 							{cursor
-								? "You have reached the end of the archive."
-								: "Published posts will show up here."}
+								? "一覧の最後まで表示しました。"
+								: "公開した記事が、ここに表示されます。"}
 						</p>
 						{cursor && (
 							<div class="empty-state__actions">
 								<a href="/posts" class="btn btn--ghost">
-									First page
+									最初のページへ
 								</a>
 							</div>
 						)}

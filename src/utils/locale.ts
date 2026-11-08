@@ -18,7 +18,7 @@ export function getSiteLocale(): string | undefined {
 
 /** Formats a date in the site's locale, or in US English without one. */
 export function formatDate(date: Date, month: "long" | "short"): string {
-	return date.toLocaleDateString(getSiteLocale() ?? "en-US", {
+	return date.toLocaleDateString(getSiteLocale() ?? "ja-JP", {
 		year: "numeric",
 		month,
 		day: "numeric",

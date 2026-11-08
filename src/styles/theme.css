@@ -1,34 +1,82 @@
 /*
-  theme.css -- your theme overrides. This is the file to edit to
-  retheme the site.
+  theme.css -- 脱毛研究室（datsumou-lab）のデザイン設定
+  tokens.css の既定値を、ここで上書きする（theme.css は layer 外なので常に優先される）。
 
-  Every design token lives in src/styles/tokens.css (colors, type
-  scale, spacing, layout, shadows) with its default value. Override any
-  of them here: declarations in this file are unlayered, so they always
-  beat the @layer base defaults in tokens.css.
-
-  Colors are defined with light-dark(). Overriding with a plain color
-  changes light and dark mode at once; use light-dark(<light>, <dark>)
-  to set different values per mode.
-
-  Set the three brand tokens together, as in the example below:
-  --color-on-brand defaults to near-black in dark mode.
-
-  Webfonts are loaded in astro.config.mjs (--font-body, --font-mono).
-  Swap the loaded font there; use overrides here for system fonts or a
-  separate heading face.
-
-  Example:
-
-  :root {
-    --color-brand: light-dark(#0f766e, #2dd4bf);
-    --color-brand-hover: light-dark(#115e59, #5eead4);
-    --color-on-brand: light-dark(#ffffff, #0a0a0a);
-    --font-heading: "Iowan Old Style", Georgia, serif;
-    --radius-lg: 18px;
-    --radius-xl: 24px;
-  }
+  設計メモ（2026-11-08）
+  - 配色の根拠: まいかのアイコンの色。ミント #7CDABA / 濃い紺 #172641 / クリーム #FDE9D8。
+  - ミントは白い文字と組むと読めない（コントラスト比 1.68）。ボタン・リンクは「紺」、ミントは面と目印にだけ使う。
+  - 文字: 日本語のゴシック体（端末の標準フォント）。Webフォントを増やさず、表示の負担を増やさない。
+  - 見出しの字間: 英語用の詰めた字間は日本語で読みにくいので 0 に戻す。
 */
 
 :root {
+	/* ---- Colors（light, dark） ---- */
+	--color-bg: light-dark(#f3fbf8, #0e1a2e); /* ごく淡いミント / 深い紺 */
+	--color-surface: light-dark(#ffffff, #162540);
+	--color-fill: light-dark(#e4f6ef, #1f3150);
+	--color-fill-strong: light-dark(#cdeee2, #2a4166);
+	--color-text: light-dark(#172641, #eaf4f1);
+	--color-text-secondary: light-dark(#3a4862, #b9c7d6);
+	--color-muted: light-dark(#566480, #93a4b8);
+	--color-border: light-dark(#d2e8df, #26385a);
+	--color-border-subtle: light-dark(#e2f1ea, #1e2f4d);
+	--color-border-strong: light-dark(#b4d8ca, #38507a);
+	--color-ring: light-dark(rgb(23 38 65 / 0.08), rgb(255 255 255 / 0.1));
+	--color-media-outline: light-dark(rgb(23 38 65 / 0.1), rgb(255 255 255 / 0.1));
+	--color-shadow: light-dark(rgb(23 38 65 / 0.06), rgb(0 0 0 / 0.4));
+	--color-shadow-strong: light-dark(rgb(23 38 65 / 0.12), rgb(0 0 0 / 0.6));
+
+	/* ブランド色: ボタン・リンク・フォーカス。ライトは紺、ダークはミント */
+	--color-brand: light-dark(#172641, #7cdaba);
+	--color-brand-hover: light-dark(#2a3d63, #a5e8d0);
+	--color-on-brand: light-dark(#ffffff, #0e1a2e);
+
+	/* このサイト独自の色 */
+	--color-accent: #7cdaba; /* アイコンのミント。面・目印用（文字は紺を載せる） */
+	--color-accent-soft: light-dark(#d5f3e8, #1d3a40);
+	--color-warm: light-dark(#fdeee2, #2a2a3a); /* アイコンのクリーム。注意・PR表記・引用の面 */
+	--color-on-accent: #172641;
+
+	/* ---- Typography ---- */
+	--font-body:
+		"Hiragino Sans", "Hiragino Kaku Gothic ProN", "BIZ UDPGothic", "Yu Gothic UI", "Yu Gothic",
+		Meiryo, system-ui, sans-serif;
+	--font-heading: var(--font-body);
+	--font-weight-heading: 700;
+	--font-weight-display: 700;
+
+	--font-size-display: clamp(1.75rem, 1.3rem + 2vw, 2.5rem);
+	--font-size-3xl: 1.75rem;
+	--font-size-4xl: 2.1rem;
+
+	--leading-tight: 1.35;
+	--leading-snug: 1.5;
+	--leading-normal: 1.75;
+	--leading-relaxed: 1.9;
+
+	--tracking-tight: 0.01em;
+	--tracking-snug: 0.01em;
+	--tracking-wide: 0.04em;
+	--tracking-wider: 0.04em;
+
+	/* ---- Shape: 角丸は役割ごとに変える（全部同じ大きさにしない） ---- */
+	--radius-sm: 6px;
+	--radius: 8px;
+	--radius-lg: 10px;
+	--radius-xl: 14px;
+
+	/* ---- Layout ---- */
+	--content-width: 40rem; /* 本文の幅。日本語は1行 35〜40字程度が読みやすい */
+}
+
+/* ---- 日本語の改行: 文節で折り返す（「選ぶ前／に確認」のような途中切れを防ぐ） ---- */
+body {
+	line-break: strict;
+	word-break: auto-phrase;
+}
+h1,
+h2,
+h3,
+h4 {
+	text-wrap: balance;
 }
