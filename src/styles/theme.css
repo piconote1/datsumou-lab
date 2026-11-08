@@ -343,3 +343,12 @@ header.site-header.site-header {
 
 .home-hero__lead { max-width: 36em; }
 .home-hero { padding-block: clamp(3rem, 7vw, 5.5rem) clamp(4rem, 8vw, 6rem); }
+
+/* 固定ページ（運営者情報など）の画像は小さく・丸く */
+.page__body .emdash-image img {
+	width: 160px;
+	height: 160px;
+	object-fit: cover;
+	border-radius: 50%;
+	border: 3px solid var(--color-accent);
+}
