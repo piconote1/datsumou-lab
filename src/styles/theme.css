@@ -350,3 +350,115 @@ header.site-header.site-header {
 	border-radius: 50%;
 	border: 3px solid var(--color-accent);
 }
+
+
+/* ---- マナブログ風: 白い上段＋黒帯メニュー／薄いグレー背景／四角いボタン ---- */
+:root {
+	--gray-bg: #f7f7f7;
+	--gray-hover: #efefef;
+	--gray-line: #686868;
+	--gray-text: #333333;
+	--gray-bar: #222222;
+}
+body { background: var(--gray-bg); }
+header.site-header.site-header {
+	position: relative;
+	background: #fff;
+	border-bottom: 0;
+}
+header.site-header .site-header__inner { min-height: 72px; border-inline: 0; }
+header.site-header::before, header.site-header::after { display: none; }
+.site-header__navbar { background: var(--gray-bar); }
+.site-header__navbar .frame { padding-block: 0; }
+header.site-header .site-nav { display: block; flex: none; margin: 0; }
+header.site-header .site-nav ul { display: flex; flex-wrap: wrap; gap: 0; margin: 0; padding: 0; list-style: none; }
+header.site-header .site-nav[class] a[href] {
+	display: block;
+	padding: 17px 26px;
+	border-radius: 0;
+	background: transparent;
+	color: #fff;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+}
+header.site-header .site-nav[class] a[href]:hover { background: rgb(255 255 255 / 0.1); color: #fff; }
+header.site-header .site-nav[class] a[href][aria-current] { background: rgb(255 255 255 / 0.14); box-shadow: inset 0 -3px 0 var(--color-accent); color: #fff; }
+
+/* ボタン: READ MORE 風（四角・線・やや広め） */
+.btn {
+	border-radius: 2px;
+	letter-spacing: 0.08em;
+	padding: 12px 32px;
+}
+.btn--on-dark { background: transparent; color: #fff; border: 1px solid rgb(255 255 255 / 0.85); }
+.btn--on-dark:hover { background: #fff; color: var(--gray-bar); }
+
+/* 記事一覧は白いカードに（背景は薄いグレー） */
+.post-list {
+	background: #fff;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 4px;
+	padding: 4px clamp(1rem, 3vw, 2rem);
+}
+
+
+/* ---- フッター: マナブログ風（白地・3列・破線リスト・黒い著作権帯） ---- */
+footer.site-footer[class] { background: #fff; color: var(--color-text); border-top: 0; margin-top: 3rem; }
+footer.site-footer[class] .site-footer__grid { padding-block: 3rem 3.5rem; gap: 2.5rem; }
+@media (min-width: 900px) {
+	footer.site-footer[class] .site-footer__grid { grid-template-columns: repeat(3, 1fr); }
+}
+footer.site-footer[class] .eyebrow {
+	margin: 0 0 1.75rem;
+	padding-bottom: 1rem;
+	position: relative;
+	color: var(--gray-bar);
+	font-size: 1.15rem;
+	font-weight: 800;
+	letter-spacing: 0.04em;
+	text-transform: none;
+}
+footer.site-footer[class] .eyebrow::after {
+	content: "";
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	width: 54px;
+	height: 3px;
+	background: var(--color-accent);
+}
+footer.site-footer[class] .site-footer__tagline { color: var(--color-text-secondary); line-height: 1.9; font-size: var(--font-size-sm); }
+footer.site-footer[class] .site-footer__more a { color: #337ab7; font-size: var(--font-size-sm); }
+footer.site-footer[class] .site-footer__links { margin: 0; padding: 0; list-style: none; border-top: 1px dashed var(--gray-line); }
+footer.site-footer[class] .site-footer__links li { border-bottom: 1px dashed var(--gray-line); }
+footer.site-footer[class] .site-footer__links a[href] {
+	display: block;
+	padding: 0.95rem 0.9rem;
+	color: var(--gray-text);
+	font-size: var(--font-size-sm);
+}
+footer.site-footer[class] .site-footer__links a[href]:hover { color: var(--gray-bar); background: var(--gray-hover); }
+footer.site-footer[class] .site-footer__bottom { background: var(--gray-bar); border-top: 0; }
+footer.site-footer[class] .site-footer__bottom-inner { justify-content: center; padding-block: 1.1rem; }
+footer.site-footer[class] .site-footer__meta { margin: 0; color: #fff; font-size: var(--font-size-xs); text-align: center; }
+footer.site-footer[class] .theme-switcher { display: none; }
+footer.site-footer[class] p.site-footer__tagline[class] { color: var(--gray-text); max-width: none; margin: 0 0 1rem; }
+footer.site-footer[class] .site-footer__more a[href] { color: #337ab7; text-decoration: none; }
+footer.site-footer[class] .site-footer__more a[href]:hover { text-decoration: underline; }
+footer.site-footer[class] .site-footer__widgets { display: none; }
+
+
+/* ---- ピックアップ3記事（マナブログ風） ---- */
+.pickup-section { padding-block: 2rem 0; }
+.pickup-grid { display: grid; gap: 1.5rem; }
+@media (min-width: 800px) { .pickup-grid { grid-template-columns: repeat(3, 1fr); } }
+.btn--readmore {
+	background: transparent;
+	color: #7b7b7b;
+	border: 1px solid #909090;
+	border-radius: 2px;
+	padding: 12px 34px;
+	font-size: var(--font-size-sm);
+	letter-spacing: 0.06em;
+}
+.btn--readmore:hover { background: var(--gray-bar); color: #fff; border-color: var(--gray-bar); }

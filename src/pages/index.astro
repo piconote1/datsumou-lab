@@ -8,6 +8,7 @@ import {
 import Base from "../layouts/Base.astro";
 import PostCard from "../components/PostCard.astro";
 import PostRow from "../components/PostRow.astro";
+import PickupCard from "../components/PickupCard.astro";
 import { resolveBlogSiteIdentity } from "../utils/site-identity";
 
 // Limit to what we render (1 featured + 6 grid). The DB does the slicing
@@ -75,22 +76,19 @@ const gridPostsWithTags = gridPosts.map((post) => ({
 ---
 
 <Base title={siteTitle} description={siteTagline}>
-	<header class="home-hero">
-		<div class="frame home-hero__grid">
-			<div>
-				<span class="home-hero__tag">契約前のチェック</span>
-				<h1 class="home-hero__title">
-					脱毛クリニックは、<br />料金表の前に<br class="sp-only" />「確認する順番」を。
-				</h1>
-				<p class="home-hero__lead">
-					通える距離、総額、解約・返金、肌トラブルの対応。公式に公開されている情報をもとに、契約前に確認したいことを整理しています。
-				</p>
-				<div class="home-hero__actions">
-					<a href="/posts" class="btn btn--on-dark">記事一覧を見る</a>
+	{
+		visiblePosts.length > 0 && (
+			<section class="band pickup-section" aria-label="ピックアップ記事">
+				<div class="frame">
+					<div class="pickup-grid">
+						{visiblePosts.slice(0, 3).map((post) => (
+							<PickupCard post={post} />
+						))}
+					</div>
 				</div>
-			</div>
-		</div>
-	</header>
+			</section>
+		)
+	}
 	{
 		categories.length > 0 && (
 			<section class="band section" id="categories" aria-labelledby="categories-title">

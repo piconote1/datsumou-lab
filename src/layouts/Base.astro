@@ -165,30 +165,6 @@ const year = new Date().getFullYear();
 						)
 					}
 				</a>
-				{
-					menuItems.length > 0 && (
-						<nav class="site-nav" aria-label="メインメニュー">
-							<ul>
-								{menuItems.map((item) => (
-									<li>
-										<a
-											href={item.url}
-											target={item.target}
-											rel={
-												item.target === "_blank"
-													? "noopener noreferrer"
-													: undefined
-											}
-											aria-current={navCurrent(item.url)}
-										>
-											{item.label}
-										</a>
-									</li>
-								))}
-							</ul>
-						</nav>
-					)
-				}
 				<div class="site-header__actions">
 					<div class="site-search" role="search" aria-label="Site">
 						<svg
@@ -241,6 +217,34 @@ const year = new Date().getFullYear();
 					}
 				</div>
 			</div>
+			<div class="site-header__navbar">
+				<div class="frame">
+				{
+					menuItems.length > 0 && (
+						<nav class="site-nav" aria-label="メインメニュー">
+							<ul>
+								{menuItems.map((item) => (
+									<li>
+										<a
+											href={item.url}
+											target={item.target}
+											rel={
+												item.target === "_blank"
+													? "noopener noreferrer"
+													: undefined
+											}
+											aria-current={navCurrent(item.url)}
+										>
+											{item.label}
+										</a>
+									</li>
+								))}
+							</ul>
+						</nav>
+					)
+				}
+				</div>
+			</div>
 		</header>
 		<script is:inline>
 			// Inline, so the height is set before the browser scrolls to a URL fragment
@@ -263,24 +267,10 @@ const year = new Date().getFullYear();
 
 		<footer class="site-footer band">
 			<div class="frame site-footer__grid">
-				<div class="site-footer__brand">
-					<a href="/" class="brand">
-						{
-							siteLogo ? (
-								<img
-									src={siteLogo.url}
-									alt={siteLogo.alt || siteTitle}
-									class="brand__logo"
-								/>
-							) : (
-								<>
-									<img src="/brand/icon-96.webp" alt="" class="brand__icon" width="36" height="36" />
-									<span class="brand__name">{siteTitle}</span>
-								</>
-							)
-						}
-					</a>
-					{siteTagline && <p class="site-footer__tagline">{siteTagline}</p>}
+				<div class="site-footer__col site-footer__about">
+					<h2 class="eyebrow">このサイトについて</h2>
+					<p class="site-footer__tagline">公式に公開されている情報をもとに、脱毛クリニックを選ぶときの確認ポイントを整理しています。</p>
+					<p class="site-footer__more"><a href="/pages/operator">» 運営者情報はこちら</a></p>
 				</div>
 				{
 					footerMenuItems.length > 0 && (
