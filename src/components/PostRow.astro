@@ -27,13 +27,6 @@ const shown = labels.slice(0, 2);
 	<a href={href} class="post-row__link">
 		<span class="post-row__meta">
 			{shown.map((l) => <span class="post-row__chip">{l.label}</span>)}
-			{
-				publishedAt && (
-					<time datetime={publishedAt.toISOString()}>
-						{formatDate(publishedAt, "long")}
-					</time>
-				)
-			}
 		</span>
 		<Heading class="post-row__title" {...post.edit.title}>
 			{title}

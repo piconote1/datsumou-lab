@@ -167,13 +167,6 @@ const hasHeadings = (post.data.content ?? []).some(
 					<div class="post-header__meta">
 						<Byline bylines={bylines} layout="inline" max={2} size="md" />
 						<p class="post-header__dateline">
-							{
-								publishedAt && (
-									<time datetime={publishedAt.toISOString()}>
-										{publishDate}
-									</time>
-								)
-							}
 							<span>約{readingTime}分で読めます</span>
 						</p>
 					</div>
@@ -209,18 +202,6 @@ const hasHeadings = (post.data.content ?? []).some(
 									</dt>
 									<dd>
 										<Byline bylines={bylines} layout="list" />
-									</dd>
-								</div>
-							)
-						}
-						{
-							publishedAt && (
-								<div class="post-fact">
-									<dt class="eyebrow">公開日</dt>
-									<dd>
-										<time datetime={publishedAt.toISOString()}>
-											{publishDate}
-										</time>
 									</dd>
 								</div>
 							)

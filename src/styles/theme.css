@@ -467,3 +467,7 @@ footer.site-footer[class] .site-footer__widgets { display: none; }
 /* ヘッダーのサイトロゴ画像 */
 .brand__logo-img { display: block; height: 56px; width: auto; }
 @media (max-width: 600px) { .brand__logo-img { height: 44px; } }
+
+/* 管理画面でサイトロゴを設定した場合も、同じ大きさで表示する */
+header.site-header .brand .brand__logo[class] { height: 56px; width: auto; max-width: none; }
+@media (max-width: 600px) { header.site-header .brand .brand__logo[class] { height: 44px; } }

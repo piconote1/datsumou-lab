@@ -58,13 +58,6 @@ const sizes = {
 	<div class="post__body">
 		<a href={href} class="post__link" aria-labelledby={titleId}>
 			<span class="post__meta">
-				{
-					publishedAt && (
-						<time datetime={publishedAt.toISOString()}>
-							{formatDate(publishedAt, "short")}
-						</time>
-					)
-				}
 				<span>{readingTime}</span>
 			</span>
 			<Heading class="post__title" id={titleId} {...post.edit.title}>
