@@ -832,3 +832,44 @@ article.post nav.toc[class], article.post .post-rail[class] { display: none !imp
 	box-shadow: 0 2px 0 #5fb27a;
 	color: #17402a;
 }
+
+/* 記事内の「関連記事」カード：本文のブロック種類を「引用」にして、リンクだけを入れる */
+.prose > blockquote:has(> a) {
+	margin-block: 1rem;
+	padding: 0;
+	border: 0;
+}
+.prose > blockquote > a {
+	display: block;
+	position: relative;
+	padding: 0.85rem 2.8rem 0.85rem 1.2rem;
+	border: 1px solid #d9dee2;
+	border-left: 4px solid #3d4752;
+	border-radius: 10px;
+	background: #f6f7f8;
+	color: #1f2a33;
+	font-weight: 700;
+	line-height: 1.5;
+	text-decoration: none;
+	white-space: pre-line;
+	transition: background 0.15s;
+}
+.prose > blockquote > a::first-line {
+	font-size: 0.75rem;
+	font-weight: 500;
+	color: #6b7782;
+}
+.prose > blockquote > a::after {
+	content: "›";
+	position: absolute;
+	right: 1.1rem;
+	top: 50%;
+	transform: translateY(-50%);
+	font-size: 1.5rem;
+	line-height: 1;
+	color: #3d4752;
+}
+.prose > blockquote > a:hover {
+	background: #eceff1;
+	color: #1f2a33;
+}
