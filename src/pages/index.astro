@@ -1,6 +1,7 @@
 ---
 import {
 	getEmDashCollection,
+	getEmDashEntry,
 	getTermsForEntries,
 	getSiteSettings,
 	getTaxonomyTermsWithCacheHint,
@@ -23,6 +24,25 @@ const [{ entries: posts, cacheHint }, settings] = await Promise.all([
 	getSiteSettings(),
 ]);
 const { siteTitle, siteTagline } = resolveBlogSiteIdentity(settings);
+
+// ピックアップ記事は、スラッグで固定する（表示順もこの順）。
+// 公開されていない・見つからない記事は飛ばして、足りない分は新着順で補う。
+const PICKUP_SLUGS = [
+	"datsumo-selection-guide",
+	"datsumo-compare-guide",
+	"datsumo-faq",
+];
+const PICKUP_COUNT = 3;
+const pinnedResults = await Promise.all(
+	PICKUP_SLUGS.map(async (slug) => {
+		try {
+			const { entry } = await getEmDashEntry("posts", slug);
+			return entry ?? null;
+		} catch {
+			return null;
+		}
+	}),
+);
 
 const catResult = await getTaxonomyTermsWithCacheHint("category", {
 	includeCounts: true,
@@ -62,12 +82,21 @@ const gridPosts = visiblePosts
 	.filter((_, i) => i !== featuredIndex)
 	.slice(0, 7);
 
+// ピックアップ：固定した記事 → 足りなければ新着順で補う
+const pinnedPosts = pinnedResults.filter((p): p is NonNullable<typeof p> => p !== null);
+const pinnedIds = new Set(pinnedPosts.map((p) => p.data.id));
+const pickupPosts = [
+	...pinnedPosts,
+	...visiblePosts.filter((p) => !pinnedIds.has(p.data.id)),
+].slice(0, PICKUP_COUNT);
+
 // Single batched query for tags across the featured post + grid posts.
 // Avoids the N+1 pattern of calling getEntryTerms() per entry.
 // Bylines are already hydrated on entry.data.bylines by getEmDashCollection.
 const tagEntryIds = [
 	...(featuredPost ? [featuredPost.data.id] : []),
 	...gridPosts.map((p) => p.data.id),
+	...pickupPosts.map((p) => p.data.id),
 ];
 const tagsByEntry = await getTermsForEntries("posts", tagEntryIds, "category");
 
@@ -93,7 +122,7 @@ const gridPostsWithTags = gridPosts.map((post) => ({
 			<section class="band pickup-section" aria-label="ピックアップ記事">
 				<div class="frame">
 					<div class="pickup-grid">
-						{visiblePosts.slice(0, 3).map((post) => (
+						{pickupPosts.map((post) => (
 							<PickupCard post={post} tags={(tagsByEntry.get(post.data.id) ?? []).map((t) => ({ slug: t.slug, label: t.label }))} />
 						))}
 					</div>
