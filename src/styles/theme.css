@@ -833,13 +833,20 @@ article.post nav.toc[class], article.post .post-rail[class] { display: none !imp
 	color: #17402a;
 }
 
-/* 記事内の「関連記事」カード：本文のブロック種類を「引用」にして、リンクだけを入れる */
-.prose > blockquote:has(> a) {
+/* 記事内の「関連記事」カード：本文のブロック種類を「引用」にして、リンクだけを入れる
+   （連続した引用は、サイトが1つの blockquote にまとめて <p> で出すため、両方の構造に対応） */
+.prose > blockquote:is(:has(> a), :has(> p > a)) {
 	margin-block: 1rem;
 	padding: 0;
 	border: 0;
+	display: grid;
+	gap: 0.6rem;
 }
-.prose > blockquote > a {
+.prose > blockquote > p {
+	margin: 0;
+}
+.prose > blockquote > a,
+.prose > blockquote > p > a {
 	display: block;
 	position: relative;
 	padding: 0.85rem 2.8rem 0.85rem 1.2rem;
@@ -854,12 +861,14 @@ article.post nav.toc[class], article.post .post-rail[class] { display: none !imp
 	white-space: pre-line;
 	transition: background 0.15s;
 }
-.prose > blockquote > a::first-line {
+.prose > blockquote > a::first-line,
+.prose > blockquote > p > a::first-line {
 	font-size: 0.75rem;
 	font-weight: 500;
 	color: #6b7782;
 }
-.prose > blockquote > a::after {
+.prose > blockquote > a::after,
+.prose > blockquote > p > a::after {
 	content: "›";
 	position: absolute;
 	right: 1.1rem;
@@ -869,7 +878,8 @@ article.post nav.toc[class], article.post .post-rail[class] { display: none !imp
 	line-height: 1;
 	color: #3d4752;
 }
-.prose > blockquote > a:hover {
+.prose > blockquote > a:hover,
+.prose > blockquote > p > a:hover {
 	background: #eceff1;
 	color: #1f2a33;
 }
