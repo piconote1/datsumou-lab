@@ -698,3 +698,11 @@ header.site-header .brand .brand__logo[class] { height: 104px; width: auto; max-
 	header.site-header .brand .brand__logo[class] { height: 78px; margin-top: -15px; }
 }
 header.site-header .brand .brand__logo[class] { filter: brightness(1.05); }
+
+/* 記事本文の文字: マナブログに合わせる（#333・17px・行の高さ2倍） */
+article.post .prose, article.post .prose p, article.post .prose li {
+	color: #333333;
+	font-size: 1.0625rem;
+	line-height: 2;
+}
+article.post .prose p { margin-block: 0 1.25rem; }
