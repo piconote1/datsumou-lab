@@ -24,10 +24,10 @@ export default defineConfig({
 	fonts: [
 		{
 			provider: fontProviders.google(),
-			name: "Inter",
+			name: "Noto Sans JP",
 			cssVariable: "--font-body",
-			weights: [400, 500, 600, 700],
-			fallbacks: ["sans-serif"],
+			weights: [400, 500, 700],
+			fallbacks: ["Hiragino Sans", "Yu Gothic", "Meiryo", "sans-serif"],
 		},
 		{
 			provider: fontProviders.google(),

@@ -41,7 +41,7 @@
 
 	/* ---- Typography ---- */
 	--font-body:
-		"Hiragino Sans", "Hiragino Kaku Gothic ProN", "BIZ UDPGothic", "Yu Gothic UI", "Yu Gothic",
+		"Noto Sans JP", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "BIZ UDPGothic", "Yu Gothic UI", "Yu Gothic",
 		Meiryo, system-ui, sans-serif;
 	--font-heading: var(--font-body);
 	--font-weight-heading: 700;
@@ -493,7 +493,7 @@ article.post h1.post-header__title[class] {
 	line-height: 1.6;
 }
 article.post .post-hero { margin-bottom: 2rem; }
-article.post .post-hero__media, article.post .post-hero__media :global(img) { border-radius: 0; }
+article.post .post-hero__media, article.post .post-hero__media img { border-radius: 0; }
 article.post .post-layout[class] { display: flex; flex-direction: column; gap: 1.5rem; }
 article.post .post-meta { display: none; }
 article.post .post-rail { order: -1; }
@@ -608,7 +608,7 @@ article.post .post-header__tags .chip[class] {
 article.post .post-header[class] { padding-bottom: 1.25rem; }
 article.post .post-hero[class] { margin-inline: calc(-1 * var(--card-pad)); margin-bottom: 2rem; }
 article.post .post-hero .frame { padding-inline: 0; }
-article.post .post-hero__media[class], article.post .post-hero__media :global(img) { border-radius: 0; width: 100%; display: block; }
+article.post .post-hero__media[class], article.post .post-hero__media img { border-radius: 0; width: 100%; display: block; }
 article.post .post-rail[class] { max-width: none; margin-inline: 0; }
 
 /* ---- 見出しの階層（マナブログに合わせる）----
@@ -676,3 +676,25 @@ article.post nav.toc .toc__link[class][href] { font-size: 1.0625rem; line-height
 article.post .prose ul:not(:first-child), article.post .prose ol { margin-block: 1rem 2rem; padding-left: 1.5rem; }
 article.post .prose li { margin: 0 0 0.6rem; line-height: 2; }
 article.post .prose li::marker { color: #4cc3a0; }
+
+
+/* ---- 記事タイトルと、サムネイルの幅（マナブログ踏襲）---- */
+article.post h1.post-header__title[class] {
+	color: #7b7b7b;
+	font-size: 1.5625rem;
+	font-weight: 700;
+	line-height: 2;
+	letter-spacing: 0.02em;
+	padding-inline: 1rem;
+}
+article.post .post-hero .frame[class] { width: 100%; max-width: none; margin: 0; padding: 0; }
+article.post .post-hero__media[class], article.post .post-hero__media[class] img { width: 100%; max-width: none; }
+
+/* サイトロゴ: 画像の余白を切り落として、文字部分を大きく見せる */
+header.site-header .brand[class] { display: block; height: 64px; overflow: hidden; }
+header.site-header .brand .brand__logo[class] { height: 104px; width: auto; max-width: none; margin-top: -20px; }
+@media (max-width: 600px) {
+	header.site-header .brand[class] { height: 48px; }
+	header.site-header .brand .brand__logo[class] { height: 78px; margin-top: -15px; }
+}
+header.site-header .brand .brand__logo[class] { filter: brightness(1.05); }
