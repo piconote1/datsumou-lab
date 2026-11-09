@@ -9,11 +9,12 @@ import { Image } from "emdash/ui";
 interface Props {
 	post: ContentEntry<InferCollectionData<"posts">>;
 	labels?: Array<{ slug: string; label: string }>;
-	headingLevel?: 2 | 3;
+	/** 0 のときは見出しにしない（記事の中の「関連記事」カード用。目次に入れない） */
+	headingLevel?: 0 | 2 | 3;
 }
 
 const { post, labels = [], headingLevel = 3 } = Astro.props;
-const Heading = `h${headingLevel}` as const;
+const Heading = (headingLevel === 0 ? "p" : `h${headingLevel}`) as "p" | "h2" | "h3";
 const href = `/posts/${post.id}`;
 const title = post.data.title || "無題";
 const publishedAt = post.data.publishedAt ?? null;

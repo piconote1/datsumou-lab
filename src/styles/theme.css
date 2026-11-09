@@ -883,3 +883,10 @@ article.post nav.toc[class], article.post .post-rail[class] { display: none !imp
 	background: #eceff1;
 	color: #1f2a33;
 }
+
+/* 記事内の「関連記事」カード（記事一覧と同じ見た目の PostRow を並べる枠） */
+.prose > .related-cards {
+	display: grid;
+	gap: 0.8rem;
+	margin-block: 1.4rem;
+}

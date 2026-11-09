@@ -10,6 +10,7 @@ import {
 import { Image, PortableText, WidgetArea } from "emdash/ui";
 import Base from "../../layouts/Base.astro";
 import PostCard from "../../components/PostCard.astro";
+import PostRow from "../../components/PostRow.astro";
 import { formatDate } from "../../utils/locale";
 import { getReadingTime } from "../../utils/reading-time";
 import { resolveBlogSiteIdentity } from "../../utils/site-identity";
@@ -66,6 +67,69 @@ const bylines = post.data.bylines ?? [];
 
 // Get reading time
 const readingTime = getReadingTime(post.data.content);
+
+// 本文の「関連記事」：ブロック種類が「引用」で、記事（/posts/○○）へのリンクだけを入れたものは、
+// 記事一覧と同じ見た目（サムネイル・ラベル・タイトル・説明）のカードで出す。
+// 連続した引用は、1つのグループにまとめる。
+type AnyBlock = Record<string, any>;
+const relatedSlugOf = (b: AnyBlock): string | null => {
+	if (b?.style !== "blockquote") return null;
+	const defs: AnyBlock[] = b.markDefs ?? [];
+	const link = defs.find(
+		(m) => m?._type === "link" && typeof m.href === "string" && m.href.startsWith("/posts/"),
+	);
+	return link ? decodeSlug(link.href.replace("/posts/", "")) ?? null : null;
+};
+type Segment =
+	| { kind: "blocks"; value: AnyBlock[] }
+	| { kind: "cards"; slugs: string[] };
+const segments: Segment[] = [];
+for (const block of (post.data.content ?? []) as AnyBlock[]) {
+	const rel = relatedSlugOf(block);
+	const last = segments[segments.length - 1];
+	if (rel) {
+		if (last?.kind === "cards") last.slugs.push(rel);
+		else segments.push({ kind: "cards", slugs: [rel] });
+	} else if (last?.kind === "blocks") {
+		last.value.push(block);
+	} else {
+		segments.push({ kind: "blocks", value: [block] });
+	}
+}
+const relatedSlugs = [
+	...new Set(segments.flatMap((s) => (s.kind === "cards" ? s.slugs : []))),
+];
+const relatedEntries = (
+	await Promise.all(
+		relatedSlugs.map(async (s) => {
+			try {
+				const { entry } = await getEmDashEntry("posts", s);
+				return entry ?? null;
+			} catch {
+				return null;
+			}
+		}),
+	)
+).filter((e): e is NonNullable<typeof e> => e !== null);
+const relatedTerms = relatedEntries.length
+	? await getTermsForEntries(
+			"posts",
+			relatedEntries.map((e) => e.data.id),
+			"category",
+		)
+	: new Map();
+const relatedBySlug = new Map(
+	relatedEntries.map((e) => [
+		e.id,
+		{
+			post: e,
+			labels: (relatedTerms.get(e.data.id) ?? []).map((t: any) => ({
+				slug: t.slug,
+				label: t.label,
+			})),
+		},
+	]),
+);
 
 // This post's tags are already hydrated onto the entry by getEmDashEntry —
 // no extra query needed.
@@ -200,7 +264,22 @@ const hasHeadings = (post.data.content ?? []).some(
 
 				<div class="post-main">
 					<div class="prose" data-post-content>
-						<PortableText value={post.data.content} />
+						{
+							segments.map((seg) =>
+								seg.kind === "blocks" ? (
+									<PortableText value={seg.value} />
+								) : (
+									<div class="related-cards">
+										{seg.slugs
+											.map((s) => relatedBySlug.get(s))
+											.filter(Boolean)
+											.map((r) => (
+												<PostRow post={r!.post} labels={r!.labels} headingLevel={0} />
+											))}
+									</div>
+								),
+							)
+						}
 					</div>
 				</div>
 
