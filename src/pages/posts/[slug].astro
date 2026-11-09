@@ -8,9 +8,7 @@ import {
 	getSiteSettings,
 } from "emdash";
 import { Image, PortableText, WidgetArea } from "emdash/ui";
-import { Comments, CommentForm } from "emdash/ui/comments";
 import Base from "../../layouts/Base.astro";
-import Byline from "../../components/Byline.astro";
 import PostCard from "../../components/PostCard.astro";
 import { formatDate } from "../../utils/locale";
 import { getReadingTime } from "../../utils/reading-time";
@@ -165,7 +163,6 @@ const hasHeadings = (post.data.content ?? []).some(
 						)
 					}
 					<div class="post-header__meta">
-						<Byline bylines={bylines} layout="inline" max={2} size="md" />
 						<p class="post-header__dateline">
 							<span>約{readingTime}分で読めます</span>
 						</p>
@@ -194,18 +191,6 @@ const hasHeadings = (post.data.content ?? []).some(
 			<div class="frame post-layout">
 				<div class="post-meta">
 					<dl class="post-facts">
-						{
-							bylines.length > 0 && (
-								<div class="post-fact">
-									<dt class="eyebrow">
-										{bylines.length === 1 ? "執筆者" : "執筆者"}
-									</dt>
-									<dd>
-										<Byline bylines={bylines} layout="list" />
-									</dd>
-								</div>
-							)
-						}
 						<div class="post-fact">
 							<dt class="eyebrow">読む時間</dt>
 							<dd>約{readingTime}分</dd>
@@ -217,12 +202,6 @@ const hasHeadings = (post.data.content ?? []).some(
 					<div class="prose" data-post-content>
 						<PortableText value={post.data.content} />
 					</div>
-
-					<section class="post-comments" aria-labelledby="comments-title">
-						<h2 id="comments-title" class="eyebrow">コメント</h2>
-						<Comments collection="posts" contentId={post.data.id} threaded />
-						<CommentForm collection="posts" contentId={post.data.id} />
-					</section>
 				</div>
 
 				<div class="post-rail">

@@ -1,7 +1,6 @@
 ---
 import type { ContentEntry, InferCollectionData } from "emdash";
 import { Image } from "emdash/ui";
-import Byline from "./Byline.astro";
 import { formatDate } from "../utils/locale";
 import { formatReadingTime, getReadingTime } from "../utils/reading-time";
 
@@ -90,13 +89,8 @@ const sizes = {
 			}
 		</a>
 		{
-			(bylines.length > 0 || visibleTags.length > 0) && (
+			visibleTags.length > 0 && (
 				<div class="post__footer">
-					<Byline
-						bylines={bylines}
-						max={variant === "card" ? 1 : 2}
-						size={variant === "feature" ? "sm" : "xs"}
-					/>
 					{visibleTags.length > 0 && (
 						<ul class="chips post__tags" aria-label="Tags">
 							{visibleTags.map((tag) => (

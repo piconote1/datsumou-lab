@@ -580,3 +580,33 @@ article.post nav.toc[class] { display: block; }
 article.post nav.toc[class][hidden] { display: none; }
 article.post .post-rail[class] { max-height: none; overflow: visible; margin: 0; padding: 0; }
 article.post nav.toc[class], article.post nav.toc .toc__list[class] { width: 100%; max-width: none; box-sizing: border-box; }
+
+/* 記事の冒頭: マナブログ風（中央タイトル → カテゴリ → カード幅いっぱいのサムネイル） */
+article.post { --card-pad: clamp(1.25rem, 4vw, 2.75rem); }
+article.post .post-header__inner[class] { display: flex; flex-direction: column; align-items: center; text-align: center; }
+article.post .back-link, article.post .post-header__lead, article.post .post-header__meta { display: none; }
+article.post h1.post-header__title[class] {
+	order: 1;
+	margin: 0.5rem 0 0.75rem;
+	padding: 0;
+	background: transparent;
+	border: 0;
+	text-align: center;
+	font-size: clamp(1.5rem, 1.15rem + 1.6vw, 2.1rem);
+	line-height: 1.7;
+}
+article.post .post-header__tags[class] { order: 2; justify-content: center; margin: 0 0 0.5rem; padding: 0; }
+article.post .post-header__tags .chip[class] {
+	padding: 0;
+	background: transparent;
+	border: 0;
+	border-radius: 0;
+	color: #1f9e7c;
+	font-size: var(--font-size-base);
+	letter-spacing: 0.04em;
+}
+article.post .post-header[class] { padding-bottom: 1.25rem; }
+article.post .post-hero[class] { margin-inline: calc(-1 * var(--card-pad)); margin-bottom: 2rem; }
+article.post .post-hero .frame { padding-inline: 0; }
+article.post .post-hero__media[class], article.post .post-hero__media :global(img) { border-radius: 0; width: 100%; display: block; }
+article.post .post-rail[class] { max-width: none; margin-inline: 0; }
