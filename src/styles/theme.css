@@ -750,7 +750,7 @@ article.post nav.toc[class], article.post .post-rail[class] { display: none !imp
 @media (min-width: 960px) { .cat-tiles { grid-template-columns: repeat(4, 1fr); } }
 .cat-tile {
 	display: grid;
-	grid-template-columns: auto 1fr auto;
+	grid-template-columns: auto 1fr;
 	align-items: center;
 	gap: 0.9rem;
 	padding: 1rem 1.1rem;
@@ -797,4 +797,38 @@ article.post nav.toc[class], article.post .post-rail[class] { display: none !imp
 	padding: 0;
 	display: grid;
 	gap: 0.9rem;
+}
+
+/* 記事内の「公式サイトを見る」ボタン：本文の段落にリンクだけがある場合にボタン表示（ライトグリーン） */
+.prose > p:has(> a[href^="http"]:only-child) {
+	margin-block: 1.1rem;
+}
+.prose > p > a[href^="http"]:only-child {
+	display: block;
+	position: relative;
+	padding: 0.95rem 3rem 0.95rem 1.5rem;
+	border-radius: 999px;
+	background: #8fd6a4;
+	box-shadow: 0 4px 0 #5fb27a;
+	color: #17402a;
+	font-weight: 700;
+	line-height: 1.5;
+	text-align: center;
+	text-decoration: none;
+	white-space: pre-line;
+	transition: transform 0.1s, box-shadow 0.1s;
+}
+.prose > p > a[href^="http"]:only-child::after {
+	content: "›";
+	position: absolute;
+	right: 1.3rem;
+	top: 50%;
+	transform: translateY(-50%);
+	font-size: 1.6rem;
+	line-height: 1;
+}
+.prose > p > a[href^="http"]:only-child:hover {
+	transform: translateY(2px);
+	box-shadow: 0 2px 0 #5fb27a;
+	color: #17402a;
 }

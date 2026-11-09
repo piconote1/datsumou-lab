@@ -118,9 +118,6 @@ const gridPostsWithTags = gridPosts.map((post) => ({
 									<span class="cat-tile__name">{c.label}</span>
 									{c.description && <span class="cat-tile__desc">{c.description}</span>}
 								</span>
-								{typeof c.count === "number" && (
-									<span class="cat-tile__count">{c.count}<small>記事</small></span>
-								)}
 							</a>
 						))}
 					</div>
