@@ -465,5 +465,5 @@ footer.site-footer[class] .site-footer__widgets { display: none; }
 
 
 /* ヘッダーのサイトロゴ画像 */
-.brand__logo-img { display: block; height: 62px; width: auto; }
-@media (max-width: 600px) { .brand__logo-img { height: 46px; } }
+.brand__logo-img { display: block; height: 56px; width: auto; }
+@media (max-width: 600px) { .brand__logo-img { height: 44px; } }
