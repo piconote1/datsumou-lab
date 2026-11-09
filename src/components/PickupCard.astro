@@ -4,10 +4,12 @@ import { Image } from "emdash/ui";
 
 interface Props {
 	post: ContentEntry<InferCollectionData<"posts">>;
+	tags?: Array<{ slug: string; label: string }>;
 }
-const { post } = Astro.props;
+const { post, tags = [] } = Astro.props;
 const href = `/posts/${post.id}`;
 const title = post.data.title || "Untitled";
+const chip = tags[0];
 ---
 
 <article class="pickup">
@@ -20,25 +22,31 @@ const title = post.data.title || "Untitled";
 			)
 		}
 	</a>
-	<h2 class="pickup__title"><a href={href}>{title}</a></h2>
-	<a href={href} class="btn btn--readmore">READ MORE</a>
+	<div class="pickup__body">
+		{chip && <span class="pickup__chip">{chip.label}</span>}
+		<h2 class="pickup__title"><a href={href}>{title}</a></h2>
+		<span class="pickup__more" aria-hidden="true">続きを読む <span class="pickup__arrow">→</span></span>
+	</div>
 </article>
 
 <style>
 	.pickup {
+		position: relative;
 		display: flex;
 		flex-direction: column;
-		align-items: center;
-		gap: var(--spacing-4);
-		padding: var(--spacing-8) var(--spacing-8) var(--spacing-6);
+		overflow: hidden;
 		background: #fff;
 		border: 1px solid var(--color-border-subtle);
-		border-radius: 2px;
-		text-align: center;
+		border-radius: 14px;
+		box-shadow: 0 1px 2px rgb(16 24 40 / 0.04);
+		transition: transform 0.2s ease, box-shadow 0.2s ease;
+	}
+	.pickup:hover {
+		transform: translateY(-3px);
+		box-shadow: 0 12px 28px -12px rgb(16 24 40 / 0.22);
 	}
 	.pickup__media {
 		display: block;
-		width: 100%;
 		aspect-ratio: 16 / 9;
 		overflow: hidden;
 		background: var(--gray-bg);
@@ -48,18 +56,60 @@ const title = post.data.title || "Untitled";
 		height: 100%;
 		object-fit: cover;
 		display: block;
+		transition: transform 0.35s ease;
+	}
+	.pickup:hover .pickup__media :global(img) {
+		transform: scale(1.04);
+	}
+	.pickup__body {
+		display: flex;
+		flex-direction: column;
+		gap: 0.65rem;
+		flex: 1;
+		padding: 1.15rem 1.25rem 1.25rem;
+	}
+	.pickup__chip {
+		align-self: flex-start;
+		padding: 2px 10px;
+		border-radius: 999px;
+		background: #d7f2e8;
+		color: #0c6e57;
+		font-size: 0.8125rem;
+		font-weight: 700;
+		letter-spacing: 0.03em;
 	}
 	.pickup__title {
 		margin: 0;
-		font-size: var(--font-size-base);
+		font-size: 1.0625rem;
 		font-weight: 700;
-		line-height: 1.7;
+		line-height: 1.6;
+		display: -webkit-box;
+		-webkit-line-clamp: 3;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
 	}
 	.pickup__title a {
-		color: var(--gray-text);
+		color: #1f2a37;
 		text-decoration: none;
 	}
-	.pickup__title a:hover {
-		text-decoration: underline;
+	.pickup__title a::after {
+		content: "";
+		position: absolute;
+		inset: 0;
+	}
+	.pickup__more {
+		margin-top: auto;
+		padding-top: 0.25rem;
+		color: #0c6e57;
+		font-size: 0.875rem;
+		font-weight: 700;
+		letter-spacing: 0.04em;
+	}
+	.pickup__arrow {
+		display: inline-block;
+		transition: transform 0.2s ease;
+	}
+	.pickup:hover .pickup__arrow {
+		transform: translateX(4px);
 	}
 </style>

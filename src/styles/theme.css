@@ -739,3 +739,62 @@ article.post .prose ul:not(:first-child), article.post .prose ol:not(:first-chil
 
 /* 目次（この記事の内容）は表示しない。記事先頭の「この記事で分かること」だけにする */
 article.post nav.toc[class], article.post .post-rail[class] { display: none !important; }
+
+/* ---- トップページの見た目（おしゃれ版）---- */
+.pickup-section { padding-block: 2.25rem 0; }
+.pickup-grid { gap: 1.25rem; }
+
+/* 悩み別に探す: アイコン付きのタイル */
+.cat-tiles { display: grid; gap: 0.9rem; grid-template-columns: 1fr; }
+@media (min-width: 600px) { .cat-tiles { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 960px) { .cat-tiles { grid-template-columns: repeat(4, 1fr); } }
+.cat-tile {
+	display: grid;
+	grid-template-columns: auto 1fr auto;
+	align-items: center;
+	gap: 0.9rem;
+	padding: 1rem 1.1rem;
+	background: #fff;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 14px;
+	box-shadow: 0 1px 2px rgb(16 24 40 / 0.04);
+	color: #1f2a37;
+	text-decoration: none;
+	transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.cat-tile:hover { transform: translateY(-2px); box-shadow: 0 10px 24px -12px rgb(16 24 40 / 0.22); border-color: #4cc3a0; }
+.cat-tile__icon {
+	display: grid;
+	place-items: center;
+	width: 44px;
+	height: 44px;
+	border-radius: 12px;
+	background: #d7f2e8;
+	color: #0c6e57;
+}
+.cat-tile__icon svg { width: 24px; height: 24px; }
+.cat-tile__body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.cat-tile__name { font-size: 1rem; font-weight: 700; line-height: 1.5; }
+.cat-tile__desc { color: #4b5563; font-size: 0.8125rem; line-height: 1.55; }
+.cat-tile__count { color: #0c6e57; font-size: 1.25rem; font-weight: 700; line-height: 1; text-align: right; }
+.cat-tile__count small { display: block; margin-top: 2px; color: #4b5563; font-size: 0.6875rem; font-weight: 500; }
+
+/* セクション見出し */
+.home-section-title[class] {
+	margin: 0 0 1.1rem;
+	padding: 0 0 0 0.8rem;
+	border: 0;
+	border-left: 5px solid var(--color-accent);
+	font-size: 1.375rem;
+	font-weight: 800;
+	letter-spacing: 0.03em;
+}
+
+/* 新しい記事: 白い行カードを縦に並べる */
+.post-list[class] {
+	background: transparent;
+	border: 0;
+	padding: 0;
+	display: grid;
+	gap: 0.9rem;
+}

@@ -42,6 +42,18 @@ const visiblePosts = posts.slice(0, POSTS_PER_PAGE);
 const hasMorePosts = posts.length > POSTS_PER_PAGE;
 
 // Find the first post with a featured image for the hero
+
+const catIcons: Record<string, string> = {
+	basics: "M12 3v18M6 21h12M5 7h14M5 7l-3 7a3 3 0 0 0 6 0L5 7zM19 7l-3 7a3 3 0 0 0 6 0l-3-7z",
+	parts: "M12 5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zM8.5 22v-8L5 9h14l-3.5 5v8",
+	price: "M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zM9 8l3 4 3-4M9 13h6M9 16h6M12 12v6",
+	access: "M12 22s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12zM12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z",
+	contract: "M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M8 13h8M8 17h5",
+	care: "M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4",
+	pain: "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM9 12l2 2 4-4",
+	types: "M12 2l10 5-10 5L2 7l10-5zM2 17l10 5 10-5M2 12l10 5 10-5",
+};
+
 const featuredPost = null; // リスト型にしたので、大きな特集カードは使わない
 const featuredIndex = featuredPost ? visiblePosts.indexOf(featuredPost) : -1;
 
@@ -82,7 +94,7 @@ const gridPostsWithTags = gridPosts.map((post) => ({
 				<div class="frame">
 					<div class="pickup-grid">
 						{visiblePosts.slice(0, 3).map((post) => (
-							<PickupCard post={post} />
+							<PickupCard post={post} tags={(tagsByEntry.get(post.data.id) ?? []).map((t) => ({ slug: t.slug, label: t.label }))} />
 						))}
 					</div>
 				</div>
@@ -94,11 +106,21 @@ const gridPostsWithTags = gridPosts.map((post) => ({
 			<section class="band section" id="categories" aria-labelledby="categories-title">
 				<div class="frame">
 					<h2 id="categories-title" class="home-section-title">悩み別に探す</h2>
-					<div class="cat-grid">
+					<div class="cat-tiles">
 						{categories.map((c) => (
-							<a class="cat-card" href={`/category/${c.slug}`}>
-								<span class="cat-card__name">{c.label}</span>
-								{c.description && <span class="cat-card__desc">{c.description}</span>}
+							<a class="cat-tile" href={`/category/${c.slug}`}>
+								<span class="cat-tile__icon" aria-hidden="true">
+									<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+										<path d={catIcons[c.slug] ?? catIcons.basics} />
+									</svg>
+								</span>
+								<span class="cat-tile__body">
+									<span class="cat-tile__name">{c.label}</span>
+									{c.description && <span class="cat-tile__desc">{c.description}</span>}
+								</span>
+								{typeof c.count === "number" && (
+									<span class="cat-tile__count">{c.count}<small>記事</small></span>
+								)}
 							</a>
 						))}
 					</div>
