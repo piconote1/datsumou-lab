@@ -928,8 +928,8 @@ article.post nav.toc[class], article.post .post-rail[class] { display: none !imp
 	width: 2.4rem;
 	height: 2.4rem;
 	border-radius: 50%;
-	background: #3d4752;
-	color: #fff;
+	background: var(--color-accent);
+	color: #1d3557;
 	font-weight: 700;
 }
 .select-steps__body {
@@ -972,4 +972,12 @@ article.post nav.toc[class], article.post .post-rail[class] { display: none !imp
 		grid-column: 2;
 		justify-self: start;
 	}
+}
+
+/* トップ上段の背景：薄いミントのグラデーション（地味に見えないように） */
+.band.select-steps {
+	background:
+		radial-gradient(520px 260px at 92% 0%, rgb(124 218 186 / 0.30), transparent 70%),
+		radial-gradient(420px 220px at 4% 100%, rgb(124 218 186 / 0.18), transparent 70%),
+		linear-gradient(180deg, #ecf9f3 0%, #f6fbf9 70%, rgb(255 255 255 / 0) 100%);
 }
