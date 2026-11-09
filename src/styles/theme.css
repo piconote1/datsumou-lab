@@ -539,3 +539,44 @@ article.post .post-main[class] { max-width: none; width: 100%; margin: 0; }
 article.post .prose[class] { max-width: none; margin: 0; }
 article.post h1.post-header__title[class] { max-width: none; width: 100%; box-sizing: border-box; }
 article.post .post-header__lead[class] { max-width: none; }
+
+/* 目次: マナブログの「本記事で解説する内容」風（✔見出し＋点線ボックス） */
+article.post nav.toc[class] { padding: 0; background: transparent; border: 0; position: static; }
+article.post nav.toc h2.eyebrow[class] {
+	margin: 0 0 1rem;
+	color: var(--color-text);
+	font-size: 1.35rem;
+	font-weight: 800;
+	letter-spacing: 0.03em;
+	text-transform: none;
+}
+article.post nav.toc h2.eyebrow[class]::before {
+	content: "\2714";
+	margin-right: 0.45em;
+	color: #4cc3a0;
+}
+article.post nav.toc .toc__list[class] {
+	margin: 0 0 2rem;
+	padding: 1.5rem 1.5rem 1.5rem 2.75rem;
+	background: #f6fcfa;
+	border: 1px dashed #4cc3a0;
+	list-style: disc;
+}
+article.post nav.toc .toc__item[class] { margin: 0.6rem 0; padding: 0; border: 0; }
+article.post nav.toc .toc__link[class][href] {
+	display: inline;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	color: var(--color-text);
+	font-size: 1rem;
+	font-weight: 500;
+	text-decoration: none;
+}
+article.post nav.toc .toc__link[class][href]:hover { color: #1f9e7c; text-decoration: underline; }
+article.post nav.toc .toc__link[class][href][aria-current] { color: var(--color-text); font-weight: 500; }
+article.post .post-rail[class] { display: block; width: 100%; position: static; }
+article.post nav.toc[class] { display: block; }
+article.post nav.toc[class][hidden] { display: none; }
+article.post .post-rail[class] { max-height: none; overflow: visible; margin: 0; padding: 0; }
+article.post nav.toc[class], article.post nav.toc .toc__list[class] { width: 100%; max-width: none; box-sizing: border-box; }
