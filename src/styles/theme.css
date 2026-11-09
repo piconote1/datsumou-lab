@@ -610,3 +610,69 @@ article.post .post-hero[class] { margin-inline: calc(-1 * var(--card-pad)); marg
 article.post .post-hero .frame { padding-inline: 0; }
 article.post .post-hero__media[class], article.post .post-hero__media :global(img) { border-radius: 0; width: 100%; display: block; }
 article.post .post-rail[class] { max-width: none; margin-inline: 0; }
+
+/* ---- 見出しの階層（マナブログに合わせる）----
+   h1: 記事タイトル（中央）
+   h2: 大見出し … 薄いグレーの箱＋左にミントの太線
+   h3: 中見出し … 左にミントの線＋太字
+   h4: 小見出し … ✔付きの太字 */
+article.post .prose h2 {
+	margin: 3rem 0 1.25rem;
+	padding: 1rem 1.25rem;
+	background: #f7f7f7;
+	border-left: 10px solid var(--color-accent);
+	font-size: 1.5rem;
+	font-weight: 600;
+	letter-spacing: 0.02em;
+	line-height: 1.6;
+}
+article.post .prose h3 {
+	margin: 2.5rem 0 1rem;
+	padding: 0.2rem 0 0.2rem 0.9rem;
+	background: transparent;
+	border-left: 8px solid var(--color-accent);
+	font-size: 1.25rem;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	line-height: 1.6;
+}
+article.post .prose h3::before { content: none; }
+article.post .prose h4 {
+	margin: 2rem 0 0.9rem;
+	font-size: 1.1rem;
+	font-weight: 800;
+	line-height: 1.6;
+}
+article.post .prose h4::before {
+	content: "\2714";
+	margin-right: 0.45em;
+	color: #4cc3a0;
+}
+article.post .prose > h3:first-child { margin-top: 2.5rem; }
+article.post .prose > h3:first-child + ul { margin: 0 0 1.5rem; padding: 0; background: transparent; border: 0; }
+/* 記事先頭の「この記事で分かること」（h4＋箇条書き）をボックス表示 */
+article.post .prose > h4:first-child { margin-top: 0; }
+article.post .prose > h4:first-child + ul {
+	margin: 0 0 2rem;
+	padding: 1.5rem 1.5rem 1.5rem 2.75rem;
+	background: #f6fcfa;
+	border: 1px dashed #4cc3a0;
+}
+article.post .prose > h4:first-child + ul li { margin: 0.5rem 0; }
+
+/* ---- 箇条書き（マナブログの寸法に合わせる）---- */
+article.post .prose > h4:first-child + ul,
+article.post nav.toc .toc__list[class] {
+	padding: 2.5rem 1rem 2.25rem 2.5rem;
+	margin: 0 0 2.5rem;
+}
+article.post .prose > h4:first-child + ul li,
+article.post nav.toc .toc__item[class] {
+	margin: 0 0 0.6rem;
+	font-size: 1.0625rem;
+	line-height: 2;
+}
+article.post nav.toc .toc__link[class][href] { font-size: 1.0625rem; line-height: 2; }
+article.post .prose ul:not(:first-child), article.post .prose ol { margin-block: 1rem 2rem; padding-left: 1.5rem; }
+article.post .prose li { margin: 0 0 0.6rem; line-height: 2; }
+article.post .prose li::marker { color: #4cc3a0; }
