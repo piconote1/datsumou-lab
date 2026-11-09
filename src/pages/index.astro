@@ -1,7 +1,6 @@
 ---
 import {
 	getEmDashCollection,
-	getEmDashEntry,
 	getTermsForEntries,
 	getSiteSettings,
 	getTaxonomyTermsWithCacheHint,
@@ -9,7 +8,6 @@ import {
 import Base from "../layouts/Base.astro";
 import PostCard from "../components/PostCard.astro";
 import PostRow from "../components/PostRow.astro";
-import PickupCard from "../components/PickupCard.astro";
 import { resolveBlogSiteIdentity } from "../utils/site-identity";
 
 // Limit to what we render (1 featured + 6 grid). The DB does the slicing
@@ -25,24 +23,16 @@ const [{ entries: posts, cacheHint }, settings] = await Promise.all([
 ]);
 const { siteTitle, siteTagline } = resolveBlogSiteIdentity(settings);
 
-// ピックアップ記事は、スラッグで固定する（表示順もこの順）。
-// 公開されていない・見つからない記事は飛ばして、足りない分は新着順で補う。
-const PICKUP_SLUGS = [
-	"datsumo-selection-guide",
-	"datsumo-compare-guide",
-	"datsumo-price-compare",
+// トップ上段：「脱毛を選ぶ、6つのステップ」（選び方ガイドの中身）。
+// 各行は、そのステップの記事へのリンク。最後のステップは、7院の比較表へつなぐ。
+const SELECT_STEPS = [
+	{ title: "方式を決める", note: "医療脱毛か、エステ脱毛か", label: "医療脱毛とエステの違い", href: "/posts/clinic-vs-salon-guide" },
+	{ title: "部位とコースを決める", note: "どこを、どのコースで", label: "部位・コース", href: "/posts/course-parts-guide" },
+	{ title: "料金の見方を知る", note: "総額に入るもの・回数", label: "料金・回数", href: "/posts/price-count-guide" },
+	{ title: "通える院を探す", note: "予約・距離・引っ越し", label: "通える院", href: "/posts/access-continue-guide" },
+	{ title: "契約の前に確認する", note: "クーリング・オフ・解約", label: "契約・解約", href: "/posts/contract-cancel-guide" },
+	{ title: "クリニックを比べて選ぶ", note: "料金・機種・追加費用・規定", label: "7院の比較表", href: "/posts/datsumo-price-compare" },
 ];
-const PICKUP_COUNT = 3;
-const pinnedResults = await Promise.all(
-	PICKUP_SLUGS.map(async (slug) => {
-		try {
-			const { entry } = await getEmDashEntry("posts", slug);
-			return entry ?? null;
-		} catch {
-			return null;
-		}
-	}),
-);
 
 const catResult = await getTaxonomyTermsWithCacheHint("category", {
 	includeCounts: true,
@@ -82,21 +72,12 @@ const gridPosts = visiblePosts
 	.filter((_, i) => i !== featuredIndex)
 	.slice(0, 7);
 
-// ピックアップ：固定した記事 → 足りなければ新着順で補う
-const pinnedPosts = pinnedResults.filter((p): p is NonNullable<typeof p> => p !== null);
-const pinnedIds = new Set(pinnedPosts.map((p) => p.data.id));
-const pickupPosts = [
-	...pinnedPosts,
-	...visiblePosts.filter((p) => !pinnedIds.has(p.data.id)),
-].slice(0, PICKUP_COUNT);
-
 // Single batched query for tags across the featured post + grid posts.
 // Avoids the N+1 pattern of calling getEntryTerms() per entry.
 // Bylines are already hydrated on entry.data.bylines by getEmDashCollection.
 const tagEntryIds = [
 	...(featuredPost ? [featuredPost.data.id] : []),
 	...gridPosts.map((p) => p.data.id),
-	...pickupPosts.map((p) => p.data.id),
 ];
 const tagsByEntry = await getTermsForEntries("posts", tagEntryIds, "category");
 
@@ -117,19 +98,29 @@ const gridPostsWithTags = gridPosts.map((post) => ({
 ---
 
 <Base title={siteTitle} description={siteTagline}>
-	{
-		visiblePosts.length > 0 && (
-			<section class="band pickup-section" aria-label="ピックアップ記事">
-				<div class="frame">
-					<div class="pickup-grid">
-						{pickupPosts.map((post) => (
-							<PickupCard post={post} tags={(tagsByEntry.get(post.data.id) ?? []).map((t) => ({ slug: t.slug, label: t.label }))} />
-						))}
-					</div>
-				</div>
-			</section>
-		)
-	}
+	<section class="band section select-steps" aria-labelledby="select-steps-title">
+		<div class="frame">
+			<h2 id="select-steps-title" class="home-section-title">脱毛を選ぶ、6つのステップ</h2>
+			<p class="select-steps__lead">上から順に決めていくと、迷いにくくなります。</p>
+			<ol class="select-steps__list">
+				{SELECT_STEPS.map((s, i) => (
+					<li class="select-steps__item">
+						<a class="select-steps__link" href={s.href}>
+							<span class="select-steps__num" aria-hidden="true">{i + 1}</span>
+							<span class="select-steps__body">
+								<span class="select-steps__title">{s.title}</span>
+								<span class="select-steps__note">{s.note}</span>
+							</span>
+							<span class="select-steps__pill">{s.label}</span>
+						</a>
+					</li>
+				))}
+			</ol>
+			<p class="select-steps__more">
+				<a href="/posts/datsumo-selection-guide">選び方ガイドを読む</a>
+			</p>
+		</div>
+	</section>
 	{
 		categories.length > 0 && (
 			<section class="band section" id="categories" aria-labelledby="categories-title">

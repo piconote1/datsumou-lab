@@ -890,3 +890,83 @@ article.post nav.toc[class], article.post .post-rail[class] { display: none !imp
 	gap: 0.8rem;
 	margin-block: 1.4rem;
 }
+
+/* ---- トップ：脱毛を選ぶ、6つのステップ ---- */
+.select-steps__lead {
+	margin: -0.4rem 0 1.1rem;
+	color: #5b6670;
+	font-size: 0.9375rem;
+}
+.select-steps__list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	gap: 0.6rem;
+}
+.select-steps__link {
+	display: grid;
+	grid-template-columns: auto 1fr auto;
+	align-items: center;
+	gap: 0.9rem 1.1rem;
+	padding: 0.9rem 1.1rem;
+	border-radius: 14px;
+	background: #f3f4f6;
+	color: #1f2a33;
+	text-decoration: none;
+	transition: background 0.15s, transform 0.15s;
+}
+.select-steps__link:hover {
+	background: #eceff1;
+	transform: translateY(-1px);
+}
+.select-steps__num {
+	display: grid;
+	place-items: center;
+	width: 2.4rem;
+	height: 2.4rem;
+	border-radius: 50%;
+	background: #3d4752;
+	color: #fff;
+	font-weight: 700;
+}
+.select-steps__body {
+	display: grid;
+	gap: 0.15rem;
+	min-width: 0;
+}
+.select-steps__title {
+	font-size: 1.0625rem;
+	font-weight: 700;
+	line-height: 1.4;
+}
+.select-steps__note {
+	color: #5b6670;
+	font-size: 0.875rem;
+}
+.select-steps__pill {
+	padding: 0.5rem 1.1rem;
+	border-radius: 999px;
+	background: #e6e9ec;
+	font-size: 0.875rem;
+	font-weight: 700;
+	white-space: nowrap;
+}
+.select-steps__more {
+	margin: 0.9rem 0 0;
+	text-align: right;
+	font-size: 0.9375rem;
+}
+.select-steps__more a {
+	color: #3d4752;
+	text-underline-offset: 3px;
+}
+@media (max-width: 640px) {
+	.select-steps__link {
+		grid-template-columns: auto 1fr;
+	}
+	.select-steps__pill {
+		grid-column: 2;
+		justify-self: start;
+	}
+}
