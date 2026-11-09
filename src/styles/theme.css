@@ -909,16 +909,18 @@ article.post nav.toc[class], article.post .post-rail[class] { display: none !imp
 	grid-template-columns: auto 1fr auto;
 	align-items: center;
 	gap: 0.9rem 1.1rem;
-	padding: 0.9rem 1.1rem;
+	padding: 0.95rem 1.2rem;
+	border: 1px solid #e1e5e9;
 	border-radius: 14px;
-	background: #f3f4f6;
+	background: #fff;
+	box-shadow: 0 1px 2px rgb(16 24 40 / 0.05);
 	color: #1f2a33;
 	text-decoration: none;
-	transition: background 0.15s, transform 0.15s;
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 .select-steps__link:hover {
-	background: #eceff1;
-	transform: translateY(-1px);
+	transform: translateY(-2px);
+	box-shadow: 0 10px 24px -12px rgb(16 24 40 / 0.22);
 }
 .select-steps__num {
 	display: grid;
@@ -947,7 +949,8 @@ article.post nav.toc[class], article.post .post-rail[class] { display: none !imp
 .select-steps__pill {
 	padding: 0.5rem 1.1rem;
 	border-radius: 999px;
-	background: #e6e9ec;
+	background: #eef1f3;
+	color: #3d4752;
 	font-size: 0.875rem;
 	font-weight: 700;
 	white-space: nowrap;
