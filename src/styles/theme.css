@@ -974,10 +974,12 @@ article.post nav.toc[class], article.post .post-rail[class] { display: none !imp
 	}
 }
 
-/* トップ上段の背景：薄いミントのグラデーション（地味に見えないように） */
+/* トップ上段の背景：薄い灰色の水玉模様 */
 .band.select-steps {
-	background:
-		radial-gradient(520px 260px at 92% 0%, rgb(124 218 186 / 0.30), transparent 70%),
-		radial-gradient(420px 220px at 4% 100%, rgb(124 218 186 / 0.18), transparent 70%),
-		linear-gradient(180deg, #ecf9f3 0%, #f6fbf9 70%, rgb(255 255 255 / 0) 100%);
+	background-color: #f2f3f5;
+	background-image:
+		radial-gradient(circle at center, #d6dade 1.4px, transparent 1.6px),
+		radial-gradient(circle at center, #e2e5e8 1.4px, transparent 1.6px);
+	background-size: 24px 24px;
+	background-position: 0 0, 12px 12px;
 }
