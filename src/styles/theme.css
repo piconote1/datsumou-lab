@@ -462,3 +462,8 @@ footer.site-footer[class] .site-footer__widgets { display: none; }
 	letter-spacing: 0.06em;
 }
 .btn--readmore:hover { background: var(--gray-bar); color: #fff; border-color: var(--gray-bar); }
+
+
+/* ヘッダーのサイトロゴ画像 */
+.brand__logo-img { display: block; height: 62px; width: auto; }
+@media (max-width: 600px) { .brand__logo-img { height: 46px; } }
