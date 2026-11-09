@@ -706,3 +706,33 @@ article.post .prose, article.post .prose p, article.post .prose li {
 	line-height: 2;
 }
 article.post .prose p { margin-block: 0 1.25rem; }
+article.post .frame[class] { width: 100%; box-sizing: border-box; }
+
+/* ---- 本文の箇条書きは、すべて点線ボックス（マナブログと同じ） ---- */
+article.post .prose ul, article.post .prose ol,
+article.post .prose > h4:first-child + ul {
+	margin: 0 0 2.5rem;
+	padding: 2.5rem 1rem 2.25rem 2.5rem;
+	background: #f6fcfa;
+	border: 1px dashed #4cc3a0;
+}
+article.post .prose ul { list-style: disc; }
+article.post .prose ol { list-style: decimal; }
+article.post .prose ul li, article.post .prose ol li {
+	margin: 0 0 0.6rem;
+	padding: 0;
+	font-size: 1.0625rem;
+	line-height: 2;
+	color: #333333;
+}
+article.post .prose li::marker { color: #333333; }
+article.post .prose ul ul, article.post .prose ol ol, article.post .prose ul ol, article.post .prose ol ul {
+	margin: 0.5rem 0 0;
+	padding: 0 0 0 1.5rem;
+	background: transparent;
+	border: 0;
+}
+article.post .prose ul:not(:first-child), article.post .prose ol:not(:first-child) {
+	margin: 0 0 2.5rem;
+	padding: 2.5rem 1rem 2.25rem 2.5rem;
+}
