@@ -736,3 +736,6 @@ article.post .prose ul:not(:first-child), article.post .prose ol:not(:first-chil
 	margin: 0 0 2.5rem;
 	padding: 2.5rem 1rem 2.25rem 2.5rem;
 }
+
+/* 目次（この記事の内容）は表示しない。記事先頭の「この記事で分かること」だけにする */
+article.post nav.toc[class], article.post .post-rail[class] { display: none !important; }
