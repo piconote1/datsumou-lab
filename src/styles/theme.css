@@ -973,3 +973,76 @@ header.site-header .site-nav ul.site-nav__sub a[href]::after { content: none; }
 .home-more a:hover {
 	background: #f1f3f5;
 }
+
+/* スマホ：記事の中の図（表・図解の画像）は、縮めると文字が読めないので、実寸に近い幅で横にスクロールさせる */
+@media (max-width: 640px) {
+	.prose figure.emdash-image {
+		overflow-x: auto !important;
+		-webkit-overflow-scrolling: touch;
+		padding-bottom: 0.5rem;
+	}
+	.prose figure.emdash-image img {
+		max-width: none !important;
+		width: 800px !important;
+		height: auto !important;
+	}
+	.prose figure.emdash-image::before {
+		content: "← 横にスクロールできます";
+		display: block;
+		position: sticky;
+		left: 0;
+		margin-bottom: 0.35rem;
+		color: #6b7280;
+		font-size: 0.75rem;
+		text-align: right;
+	}
+}
+
+/* 記事の中の表（HTMLの表）：グレー基調。スマホでは横にスクロールし、先頭の列は固定する */
+.prose .emdash-table-wrapper {
+	margin-block: 1.25rem;
+	border: 1px solid #d9dde2;
+	border-radius: 10px;
+	background: #fff;
+}
+.prose .emdash-table {
+	font-size: 0.9375rem;
+	line-height: 1.65;
+	color: #1f2a37;
+}
+.prose .emdash-table th,
+.prose .emdash-table td {
+	border: 0;
+	border-bottom: 1px solid #e3e6ea;
+	padding: 0.7rem 0.85rem;
+	white-space: pre-line;
+}
+.prose .emdash-table thead th {
+	background: #3d4752;
+	color: #fff;
+	font-weight: 700;
+	border-bottom: 0;
+}
+.prose .emdash-table tbody th {
+	background: #f3f5f7;
+	color: #1f2a37;
+	font-weight: 700;
+}
+.prose .emdash-table tbody tr:nth-child(even) td {
+	background: #fafbfc;
+}
+.prose .emdash-table tbody tr:hover {
+	background: transparent;
+}
+.prose .emdash-table tbody tr:last-child th,
+.prose .emdash-table tbody tr:last-child td {
+	border-bottom: 0;
+}
+@media (max-width: 640px) {
+	.prose .emdash-table tbody th[scope="row"],
+	.prose .emdash-table thead th:first-child {
+		position: sticky;
+		left: 0;
+		z-index: 1;
+	}
+}
