@@ -131,7 +131,7 @@ const year = new Date().getFullYear();
 			document.addEventListener('click', function (e) {
 				var a = e.target && e.target.closest && e.target.closest('.prose > p > a[href^="http"]:only-child');
 				if (!a) return;
-				var name = (a.textContent || '').trim().split(/\r?\n/)[0].trim();
+				var name = (a.innerText || a.textContent || '').trim().split(/\r?\n/)[0].trim();
 				gtag('event', 'official_click', {
 					clinic: name,
 					link_url: a.href,
