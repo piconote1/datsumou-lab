@@ -1073,3 +1073,25 @@ header.site-header .site-nav[class] li.has-sub > a[href][aria-current] {
 		border-inline: 0;
 	}
 }
+
+/* 表：縦に長い表は、表の中でスクロールし、見出しの行（上）と先頭の列（左）を固定する */
+.prose .emdash-table-wrapper {
+	max-height: 75vh;
+	overflow: auto !important;
+}
+.prose .emdash-table thead th {
+	position: sticky !important;
+	top: 0 !important;
+	z-index: 2 !important;
+	background: #3d4752 !important;
+	color: #fff !important;
+}
+.prose .emdash-table thead th:first-child {
+	left: 0 !important;
+	z-index: 4 !important;
+}
+.prose .emdash-table tbody th[scope="row"] {
+	position: sticky !important;
+	left: 0 !important;
+	z-index: 1 !important;
+}
