@@ -944,11 +944,11 @@ header.site-header .site-nav ul.site-nav__sub a[href] {
 	white-space: nowrap;
 }
 header.site-header .site-nav ul.site-nav__sub a[href]::after { content: none; }
-/* スマホでは、プルダウンは出さない（親の「カテゴリ」は記事一覧へ。カテゴリのボタンはトップの下にある） */
+/* スマホ（タップ）：「カテゴリ」を押すと開く（hover では開かない） */
+header.site-header .site-nav li.has-sub.open > ul.site-nav__sub { display: flex; }
 @media (max-width: 900px), (hover: none) {
-	header.site-header .site-nav li.has-sub:hover > ul.site-nav__sub,
-	header.site-header .site-nav li.has-sub:focus-within > ul.site-nav__sub { display: none; }
-	header.site-header .site-nav li.has-sub > a[href]::after { content: none; }
+	header.site-header .site-nav li.has-sub:hover:not(.open) > ul.site-nav__sub,
+	header.site-header .site-nav li.has-sub:focus-within:not(.open) > ul.site-nav__sub { display: none; }
 }
 
 /* ホーム：各見出しの「すべて見る」ボタン */
@@ -1055,11 +1055,7 @@ header.site-header .site-nav[class] li.has-sub > a[href][aria-current] {
 /* スマホ：メニューは1行に収める（折り返さない。はみ出す場合は横スクロール） */
 @media (max-width: 640px) {
 	header.site-header .site-nav { margin-inline: 0; }
-	header.site-header .site-nav ul {
-		flex-wrap: nowrap;
-		overflow-x: auto;
-		-webkit-overflow-scrolling: touch;
-	}
+	header.site-header .site-nav ul { flex-wrap: nowrap; }
 	header.site-header .site-nav[class] a[href] {
 		padding: 13px 10px;
 		font-size: 0.8125rem;

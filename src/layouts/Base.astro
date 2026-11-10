@@ -141,6 +141,22 @@ const year = new Date().getFullYear();
 				});
 			});
 		</script>
+		<script is:inline>
+			// ヘッダーの「カテゴリ」：スマホ（タップ）では、押すと子の項目が開く。もう一度押すか、ほかを押すと閉じる。
+			document.addEventListener('click', function (e) {
+				var t = e.target;
+				var a = t && t.closest && t.closest('.site-nav li.has-sub > a');
+				if (a && window.matchMedia('(max-width: 900px), (hover: none)').matches) {
+					e.preventDefault();
+					var li = a.parentElement;
+					var open = li.classList.toggle('open');
+					a.setAttribute('aria-expanded', open ? 'true' : 'false');
+					return;
+				}
+				var opened = document.querySelector('.site-nav li.has-sub.open');
+				if (opened && !(t && t.closest && t.closest('.site-nav li.has-sub'))) opened.classList.remove('open');
+			});
+		</script>
 		<Font cssVariable="--font-body" preload />
 		<Font cssVariable="--font-mono" />
 		<title>{fullTitle}</title>
