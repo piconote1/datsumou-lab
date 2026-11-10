@@ -126,6 +126,20 @@ const year = new Date().getFullYear();
 			function gtag(){dataLayer.push(arguments);}
 			gtag('js', new Date());
 			gtag('config', 'G-0YRSZY6QSR');
+			// 記事の中の「公式サイトを詳しく見る」ボタン（外部リンク）が押された回数を、
+			// GA4 のイベント official_click として記録する。院名は clinic、押された記事は page_path。
+			document.addEventListener('click', function (e) {
+				var a = e.target && e.target.closest && e.target.closest('.prose > p > a[href^="http"]:only-child');
+				if (!a) return;
+				var name = (a.textContent || '').trim().split(/\r?\n/)[0].trim();
+				gtag('event', 'official_click', {
+					clinic: name,
+					link_url: a.href,
+					link_domain: a.hostname,
+					page_path: location.pathname,
+					transport_type: 'beacon'
+				});
+			});
 		</script>
 		<Font cssVariable="--font-body" preload />
 		<Font cssVariable="--font-mono" />
