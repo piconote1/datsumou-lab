@@ -1,6 +1,8 @@
 ---
 import {
 	getEmDashCollection,
+	getEmDashEntry,
+	decodeSlug,
 	getTermsForEntries,
 	getSiteSettings,
 	getTaxonomyTermsWithCacheHint,
@@ -8,6 +10,8 @@ import {
 import Base from "../layouts/Base.astro";
 import PostCard from "../components/PostCard.astro";
 import PostRow from "../components/PostRow.astro";
+import { PortableText } from "emdash/ui";
+import "../styles/prose.css";
 import { resolveBlogSiteIdentity } from "../utils/site-identity";
 
 // Limit to what we render (1 featured + 6 grid). The DB does the slicing
@@ -23,16 +27,75 @@ const [{ entries: posts, cacheHint }, settings] = await Promise.all([
 ]);
 const { siteTitle, siteTagline } = resolveBlogSiteIdentity(settings);
 
-// トップ上段：「脱毛を選ぶ、6つのステップ」（選び方ガイドの中身）。
-// 各行は、そのステップの記事へのリンク。最後のステップは、7院の比較表へつなぐ。
-const SELECT_STEPS = [
-	{ title: "方式を決める", note: "医療脱毛か、エステ脱毛か", label: "医療脱毛とエステの違い", href: "/posts/clinic-vs-salon-guide" },
-	{ title: "部位とコースを決める", note: "どこを、どのコースで", label: "部位・コース", href: "/posts/course-parts-guide" },
-	{ title: "料金の見方を知る", note: "総額に入るもの・回数", label: "料金・回数", href: "/posts/price-count-guide" },
-	{ title: "通える院を探す", note: "予約・距離・引っ越し", label: "通える院", href: "/posts/access-continue-guide" },
-	{ title: "契約の前に確認する", note: "クーリング・オフ・解約", label: "契約・解約", href: "/posts/contract-cancel-guide" },
-	{ title: "クリニックを比べて選ぶ", note: "料金・機種・追加費用・規定", label: "7院の比較表", href: "/posts/datsumo-price-compare" },
+// トップ上段：選び方ガイドの記事本文を、そのまま読み込んで出す（記事を直せば、トップも変わる）。
+// 記事の冒頭（「この記事で分かること」と導入文）は出さず、最初の見出し（6つのステップ）から始める。
+const GUIDE_SLUG = "datsumo-selection-guide";
+type AnyBlock = Record<string, any>;
+const relatedSlugOf = (b: AnyBlock): string | null => {
+	if (b?.style !== "blockquote") return null;
+	const defs: AnyBlock[] = b.markDefs ?? [];
+	const link = defs.find(
+		(m) => m?._type === "link" && typeof m.href === "string" && m.href.startsWith("/posts/"),
+	);
+	return link ? decodeSlug(link.href.replace("/posts/", "")) ?? null : null;
+};
+type Segment =
+	| { kind: "blocks"; value: AnyBlock[] }
+	| { kind: "cards"; slugs: string[] };
+const guideSegments: Segment[] = [];
+try {
+	const { entry: guide } = await getEmDashEntry("posts", GUIDE_SLUG);
+	const all = ((guide?.data.content ?? []) as AnyBlock[]);
+	const start = all.findIndex((b) => b?.style === "h2");
+	for (const block of start >= 0 ? all.slice(start) : []) {
+		const rel = relatedSlugOf(block);
+		const last = guideSegments[guideSegments.length - 1];
+		if (rel) {
+			if (last?.kind === "cards") last.slugs.push(rel);
+			else guideSegments.push({ kind: "cards", slugs: [rel] });
+		} else if (last?.kind === "blocks") {
+			last.value.push(block);
+		} else {
+			guideSegments.push({ kind: "blocks", value: [block] });
+		}
+	}
+} catch {
+	// 記事が取れなくても、トップは出す
+}
+const guideRelatedSlugs = [
+	...new Set(guideSegments.flatMap((s) => (s.kind === "cards" ? s.slugs : []))),
 ];
+const guideRelatedEntries = (
+	await Promise.all(
+		guideRelatedSlugs.map(async (s) => {
+			try {
+				const { entry } = await getEmDashEntry("posts", s);
+				return entry ?? null;
+			} catch {
+				return null;
+			}
+		}),
+	)
+).filter((e): e is NonNullable<typeof e> => e !== null);
+const guideRelatedTerms = guideRelatedEntries.length
+	? await getTermsForEntries(
+			"posts",
+			guideRelatedEntries.map((e) => e.data.id),
+			"category",
+		)
+	: new Map();
+const guideRelatedBySlug = new Map(
+	guideRelatedEntries.map((e) => [
+		e.id,
+		{
+			post: e,
+			labels: (guideRelatedTerms.get(e.data.id) ?? []).map((t: any) => ({
+				slug: t.slug,
+				label: t.label,
+			})),
+		},
+	]),
+);
 
 const catResult = await getTaxonomyTermsWithCacheHint("category", {
 	includeCounts: true,
@@ -98,29 +161,34 @@ const gridPostsWithTags = gridPosts.map((post) => ({
 ---
 
 <Base title={siteTitle} description={siteTagline}>
-	<section class="band section select-steps" aria-labelledby="select-steps-title">
-		<div class="frame">
-			<h2 id="select-steps-title" class="home-section-title">脱毛を選ぶ、6つのステップ</h2>
-			<p class="select-steps__lead">上から順に決めていくと、迷いにくくなります。</p>
-			<ol class="select-steps__list">
-				{SELECT_STEPS.map((s, i) => (
-					<li class="select-steps__item">
-						<a class="select-steps__link" href={s.href}>
-							<span class="select-steps__num" aria-hidden="true">{i + 1}</span>
-							<span class="select-steps__body">
-								<span class="select-steps__title">{s.title}</span>
-								<span class="select-steps__note">{s.note}</span>
-							</span>
-							<span class="select-steps__pill">{s.label}</span>
-						</a>
-					</li>
-				))}
-			</ol>
-			<p class="select-steps__more">
-				<a href="/posts/datsumo-selection-guide">選び方ガイドを読む</a>
-			</p>
-		</div>
-	</section>
+	{
+		guideSegments.length > 0 && (
+			<section class="band section guide-home" aria-label="脱毛の選び方">
+				<div class="frame">
+					<article class="post">
+						<div class="post-main">
+							<div class="prose">
+								{guideSegments.map((seg) =>
+									seg.kind === "blocks" ? (
+										<PortableText value={seg.value} />
+									) : (
+										<div class="related-cards">
+											{seg.slugs
+												.map((s) => guideRelatedBySlug.get(s))
+												.filter(Boolean)
+												.map((r) => (
+													<PostRow post={r!.post} labels={r!.labels} headingLevel={0} />
+												))}
+										</div>
+									),
+								)}
+							</div>
+						</div>
+					</article>
+				</div>
+			</section>
+		)
+	}
 	{
 		categories.length > 0 && (
 			<section class="band section" id="categories" aria-labelledby="categories-title">
