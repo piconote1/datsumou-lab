@@ -40,9 +40,7 @@ const shown = labels.slice(0, 2);
 				{shown.map((l) => <span class="post-row__chip">{l.label}</span>)}
 				{isNew && <span class="post-row__new">NEW</span>}
 			</span>
-			<Heading class="post-row__title" {...post.edit.title}>
-				{title}
-			</Heading>
+			<Heading class="post-row__title" {...post.edit.title}>{title.split("｜").map((part) => <span class="tpart">{part}</span>)}</Heading>
 			{
 				post.data.excerpt && (
 					<p class="post-row__excerpt" {...post.edit.excerpt}>
@@ -130,15 +128,15 @@ const shown = labels.slice(0, 2);
 		letter-spacing: 0.06em;
 	}
 	.post-row__title {
-		margin: 0;
-		font-size: 1.0625rem;
-		font-weight: 700;
-		line-height: 1.6;
-		display: -webkit-box;
-		-webkit-line-clamp: 2;
-		-webkit-box-orient: vertical;
-		overflow: hidden;
-	}
+			margin: 0;
+			font-size: 1.0625rem;
+			font-weight: 700;
+			line-height: 1.6;
+		}
+		/* 「｜」の前後を、それぞれまとまりとして改行する（途中で意味が切れないようにする） */
+		.post-row__title .tpart {
+			display: block;
+		}
 	.post-row__excerpt {
 		margin: 0;
 		color: #4b5563;

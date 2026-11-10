@@ -24,7 +24,7 @@ const chip = tags[0];
 	</a>
 	<div class="pickup__body">
 		{chip && <span class="pickup__chip">{chip.label}</span>}
-		<h2 class="pickup__title"><a href={href}>{title}</a></h2>
+		<h2 class="pickup__title"><a href={href}>{title.split("｜").map((part) => <span class="tpart">{part}</span>)}</a></h2>
 		<span class="pickup__more" aria-hidden="true">続きを読む <span class="pickup__arrow">→</span></span>
 	</div>
 </article>
@@ -87,6 +87,10 @@ const chip = tags[0];
 		-webkit-line-clamp: 3;
 		-webkit-box-orient: vertical;
 		overflow: hidden;
+	}
+	/* 「｜」の前後を、それぞれまとまりとして改行する（途中で意味が切れないようにする） */
+	.pickup__title .tpart {
+		display: block;
 	}
 	.pickup__title a {
 		color: #1f2a37;
