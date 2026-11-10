@@ -119,6 +119,14 @@ const year = new Date().getFullYear();
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta name="google-site-verification" content="X6MAlj9wUhF9oCIp-B3VHZQKlpx1JDEBenn2zWaub20" />
+		<!-- Google アナリティクス（GA4） -->
+		<script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-0YRSZY6QSR"></script>
+		<script is:inline>
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+			gtag('config', 'G-0YRSZY6QSR');
+		</script>
 		<Font cssVariable="--font-body" preload />
 		<Font cssVariable="--font-mono" />
 		<title>{fullTitle}</title>
