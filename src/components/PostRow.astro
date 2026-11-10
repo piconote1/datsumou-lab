@@ -153,5 +153,15 @@ const shown = labels.slice(0, 2);
 		.post-row__excerpt {
 			display: none;
 		}
+		/* スマホ：サムネイルを上、見出しを下に縦に並べて、見出しは省略せず全部出す */
+		.post-row__link {
+			grid-template-columns: 1fr;
+			gap: 0.75rem;
+		}
+		.post-row__title {
+			display: block;
+			-webkit-line-clamp: unset;
+			overflow: visible;
+		}
 	}
 </style>
