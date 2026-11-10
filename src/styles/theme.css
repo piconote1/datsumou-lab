@@ -451,7 +451,7 @@ footer.site-footer[class] .site-footer__widgets { display: none; }
 /* ---- ピックアップ3記事（マナブログ風） ---- */
 .pickup-section { padding-block: 2rem 0; }
 .pickup-grid { display: grid; gap: 1.5rem; }
-@media (min-width: 800px) { .pickup-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 800px) { .pickup-grid { grid-template-columns: repeat(2, 1fr); } }
 .btn--readmore {
 	background: transparent;
 	color: #7b7b7b;
