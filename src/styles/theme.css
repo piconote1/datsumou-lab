@@ -1064,3 +1064,12 @@ header.site-header .site-nav[class] li.has-sub > a[href][aria-current] {
 		font-size: 0.78rem;
 	}
 }
+
+/* スマホ：記事の左右の余白をせまくして、ほぼ画面いっぱいに表示する */
+@media (max-width: 640px) {
+	article.post {
+		--card-pad: 12px;
+		padding-inline: 12px;
+		border-inline: 0;
+	}
+}
