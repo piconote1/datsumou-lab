@@ -4,6 +4,7 @@ import {
 	getEmDashEntry,
 	getTermsForEntries,
 	getSiteSettings,
+	getTaxonomyTermsWithCacheHint,
 } from "emdash";
 import Base from "../layouts/Base.astro";
 import PostRow from "../components/PostRow.astro";
@@ -83,6 +84,21 @@ const termsByEntry = allIds.length
 	: new Map();
 const labelsOf = (id: string) =>
 	(termsByEntry.get(id) ?? []).map((t: any) => ({ slug: t.slug, label: t.label }));
+
+// 悩み別（カテゴリー）のボタン。記事が1本以上あるカテゴリーだけ出す。
+const catResult = await getTaxonomyTermsWithCacheHint("category", { includeCounts: true });
+const categories = catResult.data.filter((c) => c.count === undefined || c.count > 0);
+if (Astro.cache?.enabled) Astro.cache.set(catResult.cacheHint);
+const catIcons: Record<string, string> = {
+	basics: "M12 3v18M6 21h12M5 7h14M5 7l-3 7a3 3 0 0 0 6 0L5 7zM19 7l-3 7a3 3 0 0 0 6 0l-3-7z",
+	parts: "M12 5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zM8.5 22v-8L5 9h14l-3.5 5v8",
+	price: "M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zM9 8l3 4 3-4M9 13h6M9 16h6M12 12v6",
+	access: "M12 22s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12zM12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z",
+	contract: "M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M8 13h8M8 17h5",
+	care: "M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4",
+	pain: "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM9 12l2 2 4-4",
+	types: "M12 2l10 5-10 5L2 7l10-5zM2 17l10 5 10-5M2 12l10 5 10-5",
+};
 ---
 
 <Base title={siteTitle} description={siteTagline}>
@@ -123,6 +139,26 @@ const labelsOf = (id: string) =>
 								)}
 							</section>
 						))}
+						{categories.length > 0 && (
+							<section class="home-group" id="categories" aria-labelledby="categories-title">
+								<h2 id="categories-title" class="home-section-title">悩み別に探す</h2>
+								<div class="cat-tiles">
+									{categories.map((c) => (
+										<a class="cat-tile" href={`/category/${c.slug}`}>
+											<span class="cat-tile__icon" aria-hidden="true">
+												<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+													<path d={catIcons[c.slug] ?? catIcons.basics} />
+												</svg>
+											</span>
+											<span class="cat-tile__body">
+												<span class="cat-tile__name">{c.label}</span>
+												{c.description && <span class="cat-tile__desc">{c.description}</span>}
+											</span>
+										</a>
+									))}
+								</div>
+							</section>
+						)}
 					</div>
 				</div>
 			</section>
