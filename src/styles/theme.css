@@ -1038,3 +1038,29 @@ header.site-header .site-nav[class] li.has-sub > a[href][aria-current] {
 		white-space: nowrap;
 	}
 }
+
+/* スマホの表：列を詰めて、文字を小さくする（先頭の列は固定のまま。列が多い表だけ、少し横にスクロールする） */
+@media (max-width: 640px) {
+	.prose .emdash-table {
+		min-width: 0 !important;
+		width: 100% !important;
+		font-size: 0.8125rem !important;
+		line-height: 1.5 !important;
+	}
+	.prose .emdash-table:has(thead th:nth-child(3)) { width: max(100%, 440px) !important; }
+	.prose .emdash-table:has(thead th:nth-child(4)) { width: max(100%, 520px) !important; }
+	.prose .emdash-table:has(thead th:nth-child(5)) { width: max(100%, 640px) !important; }
+	.prose .emdash-table col { width: auto !important; }
+	.prose .emdash-table th,
+	.prose .emdash-table td {
+		padding: 0.5rem 0.55rem !important;
+		word-break: normal !important;
+		line-break: auto !important;
+		overflow-wrap: anywhere !important;
+	}
+	.prose .emdash-table tbody th[scope="row"] {
+		min-width: 5em;
+		max-width: 7em;
+		font-size: 0.78rem;
+	}
+}
