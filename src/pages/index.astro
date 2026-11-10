@@ -1,5 +1,5 @@
 ---
-import { getEmDashCollection, getTermsForEntries, getSiteSettings } from "emdash";
+import { getEmDashEntry, getTermsForEntries, getSiteSettings } from "emdash";
 import Base from "../layouts/Base.astro";
 import PostRow from "../components/PostRow.astro";
 import PickupCard from "../components/PickupCard.astro";
@@ -8,66 +8,60 @@ import { resolveBlogSiteIdentity } from "../utils/site-identity";
 const settings = await getSiteSettings();
 const { siteTitle, siteTagline } = resolveBlogSiteIdentity(settings);
 
-// トップの構成：カテゴリー（大分類）ごとに記事カードを並べる。分類はカテゴリー1本だけ。
-// 並び順はここで固定する。記事にカテゴリーを付ければ、その見出しの下に自動で出る。
-type Group = { slug: string; title: string; featured?: boolean };
+// トップの構成：カテゴリー（大分類）ごとに、トップに出したい記事だけを固定で並べる。
+// 固定にしていない記事は、トップには出ない（各見出しの「すべて見る」ボタンから、カテゴリーのページで読める）。
+// 分類はカテゴリー1本だけ。見出しの名前と slug は、管理画面のカテゴリーと同じにする。
+type Group = { slug: string; title: string; featured?: boolean; pinned: string[] };
 const GROUPS: Group[] = [
-	{ slug: "select", title: "脱毛を選ぶ", featured: true },
-	{ slug: "basic", title: "基礎を知る" },
-	{ slug: "money", title: "お金と契約" },
-	{ slug: "visit", title: "通う・受ける" },
-	{ slug: "faq", title: "よくある質問" },
+	{
+		slug: "select",
+		title: "脱毛を選ぶ",
+		featured: true,
+		pinned: ["datsumo-selection-guide", "datsumo-price-compare"],
+	},
+	{
+		slug: "basic",
+		title: "基礎を知る",
+		pinned: ["clinic-vs-salon-guide", "course-parts-guide", "datsumo-machine-guide"],
+	},
+	{
+		slug: "money",
+		title: "お金と契約",
+		pinned: ["price-count-guide", "datsumo-count-guide", "contract-cancel-guide"],
+	},
+	{
+		slug: "visit",
+		title: "通う・受ける",
+		pinned: ["access-continue-guide", "prep-checklist-guide", "datsumo-vio-guide", "pain-skin-guide"],
+	},
+	{ slug: "faq", title: "よくある質問", pinned: ["datsumo-faq"] },
 ];
-// 見出しの中での並び順（先に書いた記事が上）。書いていない記事は、公開が新しい順で、その後ろに並ぶ。
-const ORDER = [
-	"datsumo-selection-guide",
-	"datsumo-price-compare",
-	"clinic-vs-salon-guide",
-	"course-parts-guide",
-	"datsumo-machine-guide",
-	"price-count-guide",
-	"datsumo-count-guide",
-	"contract-cancel-guide",
-	"access-continue-guide",
-	"prep-checklist-guide",
-	"datsumo-vio-guide",
-	"pain-skin-guide",
-	"datsumo-faq",
-];
-// トップに出さない記事（ほかの記事・ガイドの中から読まれる）
-const HIDDEN_SLUGS = ["datsumo-compare-guide"];
 
-const { entries: all } = await getEmDashCollection("posts", {
-	orderBy: { published_at: "desc" },
-	limit: 100,
-});
-const visible = all.filter((p) => !HIDDEN_SLUGS.includes(p.id));
-const ids = visible.map((p) => p.data.id);
+const fetchEntry = async (slug: string) => {
+	try {
+		const { entry } = await getEmDashEntry("posts", slug);
+		return entry ?? null;
+	} catch {
+		return null;
+	}
+};
+const groups = (
+	await Promise.all(
+		GROUPS.map(async (g) => ({
+			...g,
+			posts: (await Promise.all(g.pinned.map(fetchEntry))).filter(
+				(p): p is NonNullable<typeof p> => p !== null,
+			),
+		})),
+	)
+).filter((g) => g.posts.length > 0);
+
+const ids = groups.flatMap((g) => g.posts.map((p) => p.data.id));
 const termsByEntry = ids.length
 	? await getTermsForEntries("posts", ids, "category")
 	: new Map();
 const labelsOf = (id: string) =>
 	(termsByEntry.get(id) ?? []).map((t: any) => ({ slug: t.slug, label: t.label }));
-const rank = (slug: string) => {
-	const i = ORDER.indexOf(slug);
-	return i === -1 ? 999 : i;
-};
-const placed = new Set<string>();
-const resolved = GROUPS.map((g) => {
-	const posts = visible
-		.filter((p) => labelsOf(p.data.id).some((l: any) => l.slug === g.slug))
-		.sort((a, b) => rank(a.id) - rank(b.id));
-	posts.forEach((p) => placed.add(p.id));
-	return { ...g, posts };
-});
-// どの見出しにも入っていない公開記事（カテゴリー未設定など）は、いちばん下に出す。
-const others = visible.filter((p) => !placed.has(p.id));
-const groups = [
-	...resolved.filter((g) => g.posts.length > 0),
-	...(others.length > 0
-		? [{ slug: "others", title: "そのほかの記事", featured: false, posts: others }]
-		: []),
-];
 ---
 
 <Base title={siteTitle} description={siteTagline}>
@@ -106,6 +100,9 @@ const groups = [
 										))}
 									</ol>
 								)}
+								<p class="home-more">
+									<a href={`/category/${g.slug}`}>「{g.title}」の記事をすべて見る</a>
+								</p>
 							</section>
 						))}
 					</div>

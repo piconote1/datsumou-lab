@@ -950,3 +950,26 @@ header.site-header .site-nav ul.site-nav__sub a[href]::after { content: none; }
 	header.site-header .site-nav li.has-sub:focus-within > ul.site-nav__sub { display: none; }
 	header.site-header .site-nav li.has-sub > a[href]::after { content: none; }
 }
+
+/* ホーム：各見出しの「すべて見る」ボタン */
+.home-more {
+	margin: 1rem 0 0;
+	text-align: center;
+}
+.home-more a {
+	display: inline-block;
+	padding: 0.6rem 1.5rem;
+	border: 1px solid var(--color-border-strong, #c9ced6);
+	border-radius: 999px;
+	background: #fff;
+	color: #3d4752;
+	font-size: 0.9375rem;
+	font-weight: 700;
+	text-decoration: none;
+}
+.home-more a::after {
+	content: " ›";
+}
+.home-more a:hover {
+	background: #f1f3f5;
+}
