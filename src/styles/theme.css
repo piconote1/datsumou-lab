@@ -890,3 +890,21 @@ article.post nav.toc[class], article.post .post-rail[class] { display: none !imp
 	gap: 0.8rem;
 	margin-block: 1.4rem;
 }
+
+/* ---- トップ：灰色の背景の上に、白いパネル。大分類（見出し）→ 記事カード ---- */
+.home-wrap {
+	padding-block: 2rem 3rem;
+}
+.home-panel {
+	padding: clamp(1.1rem, 3vw, 2rem);
+	background: #fff;
+	border: 1px solid #e3e6e9;
+	border-radius: 16px;
+	box-shadow: 0 1px 2px rgb(16 24 40 / 0.04);
+}
+.home-group + .home-group {
+	margin-top: 2.6rem;
+}
+.home-group .home-section-title {
+	margin-bottom: 1.1rem;
+}

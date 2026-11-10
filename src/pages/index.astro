@@ -4,250 +4,128 @@ import {
 	getEmDashEntry,
 	getTermsForEntries,
 	getSiteSettings,
-	getTaxonomyTermsWithCacheHint,
 } from "emdash";
 import Base from "../layouts/Base.astro";
-import PostCard from "../components/PostCard.astro";
 import PostRow from "../components/PostRow.astro";
 import PickupCard from "../components/PickupCard.astro";
 import { resolveBlogSiteIdentity } from "../utils/site-identity";
 
-// Limit to what we render (1 featured + 6 grid). The DB does the slicing
-// instead of fetching every post and discarding the tail in JS.
-const POSTS_PER_PAGE = 7;
-
-const [{ entries: posts, cacheHint }, settings] = await Promise.all([
-	getEmDashCollection("posts", {
-		orderBy: { published_at: "desc" },
-		limit: POSTS_PER_PAGE + 1, // +1 to detect "view all" need
-	}),
-	getSiteSettings(),
-]);
+const settings = await getSiteSettings();
 const { siteTitle, siteTagline } = resolveBlogSiteIdentity(settings);
 
-// ピックアップ記事は、スラッグで固定する（表示順もこの順）。
-// 公開されていない・見つからない記事は飛ばして、足りない分は新着順で補う。
-const PICKUP_SLUGS = [
-	"datsumo-selection-guide",
-	"datsumo-price-compare",
+// トップの構成（2階層）：大分類（見出し）→ 記事カード。
+// 記事はスラッグで固定する。公開されていない・見つからない記事は飛ばす。
+// どの大分類にも入っていない公開記事は、いちばん下の「そのほかの記事」に自動で出る。
+type Group = { title: string; slugs: string[]; featured?: boolean };
+const GROUPS: Group[] = [
+	{
+		title: "脱毛を選ぶ",
+		featured: true,
+		slugs: ["datsumo-selection-guide", "datsumo-price-compare"],
+	},
+	{
+		title: "基礎を知る",
+		slugs: ["clinic-vs-salon-guide", "course-parts-guide"],
+	},
+	{
+		title: "お金と契約",
+		slugs: ["price-count-guide", "contract-cancel-guide"],
+	},
+	{
+		title: "通う・受ける",
+		slugs: ["access-continue-guide", "prep-checklist-guide", "pain-skin-guide"],
+	},
+	{
+		title: "よくある質問",
+		slugs: ["datsumo-faq"],
+	},
 ];
-const PICKUP_COUNT = 2;
-const pinnedResults = await Promise.all(
-	PICKUP_SLUGS.map(async (slug) => {
-		try {
-			const { entry } = await getEmDashEntry("posts", slug);
-			return entry ?? null;
-		} catch {
-			return null;
-		}
-	}),
-);
+// トップに出さない記事（ほかの記事・ガイドの中から読まれる）
+const HIDDEN_SLUGS = ["datsumo-compare-guide"];
 
-const catResult = await getTaxonomyTermsWithCacheHint("category", {
-	includeCounts: true,
-});
-// 記事が1本以上あるカテゴリーだけ、トップに出す（空のカテゴリーは出さない）
-const categories = catResult.data.filter(
-	(c) => c.count === undefined || c.count > 0,
-);
-
-if (Astro.cache?.enabled) {
-	Astro.cache.set(cacheHint);
-	Astro.cache.set(catResult.cacheHint);
-}
-
-// Trim the lookahead post used to detect overflow
-const visiblePosts = posts.slice(0, POSTS_PER_PAGE);
-const hasMorePosts = posts.length > POSTS_PER_PAGE;
-
-// Find the first post with a featured image for the hero
-
-const catIcons: Record<string, string> = {
-	basics: "M12 3v18M6 21h12M5 7h14M5 7l-3 7a3 3 0 0 0 6 0L5 7zM19 7l-3 7a3 3 0 0 0 6 0l-3-7z",
-	parts: "M12 5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zM8.5 22v-8L5 9h14l-3.5 5v8",
-	price: "M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zM9 8l3 4 3-4M9 13h6M9 16h6M12 12v6",
-	access: "M12 22s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12zM12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z",
-	contract: "M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M8 13h8M8 17h5",
-	care: "M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4",
-	pain: "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM9 12l2 2 4-4",
-	types: "M12 2l10 5-10 5L2 7l10-5zM2 17l10 5 10-5M2 12l10 5 10-5",
+const fetchEntry = async (slug: string) => {
+	try {
+		const { entry } = await getEmDashEntry("posts", slug);
+		return entry ?? null;
+	} catch {
+		return null;
+	}
 };
 
-const featuredPost = null; // リスト型にしたので、大きな特集カードは使わない
-const featuredIndex = featuredPost ? visiblePosts.indexOf(featuredPost) : -1;
-
-// Get remaining posts (exclude featured if found, limit to 6 for grid)
-const gridPosts = visiblePosts
-	.filter((_, i) => i !== featuredIndex)
-	.slice(0, 7);
-
-// ピックアップ：固定した記事 → 足りなければ新着順で補う
-const pinnedPosts = pinnedResults.filter((p): p is NonNullable<typeof p> => p !== null);
-const pinnedIds = new Set(pinnedPosts.map((p) => p.data.id));
-const pickupPosts = [
-	...pinnedPosts,
-	...visiblePosts.filter((p) => !pinnedIds.has(p.data.id)),
-].slice(0, PICKUP_COUNT);
-
-// Single batched query for tags across the featured post + grid posts.
-// Avoids the N+1 pattern of calling getEntryTerms() per entry.
-// Bylines are already hydrated on entry.data.bylines by getEmDashCollection.
-const tagEntryIds = [
-	...(featuredPost ? [featuredPost.data.id] : []),
-	...gridPosts.map((p) => p.data.id),
-	...pickupPosts.map((p) => p.data.id),
-];
-const tagsByEntry = await getTermsForEntries("posts", tagEntryIds, "category");
-
-const featuredTags = featuredPost
-	? (tagsByEntry.get(featuredPost.data.id) ?? []).map((t) => ({
-			slug: t.slug,
-			label: t.label,
-		}))
-	: [];
-
-const gridPostsWithTags = gridPosts.map((post) => ({
-	post,
-	tags: (tagsByEntry.get(post.data.id) ?? []).map((t) => ({
-		slug: t.slug,
-		label: t.label,
+const resolvedGroups = await Promise.all(
+	GROUPS.map(async (g) => ({
+		...g,
+		posts: (await Promise.all(g.slugs.map(fetchEntry))).filter(
+			(p): p is NonNullable<typeof p> => p !== null,
+		),
 	})),
-}));
+);
+
+const { entries: recent } = await getEmDashCollection("posts", {
+	orderBy: { published_at: "desc" },
+	limit: 50,
+});
+const used = new Set([
+	...resolvedGroups.flatMap((g) => g.posts.map((p) => p.id)),
+	...HIDDEN_SLUGS,
+]);
+const others = recent.filter((p) => !used.has(p.id));
+const groups = [
+	...resolvedGroups.filter((g) => g.posts.length > 0),
+	...(others.length > 0
+		? [{ title: "そのほかの記事", slugs: [], featured: false, posts: others }]
+		: []),
+];
+
+const allIds = groups.flatMap((g) => g.posts.map((p) => p.data.id));
+const termsByEntry = allIds.length
+	? await getTermsForEntries("posts", allIds, "category")
+	: new Map();
+const labelsOf = (id: string) =>
+	(termsByEntry.get(id) ?? []).map((t: any) => ({ slug: t.slug, label: t.label }));
 ---
 
 <Base title={siteTitle} description={siteTagline}>
 	{
-		visiblePosts.length > 0 && (
-			<section class="band pickup-section" aria-label="ピックアップ記事">
-				<div class="frame">
-					<div class="pickup-grid">
-						{pickupPosts.map((post) => (
-							<PickupCard post={post} tags={(tagsByEntry.get(post.data.id) ?? []).map((t) => ({ slug: t.slug, label: t.label }))} />
-						))}
-					</div>
-				</div>
-			</section>
-		)
-	}
-	{
-		categories.length > 0 && (
-			<section class="band section" id="categories" aria-labelledby="categories-title">
-				<div class="frame">
-					<h2 id="categories-title" class="home-section-title">悩み別に探す</h2>
-					<div class="cat-tiles">
-						{categories.map((c) => (
-							<a class="cat-tile" href={`/category/${c.slug}`}>
-								<span class="cat-tile__icon" aria-hidden="true">
-									<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-										<path d={catIcons[c.slug] ?? catIcons.basics} />
-									</svg>
-								</span>
-								<span class="cat-tile__body">
-									<span class="cat-tile__name">{c.label}</span>
-									{c.description && <span class="cat-tile__desc">{c.description}</span>}
-								</span>
-							</a>
-						))}
-					</div>
-				</div>
-			</section>
-		)
-	}
-
-	{
-		posts.length === 0 ? (
+		groups.length === 0 ? (
 			<section class="band section">
 				<div class="frame">
 					<div class="empty-state">
 						<h2 class="empty-state__title">記事は、まだありません</h2>
-						<p class="empty-state__text">
-							管理画面から、最初の記事を作成してください。
-						</p>
+						<p class="empty-state__text">管理画面から、最初の記事を作成してください。</p>
 						<div class="empty-state__actions">
-							<a href="/_emdash/admin/content/posts/new" class="btn">
-								記事を作成する
-							</a>
+							<a href="/_emdash/admin/content/posts/new" class="btn">記事を作成する</a>
 						</div>
 					</div>
 				</div>
 			</section>
 		) : (
-			<>
-				{featuredPost && (
-					<section class="band section">
-						<div class="frame">
-							<PostCard
-								post={featuredPost}
-								tags={featuredTags}
-								variant="feature"
-								headingLevel={2}
-								priority
-							/>
-						</div>
-					</section>
-				)}
-
-				{gridPostsWithTags.length > 0 && (
-					<section class="band section" aria-labelledby="latest-posts">
-						<div class="frame">
-							<div class="section-head">
-								<h2 id="latest-posts" class="section-head__title">
-									新しい記事
-								</h2>
-								{hasMorePosts && (
-									<a href="/posts" class="arrow-link">
-										すべての記事を見る
-										<svg
-											viewBox="0 0 24 24"
-											fill="none"
-											stroke="currentColor"
-											stroke-width="1.75"
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											aria-hidden="true"
-										>
-											<path d="M5 12h14" />
-											<path d="m12 5 7 7-7 7" />
-										</svg>
-									</a>
+			<section class="band section home-wrap">
+				<div class="frame">
+					<div class="home-panel">
+						{groups.map((g) => (
+							<section class="home-group" aria-label={g.title}>
+								<h2 class="home-section-title">{g.title}</h2>
+								{g.featured ? (
+									<div class="pickup-grid">
+										{g.posts.map((post) => (
+											<PickupCard post={post} tags={labelsOf(post.data.id)} />
+										))}
+									</div>
+								) : (
+									<ol class="post-list">
+										{g.posts.map((post) => (
+											<li>
+												<PostRow post={post} labels={labelsOf(post.data.id)} />
+											</li>
+										))}
+									</ol>
 								)}
-							</div>
-							<ol class="post-list">
-								{gridPostsWithTags.map(({ post, tags }) => (
-									<li>
-										<PostRow post={post} labels={tags} />
-									</li>
-								))}
-							</ol>
-						</div>
-					</section>
-				)}
-			</>
+							</section>
+						))}
+					</div>
+				</div>
+			</section>
 		)
 	}
 </Base>
-
-<style>
-	.home-intro {
-		display: grid;
-		grid-template-columns: minmax(0, 1fr) auto;
-		align-items: end;
-		gap: var(--spacing-6) var(--spacing-8);
-	}
-
-	/* Lifts the pill from the line box's bottom onto the last line's baseline */
-	.home-intro__rss {
-		margin-block-end: var(--spacing-2);
-	}
-
-	@media (max-width: 720px) {
-		.home-intro {
-			grid-template-columns: minmax(0, 1fr);
-		}
-
-		.home-intro__rss {
-			justify-self: start;
-			margin-block-end: 0;
-		}
-	}
-</style>
