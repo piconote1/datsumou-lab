@@ -1046,3 +1046,24 @@ header.site-header .site-nav ul.site-nav__sub a[href]::after { content: none; }
 		z-index: 1;
 	}
 }
+
+/* ヘッダーのメニュー：「カテゴリ」（親）は、記事一覧と同じ行き先なので、現在地の強調は付けない */
+header.site-header .site-nav[class] li.has-sub > a[href][aria-current] {
+	background: transparent;
+	box-shadow: none;
+}
+/* スマホ：メニューは1行に収める（折り返さない。はみ出す場合は横スクロール） */
+@media (max-width: 640px) {
+	header.site-header .site-nav { margin-inline: 0; }
+	header.site-header .site-nav ul {
+		flex-wrap: nowrap;
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+	}
+	header.site-header .site-nav[class] a[href] {
+		padding: 13px 10px;
+		font-size: 0.8125rem;
+		letter-spacing: 0;
+		white-space: nowrap;
+	}
+}
