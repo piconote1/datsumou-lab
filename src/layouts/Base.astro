@@ -232,21 +232,42 @@ const year = new Date().getFullYear();
 						<nav class="site-nav" aria-label="メインメニュー">
 							<ul>
 								{menuItems.map((item) => (
-									<li>
-										<a
-											href={item.url}
-											target={item.target}
-											rel={
-												item.target === "_blank"
-													? "noopener noreferrer"
-													: undefined
-											}
-											aria-current={navCurrent(item.url)}
-										>
-											{item.label}
-										</a>
-									</li>
-								))}
+										<li class={item.children?.length ? "has-sub" : undefined}>
+											<a
+												href={item.url}
+												target={item.target}
+												rel={
+													item.target === "_blank"
+														? "noopener noreferrer"
+														: undefined
+												}
+												aria-current={navCurrent(item.url)}
+												aria-haspopup={item.children?.length ? "true" : undefined}
+											>
+												{item.label}
+											</a>
+											{item.children?.length > 0 && (
+												<ul class="site-nav__sub">
+													{item.children.map((child) => (
+														<li>
+															<a
+																href={child.url}
+																target={child.target}
+																rel={
+																	child.target === "_blank"
+																		? "noopener noreferrer"
+																		: undefined
+																}
+																aria-current={navCurrent(child.url)}
+															>
+																{child.label}
+															</a>
+														</li>
+													))}
+												</ul>
+											)}
+										</li>
+									))}
 							</ul>
 						</nav>
 					)

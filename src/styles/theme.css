@@ -908,3 +908,45 @@ article.post nav.toc[class], article.post .post-rail[class] { display: none !imp
 .home-group .home-section-title {
 	margin-bottom: 1.1rem;
 }
+
+/* ---- ヘッダーのメニュー：子の項目があるときは、プルダウンで開く ---- */
+header.site-header .site-nav li { position: relative; }
+header.site-header .site-nav li.has-sub > a[href]::after {
+	content: "▾";
+	margin-left: 0.4em;
+	font-size: 0.8em;
+	opacity: 0.8;
+}
+header.site-header .site-nav ul.site-nav__sub {
+	display: none;
+	position: absolute;
+	top: 100%;
+	left: 0;
+	z-index: 60;
+	min-width: 230px;
+	flex-direction: column;
+	flex-wrap: nowrap;
+	margin: 0;
+	padding: 6px 0;
+	background: #1f2937;
+	border-top: 3px solid var(--color-accent);
+	box-shadow: 0 10px 24px -8px rgb(0 0 0 / 0.35);
+}
+header.site-header .site-nav li.has-sub:hover > ul.site-nav__sub,
+header.site-header .site-nav li.has-sub:focus-within > ul.site-nav__sub {
+	display: flex;
+}
+header.site-header .site-nav ul.site-nav__sub a[href] {
+	padding: 11px 20px;
+	letter-spacing: 0.02em;
+	font-size: 0.9375rem;
+	font-weight: 500;
+	white-space: nowrap;
+}
+header.site-header .site-nav ul.site-nav__sub a[href]::after { content: none; }
+/* スマホでは、プルダウンは出さない（親の「カテゴリ」は記事一覧へ。カテゴリのボタンはトップの下にある） */
+@media (max-width: 900px), (hover: none) {
+	header.site-header .site-nav li.has-sub:hover > ul.site-nav__sub,
+	header.site-header .site-nav li.has-sub:focus-within > ul.site-nav__sub { display: none; }
+	header.site-header .site-nav li.has-sub > a[href]::after { content: none; }
+}
