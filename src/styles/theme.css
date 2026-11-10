@@ -1083,8 +1083,9 @@ header.site-header .site-nav[class] li.has-sub > a[href][aria-current] {
 	position: sticky !important;
 	top: 0 !important;
 	z-index: 2 !important;
-	background: #3d4752 !important;
-	color: #fff !important;
+	background: #f3f5f7 !important;
+	color: #1f2a37 !important;
+	border-bottom: 2px solid #cfd5db !important;
 }
 .prose .emdash-table thead th:first-child {
 	left: 0 !important;
