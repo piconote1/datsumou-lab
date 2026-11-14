@@ -53,14 +53,19 @@ if (Astro.cache?.enabled) {
 	Astro.cache.set(menuResult.cacheHint);
 }
 
-const { siteTitle, siteTagline, siteLogo } = resolveBlogSiteIdentity(
+const { siteTitle, siteShortTitle, siteTagline, siteLogo } = resolveBlogSiteIdentity(
 	settingsResult.data,
 );
+// タイトル末尾のサイト名は、短い形（脱毛研究室）にする（2026-11-14 SEO対応）。
+// トップページのタイトル（= 長いサイト名そのもの）だけは、そのまま使う。
 const titleIncludesSiteName =
 	title === siteTitle ||
+	title === siteShortTitle ||
 	title.endsWith(` | ${siteTitle}`) ||
-	title.endsWith(` — ${siteTitle}`);
-const fullTitle = titleIncludesSiteName ? title : `${title} — ${siteTitle}`;
+	title.endsWith(` — ${siteTitle}`) ||
+	title.endsWith(` | ${siteShortTitle}`) ||
+	title.endsWith(` — ${siteShortTitle}`);
+const fullTitle = titleIncludesSiteName ? title : `${title} | ${siteShortTitle}`;
 
 const menu = menuResult.data;
 const menuItems = menu?.items ?? [];

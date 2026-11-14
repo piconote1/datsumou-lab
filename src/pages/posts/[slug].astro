@@ -52,11 +52,11 @@ function getImageUrl(img: unknown): string | undefined {
 	return undefined;
 }
 const featuredImageUrl = getImageUrl(post.data.featured_image);
-const { siteTitle } = resolveBlogSiteIdentity(await getSiteSettings());
+const { siteShortTitle } = resolveBlogSiteIdentity(await getSiteSettings());
 
-// Generate SEO meta from content
+// Generate SEO meta from content（タイトル末尾のサイト名は、短い形「脱毛研究室」にする）
 const seo = getSeoMeta(post, {
-	siteTitle,
+	siteTitle: siteShortTitle,
 	siteUrl: Astro.url.origin,
 	path: Astro.url.pathname.replace(/\/$/, ""),
 	defaultOgImage: featuredImageUrl,
