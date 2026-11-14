@@ -6,7 +6,14 @@ import PickupCard from "../components/PickupCard.astro";
 import { resolveBlogSiteIdentity } from "../utils/site-identity";
 
 const settings = await getSiteSettings();
-const { siteTitle, siteTagline } = resolveBlogSiteIdentity(settings);
+const { siteTitle } = resolveBlogSiteIdentity(settings);
+
+// トップ専用の説明文・SNS用の画像・正規URL（2026-11-14 SEO対応）。
+// サイト設定のキャッチフレーズが空で、説明文が出ていなかったため、ここで指定する。
+const HOME_DESCRIPTION =
+	"医療脱毛クリニックを選ぶときの確認ポイントを、公式に公開されている情報をもとに整理するサイト。料金・追加費用・契約と解約・脱毛機・通い方まで、決める順番に沿って解説します。";
+const homeCanonical = `${Astro.url.origin}/`;
+const homeImage = `${Astro.url.origin}/brand/og-default.png`;
 
 // トップの構成：カテゴリー（大分類）ごとに、トップに出したい記事だけを固定で並べる。
 // 固定にしていない記事は、トップには出ない（各見出しの「すべて見る」ボタンから、カテゴリーのページで読める）。
@@ -64,7 +71,7 @@ const labelsOf = (id: string) =>
 	(termsByEntry.get(id) ?? []).map((t: any) => ({ slug: t.slug, label: t.label }));
 ---
 
-<Base title={siteTitle} description={siteTagline}>
+<Base title={siteTitle} description={HOME_DESCRIPTION} canonical={homeCanonical} image={homeImage}>
 	{
 		groups.length === 0 ? (
 			<section class="band section">
@@ -81,6 +88,7 @@ const labelsOf = (id: string) =>
 		) : (
 			<section class="band section home-wrap">
 				<div class="frame">
+					<h1 class="sr-only">{siteTitle}</h1>
 					<div class="home-panel">
 						{groups.map((g) => (
 							<section class="home-group" aria-label={g.title}>
