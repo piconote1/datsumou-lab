@@ -24,7 +24,7 @@ const GROUPS: Group[] = [
 		slug: "select",
 		title: "脱毛を選ぶ",
 		featured: true,
-		pinned: ["datsumo-selection-guide", "datsumo-price-compare", "datsumo-gentlemax-pro"],
+		pinned: ["datsumo-selection-guide", "datsumo-price-compare", "datsumo-gentlemax-pro", "datsumo-tsudo-barai"],
 	},
 	{
 		// 地域別の比較記事（2026-11-20 追加）。専用カテゴリー「地域で選ぶ」（slug: region）。
@@ -79,6 +79,18 @@ const labelsOf = (id: string) =>
 ---
 
 <Base title={siteTitle} description={HOME_DESCRIPTION} canonical={homeCanonical} image={homeImage}>
+	<section class="band hero" aria-roledescription="carousel" aria-label="医療脱毛クリニックのイメージ" data-hero>
+		<div class="frame">
+			<div class="hero__stage">
+				<img class="hero__img is-active" src="/hero/hero-1.webp" alt="医療脱毛クリニックの待合室" width="1600" height="900" fetchpriority="high" decoding="async" />
+				<img class="hero__img hero__img--machine" src="/hero/hero-2.webp" alt="医療脱毛の施術室と脱毛機" width="1600" height="1067" loading="lazy" decoding="async" />
+				<div class="hero__dots" role="group" aria-label="表示する画像を選ぶ">
+					<button type="button" class="hero__dot is-active" aria-label="1枚目を表示" aria-current="true"></button>
+					<button type="button" class="hero__dot" aria-label="2枚目を表示"></button>
+				</div>
+			</div>
+		</div>
+	</section>
 	{
 		groups.length === 0 ? (
 			<section class="band section">
@@ -126,3 +138,99 @@ const labelsOf = (id: string) =>
 		)
 	}
 </Base>
+
+<style>
+	.hero {
+		padding-block: 20px 4px;
+	}
+	.hero__stage {
+		position: relative;
+		overflow: hidden;
+		border-radius: 14px;
+		aspect-ratio: 16 / 7;
+		background: #eef1f4;
+	}
+	.hero__img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: center;
+		opacity: 0;
+		transition: opacity 1.2s ease;
+	}
+	.hero__img--machine {
+		object-position: 72% 50%;
+	}
+	.hero__img.is-active {
+		opacity: 1;
+	}
+	.hero__dots {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 12px;
+		display: flex;
+		justify-content: center;
+		gap: 10px;
+	}
+	.hero__dot {
+		width: 10px;
+		height: 10px;
+		padding: 0;
+		border: 0;
+		border-radius: 50%;
+		background: rgba(255, 255, 255, 0.65);
+		box-shadow: 0 0 0 1px rgba(31, 41, 51, 0.25);
+		cursor: pointer;
+	}
+	.hero__dot.is-active {
+		background: #1f2933;
+		box-shadow: 0 0 0 1px #fff;
+	}
+	@media (max-width: 640px) {
+		.hero {
+			padding-block: 12px 0;
+		}
+		.hero__stage {
+			aspect-ratio: 16 / 10;
+			border-radius: 10px;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.hero__img {
+			transition: none;
+		}
+	}
+</style>
+
+<script>
+	// 画像を5秒ごとに切り替える。点を押すと、その画像を表示する。マウスを乗せている間・動きを減らす設定のときは、自動で切り替えない。
+	const root = document.querySelector<HTMLElement>("[data-hero]");
+	if (root) {
+		const imgs = Array.from(root.querySelectorAll<HTMLImageElement>(".hero__img"));
+		const dots = Array.from(root.querySelectorAll<HTMLButtonElement>(".hero__dot"));
+		let cur = 0;
+		let paused = false;
+		const show = (i: number) => {
+			cur = (i + imgs.length) % imgs.length;
+			imgs.forEach((el, k) => el.classList.toggle("is-active", k === cur));
+			dots.forEach((el, k) => {
+				el.classList.toggle("is-active", k === cur);
+				if (k === cur) el.setAttribute("aria-current", "true");
+				else el.removeAttribute("aria-current");
+			});
+		};
+		imgs.forEach((el) => el.removeAttribute("loading"));
+		dots.forEach((el, k) => el.addEventListener("click", () => show(k)));
+		root.addEventListener("mouseenter", () => (paused = true));
+		root.addEventListener("mouseleave", () => (paused = false));
+		const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+		if (!reduce && imgs.length > 1) {
+			setInterval(() => {
+				if (!paused && !document.hidden) show(cur + 1);
+			}, 5000);
+		}
+	}
+</script>
