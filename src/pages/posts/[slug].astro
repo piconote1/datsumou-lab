@@ -1,5 +1,4 @@
 ---
-import { titleChunks } from "../../utils/title-chunks";
 import {
 	getEmDashEntry,
 	getEmDashCollection,
@@ -219,7 +218,7 @@ const hasHeadings = (post.data.content ?? []).some(
 					}
 					<h1 class="intro__title post-header__title" {...post.edit.title}>
 						{post.data.title.split("｜").map((part: string, i: number, arr: string[]) => (
-							<span class="tpart">{titleChunks(part).map((c) => (<><span class="nb">{c}</span><wbr /></>))}{i < arr.length - 1 && <span class="tbar" aria-hidden="true">｜</span>}</span>
+							<span class="tpart">{part}{i < arr.length - 1 && <span class="tbar" aria-hidden="true">｜</span>}</span>
 						))}
 					</h1>
 					{
@@ -412,11 +411,9 @@ const hasHeadings = (post.data.content ?? []).some(
 	/* タイトルは「｜」の位置で改行し、各部分は文節の途中で切らない */
 	.post-header__title .tpart {
 		display: block;
-		text-wrap: pretty;
+		text-wrap: wrap;
+		word-break: normal;
 		line-break: strict;
-	}
-	.post-header__title .nb {
-		white-space: nowrap;
 	}
 	.post-header__title .tbar {
 		display: none;

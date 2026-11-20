@@ -1,5 +1,4 @@
 ---
-import { titleChunks } from "../utils/title-chunks";
 /**
  * 記事のリスト表示（サムネイル付きの横長カード）。
  * ラベル（カテゴリー）・タイトル・説明（2行）。公開から14日以内は「NEW」。
@@ -41,7 +40,7 @@ const shown = labels.slice(0, 2);
 				{shown.map((l) => <span class="post-row__chip">{l.label}</span>)}
 				{isNew && <span class="post-row__new">NEW</span>}
 			</span>
-			<Heading class="post-row__title" {...post.edit.title}>{title.split("｜").map((part) => <span class="tpart">{titleChunks(part).map((c) => (<><span class="nb">{c}</span><wbr /></>))}</span>)}</Heading>
+			<Heading class="post-row__title" {...post.edit.title}>{title.split("｜").map((part) => <span class="tpart">{part}</span>)}</Heading>
 			{
 				post.data.excerpt && (
 					<p class="post-row__excerpt" {...post.edit.excerpt}>
@@ -135,9 +134,6 @@ const shown = labels.slice(0, 2);
 			line-height: 1.6;
 		}
 		/* 「｜」の前後を、それぞれまとまりとして改行する（途中で意味が切れないようにする） */
-		.post-row__title .nb {
-			white-space: nowrap;
-		}
 		.post-row__title .tpart {
 			display: block;
 		}

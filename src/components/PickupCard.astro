@@ -1,5 +1,4 @@
 ---
-import { titleChunks } from "../utils/title-chunks";
 import type { ContentEntry, InferCollectionData } from "emdash";
 import { Image } from "emdash/ui";
 
@@ -25,7 +24,7 @@ const chip = tags[0];
 	</a>
 	<div class="pickup__body">
 		{chip && <span class="pickup__chip">{chip.label}</span>}
-		<h2 class="pickup__title"><a href={href}>{title.split("｜").map((part) => <span class="tpart">{titleChunks(part).map((c) => (<><span class="nb">{c}</span><wbr /></>))}</span>)}</a></h2>
+		<h2 class="pickup__title"><a href={href}>{title.split("｜").map((part) => <span class="tpart">{part}</span>)}</a></h2>
 		<span class="pickup__more" aria-hidden="true">続きを読む <span class="pickup__arrow">→</span></span>
 	</div>
 </article>
@@ -89,11 +88,9 @@ const chip = tags[0];
 	/* 「｜」の前後を、それぞれまとまりとして改行する（途中で意味が切れないようにする） */
 	.pickup__title .tpart {
 		display: block;
-		text-wrap: pretty;
+		text-wrap: wrap;
+		word-break: normal;
 		line-break: strict;
-	}
-	.pickup__title .nb {
-		white-space: nowrap;
 	}
 	.pickup__title a {
 		color: #1f2a37;

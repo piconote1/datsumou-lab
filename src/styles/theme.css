@@ -76,11 +76,13 @@ body {
 	line-break: strict;
 	word-break: auto-phrase;
 }
+/* 見出し・タイトルは、文節ではなく、行いっぱいに文字を詰めて折り返す */
 h1,
 h2,
 h3,
 h4 {
-	text-wrap: balance;
+	text-wrap: wrap;
+	word-break: normal;
 }
 
 /* ---- ヘッダーのロゴ（アイコン画像） ---- */
