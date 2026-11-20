@@ -14,6 +14,7 @@ import PrNotice from "../components/PrNotice.astro";
 import { resolveBlogSiteIdentity } from "../utils/site-identity";
 import "../styles/tokens.css";
 import "../styles/theme.css";
+import "../styles/article-tables.css";
 import "../styles/tailwind.css";
 
 interface Props {
@@ -29,6 +30,8 @@ interface Props {
 	author?: string | null;
 	/** Pass content reference for plugin page contributions on content pages */
 	content?: { collection: string; id: string; slug?: string | null };
+	/** パンくず（構造化データ用）。先頭から順に、ホーム → 上位 → このページ */
+	breadcrumbs?: { name: string; url: string }[] | null;
 }
 
 const {
@@ -43,6 +46,7 @@ const {
 	modifiedTime,
 	author,
 	content,
+	breadcrumbs,
 } = Astro.props;
 const [settingsResult, menuResult] = await Promise.all([
 	getSiteSettingsWithCacheHint(),
@@ -88,6 +92,32 @@ const pageCtx = createPublicPageContext({
 	articleMeta: { publishedTime, modifiedTime, author },
 	siteName: siteTitle,
 });
+
+// 構造化データ（2026-11-20 追加）: 運営者（Organization、ロゴつき）と、パンくず（BreadcrumbList）。
+// 記事の BlogPosting は EmDash の本体が出すので、ここでは重ねない。
+const siteOrigin = Astro.url.origin;
+const extraJsonLd: Record<string, unknown>[] = [
+	{
+		"@context": "https://schema.org",
+		"@type": "Organization",
+		"@id": `${siteOrigin}/#organization`,
+		name: siteTitle,
+		url: `${siteOrigin}/`,
+		logo: { "@type": "ImageObject", url: `${siteOrigin}/brand/icon-512.png`, width: 512, height: 512 },
+	},
+];
+if (breadcrumbs && breadcrumbs.length > 1) {
+	extraJsonLd.push({
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		itemListElement: breadcrumbs.map((b, i) => ({
+			"@type": "ListItem",
+			position: i + 1,
+			name: b.name,
+			item: b.url.startsWith("http") ? b.url : `${siteOrigin}${b.url}`,
+		})),
+	});
+}
 
 // Check if user is logged in (for showing admin link)
 const isLoggedIn = !!Astro.locals.user;
@@ -164,9 +194,12 @@ const year = new Date().getFullYear();
 		</script>
 		<Font cssVariable="--font-body" preload />
 		<Font cssVariable="--font-mono" />
+		<script>import "../scripts/table-fullscreen";</script>
 		<title>{fullTitle}</title>
 		<link rel="icon" href="/favicon.png" type="image/png" />
 		<EmDashHead page={pageCtx} />
+		<meta property="og:locale" content="ja_JP" />
+		{extraJsonLd.map((o) => <script type="application/ld+json" set:html={JSON.stringify(o).replace(/</g, "\\u003c")} />)}
 		<link
 			rel="alternate"
 			type="application/rss+xml"

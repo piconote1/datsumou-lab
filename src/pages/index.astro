@@ -83,7 +83,7 @@ const labelsOf = (id: string) =>
 		<div class="hero__wrap">
 			<div class="hero__stage">
 				<img class="hero__img is-active" src="/hero/hero-1.webp" alt="医療クリニックの受付" width="1600" height="900" fetchpriority="high" decoding="async" />
-				<img class="hero__img hero__img--machine" src="/hero/hero-2.webp" alt="医療脱毛の施術室と脱毛機" width="1600" height="1067" loading="lazy" decoding="async" />
+				<img class="hero__img hero__img--machine" src="/hero/hero-2.webp" alt="医療脱毛の施術室と脱毛機" width="1600" height="1067" decoding="async" />
 				<div class="hero__dots" role="group" aria-label="表示する画像を選ぶ">
 					<button type="button" class="hero__dot is-active" aria-label="1枚目を表示" aria-current="true"></button>
 					<button type="button" class="hero__dot" aria-label="2枚目を表示"></button>
@@ -187,6 +187,7 @@ const labelsOf = (id: string) =>
 		gap: 10px;
 	}
 	.hero__dot {
+		position: relative;
 		width: 10px;
 		height: 10px;
 		padding: 0;
@@ -195,6 +196,12 @@ const labelsOf = (id: string) =>
 		background: rgba(255, 255, 255, 0.65);
 		box-shadow: 0 0 0 1px rgba(31, 41, 51, 0.25);
 		cursor: pointer;
+	}
+	/* 見た目は小さいまま、押せる範囲を 44px 四方にする */
+	.hero__dot::after {
+		content: "";
+		position: absolute;
+		inset: -17px;
 	}
 	.hero__dot.is-active {
 		background: #1f2933;
@@ -221,7 +228,7 @@ const labelsOf = (id: string) =>
 </style>
 
 <script>
-	// 画像を5秒ごとに切り替える。点を押すと、その画像を表示する。マウスを乗せている間・動きを減らす設定のときは、自動で切り替えない。
+	// 画像を5秒ごとに切り替える。点を押すと、その画像を表示する。マウスを乗せている間・動きを減らす設定のときは、自動で切り替えない（スマホの操作では止めない）。
 	const root = document.querySelector<HTMLElement>("[data-hero]");
 	if (root) {
 		const imgs = Array.from(root.querySelectorAll<HTMLImageElement>(".hero__img"));
@@ -239,8 +246,13 @@ const labelsOf = (id: string) =>
 		};
 		imgs.forEach((el) => el.removeAttribute("loading"));
 		dots.forEach((el, k) => el.addEventListener("click", () => show(k)));
-		root.addEventListener("mouseenter", () => (paused = true));
-		root.addEventListener("mouseleave", () => (paused = false));
+		// マウスを乗せている間だけ止める。スマホ（タッチ）では、触れても止めない
+		root.addEventListener("pointerenter", (e) => {
+			if (e.pointerType === "mouse") paused = true;
+		});
+		root.addEventListener("pointerleave", (e) => {
+			if (e.pointerType === "mouse") paused = false;
+		});
 		const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 		if (!reduce && imgs.length > 1) {
 			setInterval(() => {

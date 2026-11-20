@@ -170,6 +170,13 @@ const hasHeadings = (post.data.content ?? []).some(
 		"style" in block &&
 		(block.style === "h2" || block.style === "h3"),
 );
+// パンくず（構造化データ用）: ホーム → 最初のカテゴリー → この記事
+const postCategory = (post.data.terms?.category ?? [])[0];
+const postBreadcrumbs = [
+	{ name: "ホーム", url: "/" },
+	...(postCategory ? [{ name: postCategory.label, url: `/category/${postCategory.slug}` }] : []),
+	{ name: post.data.title, url: `/posts/${slug}` },
+];
 ---
 
 <Base
@@ -183,6 +190,7 @@ const hasHeadings = (post.data.content ?? []).some(
 	publishedTime={post.data.publishedAt?.toISOString() ?? null}
 	modifiedTime={post.data.updatedAt.toISOString()}
 	content={{ collection: "posts", id: post.data.id, slug }}
+	breadcrumbs={postBreadcrumbs}
 >
 	<article class="post">
 		<header class="intro post-header">

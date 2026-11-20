@@ -49,9 +49,54 @@ const filteredPosts = posts.map((post) => ({
 	post,
 	tags: tagsByEntry.get(post.data.id) ?? [],
 }));
+// カテゴリーごとの、タイトル・説明（検索結果に出る文）。自動の「〜の記事」をやめる（2026-11-20）。
+const CATEGORY_META: Record<string, { title: string; description: string }> = {
+	select: {
+		title: "脱毛を選ぶ｜クリニック選びの比較記事",
+		description:
+			"医療脱毛クリニックを選ぶための記事をまとめています。選び方のガイド、全身5回の料金比較、ジェントルマックスプロが使える院、都度払いができる院を、公式ページの情報で比較しています。",
+	},
+	region: {
+		title: "地域で選ぶ｜東京・大阪・福岡・名古屋・札幌の医療脱毛",
+		description:
+			"東京・大阪・福岡・名古屋・札幌の医療脱毛クリニックを、料金・脱毛機・最寄り駅で比較した記事の一覧です。公式ページの情報をもとに整理しています。",
+	},
+	basic: {
+		title: "基礎を知る｜医療脱毛とエステ脱毛の違い・脱毛機の種類",
+		description:
+			"医療脱毛とエステ脱毛の違い、脱毛の部位とコース、脱毛機の方式（熱破壊式・蓄熱式）など、クリニックを選ぶ前に知っておきたい基礎の記事の一覧です。",
+	},
+	money: {
+		title: "お金と契約｜脱毛の料金・回数・契約と解約",
+		description:
+			"脱毛の総額に含まれるもの、回数の目安、クーリング・オフや中途解約など、契約の前に確認したいお金と契約の記事の一覧です。",
+	},
+	visit: {
+		title: "通う・受ける｜予約・準備・VIO・痛みと肌トラブル",
+		description:
+			"脱毛に通い続けるための確認事項、施術前の準備、VIO脱毛の流れ、痛みや肌トラブルへの備えなど、通う・受けるときの記事の一覧です。",
+	},
+	faq: {
+		title: "よくある質問｜脱毛の契約・料金・通い方・準備",
+		description: "脱毛のよくある質問に短く答えて、詳しい記事へつなぐページの一覧です。",
+	},
+};
+const catMeta = CATEGORY_META[term.slug] ?? {
+	title: `${term.label}の記事`,
+	description: `${term.label}の記事一覧`,
+};
+const catCanonical = `${Astro.url.origin}/category/${term.slug}`;
 ---
 
-<Base title={`${term.label}の記事`} description={`${term.label}の記事一覧`}>
+<Base
+	title={catMeta.title}
+	description={catMeta.description}
+	canonical={catCanonical}
+	breadcrumbs={[
+		{ name: "ホーム", url: "/" },
+		{ name: term.label, url: `/category/${term.slug}` },
+	]}
+>
 	<header class="band intro">
 		<div class="frame archive-intro">
 			<div class="archive-intro__text">
