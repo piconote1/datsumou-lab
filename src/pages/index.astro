@@ -80,9 +80,9 @@ const labelsOf = (id: string) =>
 
 <Base title={siteTitle} description={HOME_DESCRIPTION} canonical={homeCanonical} image={homeImage}>
 	<section class="band hero" aria-roledescription="carousel" aria-label="医療脱毛クリニックのイメージ" data-hero>
-		<div class="frame">
+		<div class="hero__wrap">
 			<div class="hero__stage">
-				<img class="hero__img is-active" src="/hero/hero-1.webp" alt="医療脱毛クリニックの待合室" width="1600" height="900" fetchpriority="high" decoding="async" />
+				<img class="hero__img is-active" src="/hero/hero-1.webp" alt="医療クリニックの受付" width="1600" height="900" fetchpriority="high" decoding="async" />
 				<img class="hero__img hero__img--machine" src="/hero/hero-2.webp" alt="医療脱毛の施術室と脱毛機" width="1600" height="1067" loading="lazy" decoding="async" />
 				<div class="hero__dots" role="group" aria-label="表示する画像を選ぶ">
 					<button type="button" class="hero__dot is-active" aria-label="1枚目を表示" aria-current="true"></button>
@@ -141,13 +141,21 @@ const labelsOf = (id: string) =>
 
 <style>
 	.hero {
-		padding-block: 20px 4px;
+		/* 写真のまわりに白い余白を残す（左右・上・下）。下の余白で、1画面目の終わりが分かる */
+		padding: 20px clamp(16px, 2.4vw, 48px) 0;
+	}
+	.hero__wrap {
+		width: 100%;
 	}
 	.hero__stage {
 		position: relative;
 		overflow: hidden;
-		border-radius: 14px;
-		aspect-ratio: 16 / 7;
+		/* 1画面目いっぱいに写真を出す（ヘッダー分を引いた高さ） */
+		border-radius: 16px;
+		height: calc(100vh - 130px - 20px - 64px);
+		height: calc(100svh - 130px - 20px - 64px);
+		min-height: 320px;
+		max-height: 900px;
 		background: #eef1f4;
 	}
 	.hero__img {
@@ -162,6 +170,9 @@ const labelsOf = (id: string) =>
 	}
 	.hero__img--machine {
 		object-position: 72% 50%;
+	}
+	.hero__img:not(.hero__img--machine) {
+		object-position: 62% 50%;
 	}
 	.hero__img.is-active {
 		opacity: 1;
@@ -191,11 +202,15 @@ const labelsOf = (id: string) =>
 	}
 	@media (max-width: 640px) {
 		.hero {
-			padding-block: 12px 0;
+			padding-top: 12px;
 		}
 		.hero__stage {
-			aspect-ratio: 16 / 10;
-			border-radius: 10px;
+			border-radius: 12px;
+			height: calc(100svh - 150px - 12px - 48px);
+			min-height: 300px;
+		}
+		.hero__img:not(.hero__img--machine) {
+			object-position: 88% 50%;
 		}
 	}
 	@media (prefers-reduced-motion: reduce) {
