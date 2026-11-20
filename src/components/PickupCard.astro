@@ -88,6 +88,9 @@ const chip = tags[0];
 	/* 「｜」の前後を、それぞれまとまりとして改行する（途中で意味が切れないようにする） */
 	.pickup__title .tpart {
 		display: block;
+		text-wrap: pretty;
+		word-break: auto-phrase;
+		line-break: strict;
 	}
 	.pickup__title a {
 		color: #1f2a37;
