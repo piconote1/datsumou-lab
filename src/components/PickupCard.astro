@@ -83,10 +83,7 @@ const chip = tags[0];
 		font-size: 1.0625rem;
 		font-weight: 700;
 		line-height: 1.6;
-		display: -webkit-box;
-		-webkit-line-clamp: 3;
-		-webkit-box-orient: vertical;
-		overflow: hidden;
+		/* タイトルは、最後まで表示する（行数で切らない） */
 	}
 	/* 「｜」の前後を、それぞれまとまりとして改行する（途中で意味が切れないようにする） */
 	.pickup__title .tpart {
