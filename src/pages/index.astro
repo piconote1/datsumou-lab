@@ -18,13 +18,21 @@ const homeImage = `${Astro.url.origin}/brand/og-default.png`;
 // トップの構成：カテゴリー（大分類）ごとに、トップに出したい記事だけを固定で並べる。
 // 固定にしていない記事は、トップには出ない（各見出しの「すべて見る」ボタンから、カテゴリーのページで読める）。
 // 分類はカテゴリー1本だけ。見出しの名前と slug は、管理画面のカテゴリーと同じにする。
-type Group = { slug: string; title: string; featured?: boolean; pinned: string[] };
+type Group = { slug: string; title: string; featured?: boolean; pinned: string[]; noMore?: boolean };
 const GROUPS: Group[] = [
 	{
 		slug: "select",
 		title: "脱毛を選ぶ",
 		featured: true,
 		pinned: ["datsumo-selection-guide", "datsumo-price-compare"],
+	},
+	{
+		// 地域別の比較記事（2026-11-20 追加）。カテゴリーは「脱毛を選ぶ」なので、「すべて見る」は出さない。
+		slug: "select",
+		title: "地域で選ぶ",
+		featured: true,
+		noMore: true,
+		pinned: ["datsumo-osaka", "datsumo-nagoya", "datsumo-sapporo"],
 	},
 	{
 		slug: "basic",
@@ -108,9 +116,11 @@ const labelsOf = (id: string) =>
 										))}
 									</ol>
 								)}
-								<p class="home-more">
-									<a href={`/category/${g.slug}`}>「{g.title}」の記事をすべて見る</a>
-								</p>
+								{!g.noMore && (
+									<p class="home-more">
+										<a href={`/category/${g.slug}`}>「{g.title}」の記事をすべて見る</a>
+									</p>
+								)}
 							</section>
 						))}
 					</div>
