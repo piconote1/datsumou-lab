@@ -74,3 +74,10 @@
 .dt-root.dt-fs thead th{position:sticky;top:0;z-index:2}
 .dt-root.dt-fs thead th:first-child{z-index:4}
 .dt-root.dt-fs caption{padding-right:12px}
+/* 2026-11-21 追加: 地域別の記事の表で使うクラス（.stack / .btnrow / .mach） */
+.dt-root .dt-stack{display:flex;flex-direction:column;gap:8px}
+.dt-root .dt-btnrow td{vertical-align:top}
+.dt-root .dt-btnrow td a.dt-btn{padding:9px 22px 9px 8px;font-size:13px;line-height:1.4}
+.dt-root .dt-btnrow td a.dt-btn span+span{font-size:12px}
+.dt-root .dt-btnrow td a.dt-btn .dt-ch{right:8px;font-size:18px}
+@media (min-width:641px){.dt-root tr.dt-mach td{font-size:13px}}
