@@ -1,12 +1,15 @@
-// 記事の中の表（.dt-root の .dt-wrap）に、「全画面で見る」ボタンを付ける（2026-11-20）。
+// 記事の中の表（.dt-root の .dt-wrap）に、右上の小さな「拡大マーク」ボタンを付ける（2026-11-20）。
 // 押すと、表を画面いっぱいに出す。拡大縮小は、2本指（ピンチ）と、「−」「＋」ボタンの両方でできる。
 // ブラウザ任せの拡大は、ページ全体の標準の大きさより小さくできず、機種によっても動きが違う。
 // そこで、スクリプトで拡大率（CSS の zoom）を変えて、標準より小さくもできるようにする。
-// 閉じるボタン・Esc で閉じる。
+// ボタンの帯は、表の上の別の行にして、表に重ならないようにする。閉じるボタン・Esc で閉じる。
 const wraps = document.querySelectorAll<HTMLElement>(".dt-root .dt-wrap");
 
 const MIN = 0.4;
 const MAX = 3;
+
+const EXPAND_ICON =
+	'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6"/><path d="M10 20H4v-6"/><path d="M20 4l-7 7"/><path d="M4 20l7-7"/></svg>';
 
 function openFullscreen(source: HTMLElement, opener: HTMLElement) {
 	const overlay = document.createElement("div");
@@ -30,28 +33,31 @@ function openFullscreen(source: HTMLElement, opener: HTMLElement) {
 	const close = mk("閉じる ×", "閉じる", "dt-fs-close");
 	bar.append(minus, plus, close);
 
+	const scroller = document.createElement("div");
+	scroller.className = "dt-fs-scroll";
 	const inner = document.createElement("div");
 	inner.className = "dt-root dt-fs";
 	inner.appendChild(source.cloneNode(true));
+	scroller.appendChild(inner);
 
-	overlay.append(bar, inner);
+	overlay.append(bar, scroller);
 	document.body.appendChild(overlay);
 	const prevOverflow = document.body.style.overflow;
 	document.body.style.overflow = "hidden";
 	close.focus();
 
 	let scale = 1;
-	const apply = (next: number, cx = overlay.clientWidth / 2, cy = overlay.clientHeight / 2) => {
+	const apply = (next: number, cx = scroller.clientWidth / 2, cy = scroller.clientHeight / 2) => {
 		const clamped = Math.min(MAX, Math.max(MIN, next));
 		const ratio = clamped / scale;
 		if (ratio === 1) return;
 		// 拡大縮小の中心（指の真ん中）が動かないように、スクロール位置を直す
-		const left = (overlay.scrollLeft + cx) * ratio - cx;
-		const top = (overlay.scrollTop + cy) * ratio - cy;
+		const left = (scroller.scrollLeft + cx) * ratio - cx;
+		const top = (scroller.scrollTop + cy) * ratio - cy;
 		scale = clamped;
 		(inner.style as CSSStyleDeclaration & { zoom: string }).zoom = String(scale);
-		overlay.scrollLeft = left;
-		overlay.scrollTop = top;
+		scroller.scrollLeft = left;
+		scroller.scrollTop = top;
 	};
 	plus.addEventListener("click", () => apply(scale * 1.25));
 	minus.addEventListener("click", () => apply(scale / 1.25));
@@ -60,7 +66,7 @@ function openFullscreen(source: HTMLElement, opener: HTMLElement) {
 	let startDist = 0;
 	let startScale = 1;
 	const dist = (t: TouchList) => Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
-	overlay.addEventListener(
+	scroller.addEventListener(
 		"touchstart",
 		(e) => {
 			if (e.touches.length === 2) {
@@ -70,19 +76,20 @@ function openFullscreen(source: HTMLElement, opener: HTMLElement) {
 		},
 		{ passive: true },
 	);
-	overlay.addEventListener(
+	scroller.addEventListener(
 		"touchmove",
 		(e) => {
 			if (e.touches.length === 2 && startDist > 0) {
 				e.preventDefault();
-				const cx = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-				const cy = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+				const rect = scroller.getBoundingClientRect();
+				const cx = (e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left;
+				const cy = (e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top;
 				apply(startScale * (dist(e.touches) / startDist), cx, cy);
 			}
 		},
 		{ passive: false },
 	);
-	overlay.addEventListener("touchend", (e) => {
+	scroller.addEventListener("touchend", (e) => {
 		if (e.touches.length < 2) startDist = 0;
 	});
 
@@ -102,10 +109,14 @@ function openFullscreen(source: HTMLElement, opener: HTMLElement) {
 }
 
 for (const wrap of wraps) {
+	const root = wrap.parentElement;
+	if (!root) continue;
 	const btn = document.createElement("button");
 	btn.type = "button";
 	btn.className = "dt-fs-btn";
-	btn.textContent = "全画面で見る（拡大できます）";
+	btn.innerHTML = EXPAND_ICON;
+	btn.setAttribute("aria-label", "この表を全画面で見る（拡大縮小できます）");
+	btn.setAttribute("title", "全画面で見る");
 	btn.addEventListener("click", () => openFullscreen(wrap, btn));
-	wrap.parentElement?.insertBefore(btn, wrap);
+	root.appendChild(btn);
 }
