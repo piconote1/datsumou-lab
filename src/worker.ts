@@ -76,7 +76,7 @@ export default {
 			return new Response(xml, { status: 200, headers: h });
 		}
 		const isHtml = (res.headers.get("content-type") ?? "").includes("text/html");
-		const isPublicPage = isHtml && request.method === "GET" && !url.pathname.startsWith("/_emdash/");
+		const isPublicPage = isHtml && (request.method === "GET" || request.method === "HEAD") && !url.pathname.startsWith("/_emdash/");
 		if (isPublicPage) {
 			// 公開ページの HTML（2026-11-21）。ログインしている人（Cookie あり）の画面は対象外。
 			// ブラウザは毎回確認し、エッジ（Cloudflare）は60秒だけ保存してよい、という指定。記事を直したら、すぐ反映される。
