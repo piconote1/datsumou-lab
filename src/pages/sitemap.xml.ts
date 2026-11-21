@@ -15,7 +15,7 @@ async function lastmodOf(collection: string): Promise<string | null> {
 	try {
 		const { entries } = await getEmDashCollection(collection, { orderBy: { updated_at: "desc" }, limit: 1 });
 		const d = (entries[0]?.data as { updatedAt?: Date } | undefined)?.updatedAt;
-		return d ? d.toISOString() : null;
+		return d ? d.toISOString().replace(/\.\d{3}Z$/, "Z") : null;
 	} catch {
 		return null;
 	}
@@ -27,9 +27,9 @@ export const GET: APIRoute = async ({ url }) => {
 	const pages = await lastmodOf("pages");
 	// トップとカテゴリーは、記事の更新で変わるので、記事の最終更新日を使う
 	const items: { name: string; lastmod: string }[] = [
-		{ name: "posts", lastmod: posts ?? new Date().toISOString() },
-		{ name: "pages", lastmod: pages ?? new Date().toISOString() },
-		{ name: "extra", lastmod: posts ?? new Date().toISOString() },
+		{ name: "posts", lastmod: posts ?? new Date().toISOString().replace(/\.\d{3}Z$/, "Z") },
+		{ name: "pages", lastmod: pages ?? new Date().toISOString().replace(/\.\d{3}Z$/, "Z") },
+		{ name: "extra", lastmod: posts ?? new Date().toISOString().replace(/\.\d{3}Z$/, "Z") },
 	];
 	const lines = ['<?xml version="1.0" encoding="UTF-8"?>', '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'];
 	for (const i of items) {

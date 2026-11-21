@@ -61,6 +61,8 @@
 .dt-root caption{padding-right:48px}
 .dt-fs-btn{position:absolute;top:6px;right:6px;z-index:5;width:30px;height:30px;padding:0;border:1px solid #b8c2cc;border-radius:50%;background:rgba(255,255,255,.95);color:#1f2933;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.15)}
 .dt-fs-btn:hover{background:#f3f5f8}
+/* 見た目は小さいまま、押せる範囲を 44px 四方にする（2026-11-21） */
+.dt-fs-btn::after{content:"";position:absolute;inset:-7px}
 .dt-fs-overlay{position:fixed;inset:0;z-index:2000;background:#fff;display:flex;flex-direction:column}
 .dt-fs-bar{flex:none;display:flex;gap:8px;align-items:center;justify-content:flex-end;padding:8px 10px;background:#fff;border-bottom:1px solid #e6e9ed}
 .dt-fs-ctl{width:40px;height:40px;padding:0;border:0;border-radius:50%;background:#1f1f1f;color:#fff;font-size:22px;line-height:1;font-weight:700;cursor:pointer}

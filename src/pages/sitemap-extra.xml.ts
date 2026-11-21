@@ -15,11 +15,11 @@ async function latestPostUpdate(): Promise<string> {
 	try {
 		const { entries } = await getEmDashCollection("posts", { orderBy: { updated_at: "desc" }, limit: 1 });
 		const d = (entries[0]?.data as { updatedAt?: Date } | undefined)?.updatedAt;
-		if (d) return d.toISOString();
+		if (d) return d.toISOString().replace(/\.\d{3}Z$/, "Z");
 	} catch {
 		// 現在の日時を使う
 	}
-	return new Date().toISOString();
+	return new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
 }
 
 export const GET: APIRoute = async ({ url }) => {
