@@ -37,13 +37,59 @@ export default {
 		// ヘッダーの追加（2026-11-20）。本番（https）のときだけ。転送（3xx）と WebSocket には付けない。
 		if (LOCAL_HOST.test(url.hostname) || res.status === 101 || (res.status >= 300 && res.status < 400)) return res;
 		const headers = new Headers(res.headers);
-		// HSTS: https だけで使うよう、ブラウザに記憶させる（サブドメインは含めない）。
-		headers.set("Strict-Transport-Security", "max-age=31536000");
+		// HSTS: https だけで使うよう、ブラウザに記憶させる。サブドメインにも適用する（2026-11-21。使っているサブドメインは www のみで、https で動く）。
+		headers.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
 		// 画像などのメディアは、ファイル名（ID）が変わらない限り中身が変わらない。長く保存してよい。
 		if (url.pathname.startsWith("/_emdash/api/media/file/") && res.status === 200) {
 			headers.set("Cache-Control", "public, max-age=31536000, immutable");
 		}
-		return new Response(res.body, { status: res.status, statusText: res.statusText, headers });
+		const isHtml = (res.headers.get("content-type") ?? "").includes("text/html");
+		const isPublicPage = isHtml && request.method === "GET" && !url.pathname.startsWith("/_emdash/");
+		if (isPublicPage) {
+			// 公開ページの HTML（2026-11-21）。ログインしている人（Cookie あり）の画面は対象外。
+			// ブラウザは毎回確認し、エッジ（Cloudflare）は60秒だけ保存してよい、という指定。記事を直したら、すぐ反映される。
+			if (res.status === 200 && !request.headers.get("cookie") && !headers.has("cache-control")) {
+				headers.set("Cache-Control", "public, max-age=0, s-maxage=60");
+			}
+			// CSP は、まず「報告だけ」の形で付ける（表示は止めない）。違反があればブラウザのコンソールに出るので、後で本番の形にできる。
+			headers.set(
+				"Content-Security-Policy-Report-Only",
+				"default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://cloudflareinsights.com; frame-src https://www.google.com; base-uri 'self'; form-action 'self'; object-src 'none'",
+			);
+		}
+		const out = new Response(res.body, { status: res.status, statusText: res.statusText, headers });
+		// 記事（/posts/…）の構造化データ（BlogPosting）の、出版者と著者を、サイトの組織情報（#organization）に結びつける（2026-11-21）。
+		// EmDash の本体は、出版者を名前だけ、著者を人物の形で出す。ここで、組織情報（ロゴつき）を指す形に書き換える。
+		if (isPublicPage && res.status === 200 && url.pathname.startsWith("/posts/")) {
+			const orgId = `${url.origin}/#organization`;
+			let buf = "";
+			return new HTMLRewriter()
+				.on('script[type="application/ld+json"]', {
+					text(chunk) {
+						buf += chunk.text;
+						if (!chunk.lastInTextNode) {
+							chunk.remove();
+							return;
+						}
+						let outText = buf;
+						try {
+							const j = JSON.parse(buf);
+							if (j && j["@type"] === "BlogPosting") {
+								j.author = { "@type": "Organization", "@id": orgId, name: j.author?.name ?? "脱毛研究室" };
+								j.publisher = { "@id": orgId };
+								j.inLanguage = "ja";
+								outText = JSON.stringify(j).replace(/</g, "\\u003c");
+							}
+						} catch {
+							// 解析できなければ、元のまま出す
+						}
+						buf = "";
+						chunk.replace(outText, { html: true });
+					},
+				})
+				.transform(out);
+		}
+		return out;
 	},
 	scheduled: createScheduledHandler(),
 } satisfies ExportedHandler;

@@ -682,11 +682,11 @@ article.post .prose li::marker { color: #4cc3a0; }
 
 /* ---- 記事タイトルと、サムネイルの幅（マナブログ踏襲）---- */
 article.post h1.post-header__title[class] {
-	color: #7b7b7b;
+	color: #1f2933;
 	font-size: 1.5625rem;
 	font-weight: 700;
-	line-height: 2;
-	letter-spacing: 0.02em;
+	line-height: 1.6;
+	letter-spacing: 0.01em;
 	padding-inline: 1rem;
 }
 article.post .post-hero .frame[class] { width: 100%; max-width: none; margin: 0; padding: 0; }
