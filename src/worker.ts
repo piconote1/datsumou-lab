@@ -29,6 +29,10 @@ export default {
 			url.pathname = url.pathname.replace(/\/+$/, "") || "/";
 			return Response.redirect(url.toString(), 301);
 		}
+		// 存在しない目次（EmDash 本体が、200 で「Collection not found」を返す）は、404 にする（2026-11-22）。実際の目次は /sitemap.xml。
+		if (url.pathname === "/sitemap-index.xml") {
+			return new Response("Not found", { status: 404, headers: { "Content-Type": "text/plain; charset=utf-8" } });
+		}
 		const res = await (handler as { fetch: (r: Request, e: unknown, c: ExecutionContext) => Promise<Response> }).fetch(
 			request,
 			env,
@@ -50,7 +54,7 @@ export default {
 		) {
 			const original = res.clone();
 			try {
-				const resized = (await IMAGES.input(res.body).transform({ width: Math.round(wParam) }).output({ format: "image/webp", quality: 82 })).response();
+				const resized = (await IMAGES.input(res.body).transform({ width: Math.round(wParam) }).output({ format: "image/webp", quality: 78 })).response();
 				const h = new Headers(resized.headers);
 				h.set("Cache-Control", "public, max-age=31536000, immutable");
 				h.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
@@ -141,11 +145,12 @@ export default {
 						} catch {
 							return;
 						}
-						const widths = [320, 640, 960, 1280].filter((w) => w < natural);
+						const widths = [320, 480, 640, 800, 960, 1280].filter((w) => w < natural);
 						el.setAttribute("srcset", [...widths.map((w) => `${path}?w=${w} ${w}w`), `${path} ${natural}w`].join(", "));
 						return;
 					}
 					const parts = srcset.split(",").map((p) => p.trim()).filter(Boolean);
+					let basePath = "";
 					const next = parts.map((p) => {
 						const m = p.match(/^(\S+)\s+(\d+)w$/);
 						if (!m) return p;
@@ -156,6 +161,7 @@ export default {
 							const parsed = new URL(u, url.origin);
 							if (parsed.origin !== url.origin || !parsed.pathname.startsWith(MEDIA)) return p;
 							path = `${parsed.pathname}`;
+							basePath = path;
 						} catch {
 							return p;
 						}
@@ -163,7 +169,10 @@ export default {
 						const natural = Number(el.getAttribute("width")) || 1600;
 						return width < natural ? `${path}?w=${width} ${width}w` : `${path} ${width}w`;
 					});
-					el.setAttribute("srcset", next.join(", "));
+					// 本体の srcset は、最小が 640 幅。カードなど小さく表示する画像のため、320・480 幅も足す。
+					const natural0 = Number(el.getAttribute("width")) || 1600;
+					const extra = basePath && natural0 > 480 && !next.some((x) => /\?w=(320|480) /.test(x)) ? [`${basePath}?w=320 320w`, `${basePath}?w=480 480w`] : [];
+					el.setAttribute("srcset", [...extra, ...next].join(", "));
 				},
 			});
 			return rewriter.transform(out);
