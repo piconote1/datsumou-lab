@@ -1098,3 +1098,9 @@ header.site-header .site-nav[class] li.has-sub > a[href][aria-current] {
 	left: 0 !important;
 	z-index: 1 !important;
 }
+
+/* 2026-11-21: スマホで、記事のバナー画像の下の空きを詰める（診断で約90pxの空きを指摘） */
+@media (max-width: 640px) {
+	article.post .post-hero[class] { margin-bottom: 1rem; }
+	article.post .post-layout[class] { gap: 1rem; }
+}
