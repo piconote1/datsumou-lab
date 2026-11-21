@@ -68,6 +68,13 @@ export default {
 		if (url.pathname.startsWith("/_emdash/api/media/file/") && res.status === 200) {
 			headers.set("Cache-Control", "public, max-age=31536000, immutable");
 		}
+		// サイトマップ（記事・固定ページ）の更新日時から、ミリ秒を外す（2026-11-21）。EmDash 本体が出す形（….103Z）を、秒まで（…Z）にそろえる。
+		if (/^\/sitemap-(posts|pages)\.xml$/.test(url.pathname) && request.method === "GET" && res.status === 200) {
+			const xml = (await res.text()).replace(/(<lastmod>[^<]*?)\.\d{3}Z</g, "$1Z<");
+			const h = new Headers(res.headers);
+			h.delete("content-length");
+			return new Response(xml, { status: 200, headers: h });
+		}
 		const isHtml = (res.headers.get("content-type") ?? "").includes("text/html");
 		const isPublicPage = isHtml && request.method === "GET" && !url.pathname.startsWith("/_emdash/");
 		if (isPublicPage) {
@@ -116,11 +123,28 @@ export default {
 				});
 			}
 			// 画像の srcset（どの幅でも同じファイルを指していた）を、幅ごとに縮小した画像（?w=幅）を指すよう書き換える。
-			rewriter.on("img[srcset]", {
+			// EmDash 本体は、srcset を出したり出さなかったりする（安定しない）ため、
+			// srcset がない画像（記事の画像・サムネイル）には、こちらで、幅ごとの縮小版を指す srcset を付ける。
+			rewriter.on("img", {
 				element(el) {
-					const srcset = el.getAttribute("srcset");
-					if (!srcset) return;
 					const MEDIA = "/_emdash/api/media/file/";
+					const srcset = el.getAttribute("srcset");
+					if (!srcset) {
+						const src = el.getAttribute("src");
+						const natural = Number(el.getAttribute("width")) || 0;
+						if (!src || !el.getAttribute("sizes") || natural < 700) return;
+						let path = "";
+						try {
+							const parsed = new URL(src, url.origin);
+							if (parsed.origin !== url.origin || !parsed.pathname.startsWith(MEDIA) || parsed.search) return;
+							path = parsed.pathname;
+						} catch {
+							return;
+						}
+						const widths = [320, 640, 960, 1280].filter((w) => w < natural);
+						el.setAttribute("srcset", [...widths.map((w) => `${path}?w=${w} ${w}w`), `${path} ${natural}w`].join(", "));
+						return;
+					}
 					const parts = srcset.split(",").map((p) => p.trim()).filter(Boolean);
 					const next = parts.map((p) => {
 						const m = p.match(/^(\S+)\s+(\d+)w$/);
