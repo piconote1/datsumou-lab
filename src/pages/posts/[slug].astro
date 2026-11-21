@@ -189,6 +189,8 @@ const postBreadcrumbs = [
 	type="article"
 	publishedTime={post.data.publishedAt?.toISOString() ?? null}
 	modifiedTime={post.data.updatedAt.toISOString()}
+	// 書いた人（構造化データだけに入る。画面には出さない）。サイト名にする（2026-11-21）
+	author="脱毛研究室"
 	content={{ collection: "posts", id: post.data.id, slug }}
 	breadcrumbs={postBreadcrumbs}
 >
