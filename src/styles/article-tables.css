@@ -26,8 +26,8 @@
 .dt-root table{min-width:900px}
 .dt-root td,.dt-root th{font-size:13px}
 .dt-root tr.dt-hl td,.dt-root tr.dt-hl th{background:#fff8ec}
-.dt-root .dt-hot{display:inline-block;background:#fde7c8;color:#7a4a05;border-radius:6px;padding:1px 8px;font-weight:700;font-size:12px;margin-bottom:3px}
-.dt-root .dt-no{display:inline-block;background:#eceff2;color:#5b6773;border-radius:6px;padding:1px 8px;font-weight:700;font-size:12px;margin-bottom:3px}
+.dt-root span.dt-hot{display:inline-block;background:#fde7c8;color:#7a4a05;border-radius:6px;padding:1px 8px;font-weight:700;font-size:12px;margin-bottom:3px}
+.dt-root span.dt-no{display:inline-block;background:#eceff2;color:#5b6773;border-radius:6px;padding:1px 8px;font-weight:700;font-size:12px;margin-bottom:3px}
 .dt-root tr.dt-no td,.dt-root tr.dt-no th{color:#7b8794;background:#f3f5f8}
 .dt-root thead th{position:static}
 .dt-root tbody tr>th:first-child,.dt-root thead tr+tr>th:first-child{position:sticky;left:0;z-index:2}
