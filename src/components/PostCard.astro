@@ -278,6 +278,17 @@ const sizes = {
 		padding: var(--spacing-4) var(--spacing-3) var(--spacing-4);
 	}
 
+	/* サムネイルは 16:9 で作っているので、同じ比率で出す（左右が切れないように）。説明文も省略せず全部出す */
+	.post--card .post__media {
+		aspect-ratio: 16 / 9;
+	}
+
+	.post--card .post__excerpt {
+		display: block;
+		-webkit-line-clamp: unset;
+		overflow: visible;
+	}
+
 	/* Stacked, so footers line up across a row whatever their content */
 	.post--card .post__footer {
 		flex-direction: column;
