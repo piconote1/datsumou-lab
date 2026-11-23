@@ -86,10 +86,10 @@
 
 /* タブ切り替えの比較表（.dt-tabs）。ロゴを行頭に置く。2026-11-23。スクリプトは src/scripts/dt-tabs.ts */
 .dt-tabs{margin:1.25em 0}
-.dt-tabs__tabs{display:flex;gap:4px;margin:0;border-bottom:2px solid #172641;position:relative}
-.dt-tabs__tab{flex:1 1 0;padding:11px 8px;border:1px solid #7cdaba;border-bottom:0;border-radius:10px 10px 0 0;background:#7cdaba;color:#172641;font-weight:700;font-size:15px;line-height:1.4;cursor:pointer;font-family:inherit}
+.dt-tabs__tabs{display:flex;gap:4px;margin:0;border-bottom:2px solid #1f8a6e;position:relative}
+.dt-tabs__tab{flex:1 1 0;padding:11px 8px;border:1px solid #7cdaba;border-bottom:0;border-radius:10px 10px 0 0;background:#7cdaba;color:#fff;font-weight:700;font-size:15px;line-height:1.4;cursor:pointer;font-family:inherit}
 .dt-tabs__tab:hover{background:#6bcfae;border-color:#6bcfae}
-.dt-tabs__tab[aria-selected="true"]{background:#172641;border-color:#172641;color:#fff}
+.dt-tabs__tab[aria-selected="true"]{background:#1f8a6e;border-color:#1f8a6e;color:#fff}
 .dt-tabs__tab:focus-visible{outline:2px solid #7cdaba;outline-offset:2px}
 .dt-tabs [hidden]{display:none}
 .dt-tabs .dt-root{margin:0}
@@ -98,10 +98,11 @@
 .dt-tabs .dt-root thead th:first-child,.dt-tabs .dt-root tbody tr>th:first-child{width:140px;min-width:140px;max-width:140px;padding:8px 6px;text-align:center;vertical-align:middle}
 .dt-tabs .dt-logoline{display:flex;align-items:center;justify-content:center;gap:6px}
 .dt-tabs .dt-logo img{display:block;width:100px;height:auto;margin:0 auto}
+.dt-tabs .dt-logo img:not(.dt-rank){background:#fff}
 .dt-tabs .dt-logo img.dt-rank{width:24px;height:auto;margin:0;flex:0 0 auto}
 .dt-tabs .dt-logo a.dt-name{display:block;margin-top:5px;font-size:12px;font-weight:700;line-height:1.35;color:#172641;text-decoration:underline}
 .dt-tabs .dt-root td small{display:block;margin-top:2px;font-size:11px;line-height:1.45;color:#5b6773}
-.dt-tabs .dt-root td a.dt-mini{display:block;padding:8px 6px;border-radius:999px;background:#90d6a2;color:#172641;font-weight:700;font-size:12px;line-height:1.3;text-align:center;text-decoration:none;box-shadow:0 3px 0 #62b077}
+.dt-tabs .dt-root td a.dt-mini{display:block;box-sizing:border-box;width:76px;margin:0 auto;white-space:nowrap;padding:8px 4px;border-radius:999px;background:#90d6a2;color:#172641;font-weight:700;font-size:12px;line-height:1.3;text-align:center;text-decoration:none;box-shadow:0 3px 0 #62b077}
 .dt-tabs .dt-root td a.dt-mini:hover{box-shadow:0 1px 0 #62b077;transform:translateY(2px)}
 @media (max-width:640px){
 .dt-tabs__tab{padding:10px 4px;font-size:13px}
@@ -118,6 +119,7 @@
 .dt-root .dt-stores{margin-top:6px}
 .dt-root .dt-stores__label{display:block;margin-bottom:3px;font-size:11px;color:#172641}
 .dt-root .dt-stores__btn{display:flex;justify-content:space-between;align-items:center;width:100%;padding:4px 8px;border:1px solid #cfd6de;border-radius:6px;background:#fff;color:#172641;font:inherit;font-size:11px;font-weight:400;line-height:1.4;text-align:left;cursor:pointer}
+.dt-root a.dt-stores__btn{text-decoration:none;box-sizing:border-box}
 .dt-root .dt-stores__btn::after{content:"›";margin-left:6px;font-size:13px;color:#5b6773}
 .dt-root .dt-stores ul{list-style:none;margin:4px 0 0;padding:0;max-height:170px;overflow-y:auto;border:1px solid #e6e9ed;border-radius:6px;background:#fff}
 .dt-root .dt-stores li{margin:0;padding:0;list-style:none}
@@ -141,8 +143,8 @@
 .dt-m{margin:0 0 3px;line-height:1.55}
 .dt-tag{display:inline-block;margin-right:4px;padding:0 6px;border-radius:999px;font-size:10px;font-weight:700;line-height:17px;color:#fff;vertical-align:1px;white-space:nowrap}
 .dt-tag--heat{background:#e0733a}
-.dt-tag--store{background:#2a9d8f}
-.dt-tag--both{background:linear-gradient(90deg,#e0733a 50%,#2a9d8f 50%)}
+.dt-tag--store{background:#2f97d3}
+.dt-tag--both{background:linear-gradient(90deg,#e0733a 50%,#2f97d3 50%)}
 .dt-notes{margin:8px 2px 0;color:#6b7785;line-height:1.7}
 .dt-notes small{display:block;font-size:11px}
 .dt-p span{display:block}
