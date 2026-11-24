@@ -31,12 +31,29 @@ for (const root of roots) {
 		return btn;
 	});
 
+	const hydrateMaps = (panel: HTMLElement) => {
+		for (const link of panel.querySelectorAll<HTMLAnchorElement>('a.dt-map-embed[href*="google.com/maps"]')) {
+			const href = link.getAttribute("href");
+			if (!href) continue;
+			const frame = document.createElement("iframe");
+			frame.src = href;
+			frame.title = link.textContent?.trim() || "Googleマップ";
+			frame.width = "100%";
+			frame.height = "420";
+			frame.loading = "lazy";
+			frame.referrerPolicy = "no-referrer-when-downgrade";
+			frame.allowFullscreen = true;
+			link.replaceWith(frame);
+		}
+	};
+
 	const show = (index: number) => {
 		panels.forEach((panel, k) => {
 			panel.hidden = k !== index;
 			buttons[k].setAttribute("aria-selected", String(k === index));
 			buttons[k].tabIndex = k === index ? 0 : -1;
 		});
+		if (panels[index]) hydrateMaps(panels[index]);
 	};
 
 	root.insertBefore(bar, panels[0]);

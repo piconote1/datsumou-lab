@@ -230,3 +230,18 @@
 .dt-tabs [data-tab-title="サービス"] thead th:nth-child(2){width:235px}
 .dt-tabs [data-tab-title="サービス"] thead th:nth-child(3){width:148px}
 .dt-tabs [data-tab-title="サービス"] tbody td:nth-child(3) .dt-m,.dt-tabs [data-tab-title="サービス"] tbody td:nth-child(4) .dt-m{white-space:normal}
+
+/* エリア別Googleマップのタブ切り替え（.dt-map-tabs）。2026-11-25 */
+.dt-map-panel{padding:14px;border:1px solid #cdeee2;border-top:0;border-radius:0 0 10px 10px;background:#fff}
+.dt-map-desc{margin:0 0 10px;font-size:13px;line-height:1.65;color:#33404c}
+.dt-map-box{width:100%;min-height:420px;border:1px solid #d8dee4;border-radius:8px;overflow:hidden;background:#f3f5f7}
+.dt-map-box iframe{display:block;width:100%;height:420px;border:0}
+.dt-map-box a.dt-map-embed{display:flex;align-items:center;justify-content:center;width:100%;height:420px;font-weight:700;color:#1f8a6e;text-decoration:underline}
+.dt-map-list{margin:12px 0 2px;padding-left:20px}
+.dt-map-list li{margin:6px 0;font-size:14px;line-height:1.6}
+.dt-map-list a{color:#172641;text-decoration:underline}
+.dt-map-list small{display:block;margin-top:2px;font-size:12px;color:#5b6773}
+@media (max-width:640px){
+.dt-map-tabs .dt-tabs__tab{padding:9px 2px;font-size:12px}
+.dt-map-panel{padding:10px}
+.dt-map-box,.dt-map-box iframe,.dt-map-box a.dt-map-embed{min-height:340px;height:340px}}
