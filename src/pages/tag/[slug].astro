@@ -50,12 +50,31 @@ const filteredPosts = posts.map((post) => ({
 		(t) => t.slug !== term.slug,
 	),
 }));
+const tagUrl = `${Astro.url.origin}/tag/${term.slug}`;
+const tagDescription = `タグ「${term.label}」が付いた医療脱毛クリニックの比較・解説記事の一覧です。`;
+const tagSchema = {
+	"@context": "https://schema.org",
+	"@type": "CollectionPage",
+	"@id": `${tagUrl}#webpage`,
+	url: tagUrl,
+	name: `タグ「${term.label}」の記事 | 脱毛研究室`,
+	description: tagDescription,
+	inLanguage: "ja",
+	isPartOf: { "@id": `${Astro.url.origin}/#website` },
+	about: { "@id": `${Astro.url.origin}/#organization` },
+};
 ---
 
 <Base
 	title={`タグ「${term.label}」の記事`}
-	description={`タグ「${term.label}」の記事一覧`}
-	canonical={cursor ? `${Astro.url.origin}/tag/${term.slug}?cursor=${encodeURIComponent(cursor)}` : `${Astro.url.origin}/tag/${term.slug}`}
+	description={tagDescription}
+	canonical={cursor ? `${tagUrl}?cursor=${encodeURIComponent(cursor)}` : tagUrl}
+	breadcrumbs={[
+		{ name: "ホーム", url: "/" },
+		{ name: "記事一覧", url: "/posts" },
+		{ name: term.label, url: `/tag/${term.slug}` },
+	]}
+	schema={tagSchema}
 >
 	<header class="band intro">
 		<div class="frame archive-intro">
@@ -90,11 +109,13 @@ const filteredPosts = posts.map((post) => ({
 				filteredPosts.length > 0 ? (
 					<>
 						<ol class="post-list">
-							{filteredPosts.map(({ post, tags }) => (
+							{filteredPosts.map(({ post, tags }, i) => (
 								<li>
 									<PostRow
 										post={post}
 										labels={tags.map((t) => ({ slug: t.slug, label: t.label }))}
+										headingLevel={2}
+										priority={i === 0}
 									/>
 								</li>
 							))}

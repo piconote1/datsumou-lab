@@ -98,6 +98,7 @@ export default {
 		// EmDash の本体は、出版者を名前だけ、著者を人物の形で出す。ここで、組織情報（ロゴつき）を指す形に書き換える。
 		if (isPublicPage && res.status === 200) {
 			const orgId = `${url.origin}/#organization`;
+			const websiteId = `${url.origin}/#website`;
 			const isPost = url.pathname.startsWith("/posts/");
 			let buf = "";
 			const rewriter = new HTMLRewriter();
@@ -108,31 +109,40 @@ export default {
 					}
 				},
 			});
-			if (isPost) {
-				rewriter.on('script[type="application/ld+json"]', {
-					text(chunk) {
-						buf += chunk.text;
-						if (!chunk.lastInTextNode) {
-							chunk.remove();
-							return;
+			rewriter.on('script[type="application/ld+json"]', {
+				text(chunk) {
+					buf += chunk.text;
+					if (!chunk.lastInTextNode) {
+						chunk.remove();
+						return;
+					}
+					let outText = buf;
+					try {
+						const j = JSON.parse(buf);
+						if (j && j["@type"] === "WebSite") {
+							j.url = `${url.origin}/`;
+							j.inLanguage = "ja";
+							j.publisher = { "@id": orgId };
+							j.potentialAction = {
+								"@type": "SearchAction",
+								target: `${url.origin}/search?q={search_term_string}`,
+								"query-input": "required name=search_term_string",
+							};
+							outText = JSON.stringify(j).replace(/</g, "\\u003c");
+						} else if (isPost && j && j["@type"] === "BlogPosting") {
+							j.author = { "@type": "Organization", "@id": orgId, name: j.author?.name ?? "脱毛研究室" };
+							j.publisher = { "@id": orgId };
+							j.isPartOf = { "@id": websiteId };
+							j.inLanguage = "ja";
+							outText = JSON.stringify(j).replace(/</g, "\\u003c");
 						}
-						let outText = buf;
-						try {
-							const j = JSON.parse(buf);
-							if (j && j["@type"] === "BlogPosting") {
-								j.author = { "@type": "Organization", "@id": orgId, name: j.author?.name ?? "脱毛研究室" };
-								j.publisher = { "@id": orgId };
-								j.inLanguage = "ja";
-								outText = JSON.stringify(j).replace(/</g, "\\u003c");
-							}
-						} catch {
-							// 解析できなければ、元のまま出す
-						}
-						buf = "";
-						chunk.replace(outText, { html: true });
-					},
-				});
-			}
+					} catch {
+						// 解析できなければ、元のまま出す
+					}
+					buf = "";
+					chunk.replace(outText, { html: true });
+				},
+			});
 			// 画像の srcset（どの幅でも同じファイルを指していた）を、幅ごとに縮小した画像（?w=幅）を指すよう書き換える。
 			// EmDash 本体は、srcset を出したり出さなかったりする（安定しない）ため、
 			// srcset がない画像（記事の画像・サムネイル）には、こちらで、幅ごとの縮小版を指す srcset を付ける。

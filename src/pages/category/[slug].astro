@@ -87,6 +87,17 @@ const catMeta = CATEGORY_META[term.slug] ?? {
 	description: `${term.label}の記事一覧`,
 };
 const catCanonical = `${Astro.url.origin}/category/${term.slug}`;
+const catSchema = {
+	"@context": "https://schema.org",
+	"@type": "CollectionPage",
+	"@id": `${catCanonical}#webpage`,
+	url: catCanonical,
+	name: catMeta.title,
+	description: catMeta.description,
+	inLanguage: "ja",
+	isPartOf: { "@id": `${Astro.url.origin}/#website` },
+	about: { "@id": `${Astro.url.origin}/#organization` },
+};
 ---
 
 <Base
@@ -97,6 +108,7 @@ const catCanonical = `${Astro.url.origin}/category/${term.slug}`;
 		{ name: "ホーム", url: "/" },
 		{ name: term.label, url: `/category/${term.slug}` },
 	]}
+	schema={catSchema}
 >
 	<header class="band intro">
 		<div class="frame archive-intro">
@@ -131,11 +143,13 @@ const catCanonical = `${Astro.url.origin}/category/${term.slug}`;
 				filteredPosts.length > 0 ? (
 					<>
 						<ol class="post-list">
-							{filteredPosts.map(({ post, tags }) => (
+							{filteredPosts.map(({ post, tags }, i) => (
 								<li>
 									<PostRow
 										post={post}
 										labels={tags.map((t) => ({ slug: t.slug, label: t.label }))}
+										headingLevel={2}
+										priority={i === 0}
 									/>
 								</li>
 							))}

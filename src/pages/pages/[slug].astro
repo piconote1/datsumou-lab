@@ -24,11 +24,45 @@ if (!page) {
 
 if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
 const { siteShortTitle } = resolveBlogSiteIdentity(await getSiteSettings());
+const pageOrigin = Astro.url.origin;
+const pageUrl = `${pageOrigin}/pages/${slug}`;
 const seo = getSeoMeta(page, {
 	siteTitle: siteShortTitle,
-	siteUrl: Astro.url.origin,
+	siteUrl: pageOrigin,
 	path: Astro.url.pathname.replace(/\/$/, ""),
 });
+const pageSchema: Record<string, unknown> =
+	slug === "operator"
+		? {
+				"@context": "https://schema.org",
+				"@type": "ProfilePage",
+				"@id": `${pageUrl}#webpage`,
+				url: pageUrl,
+				name: seo.title,
+				inLanguage: "ja",
+				isPartOf: { "@id": `${pageOrigin}/#website` },
+				about: { "@id": `${pageOrigin}/#organization` },
+				dateModified: page.data.updatedAt.toISOString(),
+				mainEntity: {
+					"@type": "Person",
+					"@id": `${pageUrl}#person`,
+					name: "まいか",
+					url: pageUrl,
+					sameAs: ["https://www.threads.com/@maika.datsumou"],
+					worksFor: { "@id": `${pageOrigin}/#organization` },
+				},
+			}
+		: {
+				"@context": "https://schema.org",
+				"@type": "WebPage",
+				"@id": `${pageUrl}#webpage`,
+				url: pageUrl,
+				name: seo.title,
+				inLanguage: "ja",
+				isPartOf: { "@id": `${pageOrigin}/#website` },
+				about: { "@id": `${pageOrigin}/#organization` },
+				dateModified: page.data.updatedAt.toISOString(),
+			};
 ---
 
 <Base
@@ -38,6 +72,11 @@ const seo = getSeoMeta(page, {
 	canonical={seo.canonical}
 	robots={seo.robots}
 	content={{ collection: "pages", id: page.data.id, slug }}
+	breadcrumbs={[
+		{ name: "ホーム", url: "/" },
+		{ name: page.data.title, url: `/pages/${slug}` },
+	]}
+	schema={pageSchema}
 >
 	<article class="band page">
 		<div class="frame page__layout">

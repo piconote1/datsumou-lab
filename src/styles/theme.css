@@ -586,7 +586,10 @@ article.post nav.toc[class], article.post nav.toc .toc__list[class] { width: 100
 /* 記事の冒頭: マナブログ風（中央タイトル → カテゴリ → カード幅いっぱいのサムネイル） */
 article.post { --card-pad: clamp(1.25rem, 4vw, 2.75rem); }
 article.post .post-header__inner[class] { display: flex; flex-direction: column; align-items: center; text-align: center; }
-article.post .back-link, article.post .post-header__lead, article.post .post-header__meta { display: none; }
+article.post .back-link, article.post .post-header__lead { display: none; }
+article.post .post-header__meta[class] { order: 3; display: flex; justify-content: center; margin: 0.25rem 0 0; }
+article.post .post-header__dateline[class] { justify-content: center; color: #525e6b; }
+article.post .post-header__dateline a { color: inherit; text-decoration: underline; text-underline-offset: 0.2em; }
 article.post h1.post-header__title[class] {
 	order: 1;
 	margin: 0.5rem 0 0.75rem;
@@ -639,36 +642,36 @@ article.post .prose h3 {
 	line-height: 1.6;
 }
 article.post .prose h3::before { content: none; }
-article.post .prose h4 {
+article.post .prose :is(h4, .prose-check-h3, .prose-lead-heading) {
 	margin: 2rem 0 0.9rem;
 	font-size: 1.1rem;
 	font-weight: 800;
 	line-height: 1.6;
 }
-article.post .prose h4::before {
+article.post .prose :is(h4, .prose-check-h3, .prose-lead-heading)::before {
 	content: "\2714";
 	margin-right: 0.45em;
 	color: #4cc3a0;
 }
 article.post .prose > h3:first-child { margin-top: 2.5rem; }
 article.post .prose > h3:first-child + ul { margin: 0 0 1.5rem; padding: 0; background: transparent; border: 0; }
-/* 記事先頭の「この記事で分かること」（h4＋箇条書き）をボックス表示 */
-article.post .prose > h4:first-child { margin-top: 0; }
-article.post .prose > h4:first-child + ul {
+/* 記事先頭の「この記事で分かること」（見出し＋箇条書き）をボックス表示 */
+article.post .prose > :is(h4, .prose-lead-heading):first-child { margin-top: 0; }
+article.post .prose > :is(h4, .prose-lead-heading):first-child + ul {
 	margin: 0 0 2rem;
 	padding: 1.5rem 1.5rem 1.5rem 2.75rem;
 	background: #f6fcfa;
 	border: 1px dashed #4cc3a0;
 }
-article.post .prose > h4:first-child + ul li { margin: 0.5rem 0; }
+article.post .prose > :is(h4, .prose-lead-heading):first-child + ul li { margin: 0.5rem 0; }
 
 /* ---- 箇条書き（マナブログの寸法に合わせる）---- */
-article.post .prose > h4:first-child + ul,
+article.post .prose > :is(h4, .prose-lead-heading):first-child + ul,
 article.post nav.toc .toc__list[class] {
 	padding: 2.5rem 1rem 2.25rem 2.5rem;
 	margin: 0 0 2.5rem;
 }
-article.post .prose > h4:first-child + ul li,
+article.post .prose > :is(h4, .prose-lead-heading):first-child + ul li,
 article.post nav.toc .toc__item[class] {
 	margin: 0 0 0.6rem;
 	font-size: 1.0625rem;
@@ -712,7 +715,7 @@ article.post .frame[class] { width: 100%; box-sizing: border-box; }
 
 /* ---- 本文の箇条書きは、すべて点線ボックス（マナブログと同じ） ---- */
 article.post .prose ul, article.post .prose ol,
-article.post .prose > h4:first-child + ul {
+article.post .prose > :is(h4, .prose-lead-heading):first-child + ul {
 	margin: 0 0 2.5rem;
 	padding: 2.5rem 1rem 2.25rem 2.5rem;
 	background: #f6fcfa;

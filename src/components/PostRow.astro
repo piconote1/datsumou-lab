@@ -11,9 +11,11 @@ interface Props {
 	labels?: Array<{ slug: string; label: string }>;
 	/** 0 のときは見出しにしない（記事の中の「関連記事」カード用。目次に入れない） */
 	headingLevel?: 0 | 2 | 3;
+	/** 一覧の先頭などファーストビューに入る画像を eager 読み込みにする */
+	priority?: boolean;
 }
 
-const { post, labels = [], headingLevel = 3 } = Astro.props;
+const { post, labels = [], headingLevel = 3, priority = false } = Astro.props;
 const Heading = (headingLevel === 0 ? "p" : `h${headingLevel}`) as "p" | "h2" | "h3";
 const href = `/posts/${post.id}`;
 const title = post.data.title || "無題";
@@ -29,7 +31,7 @@ const shown = labels.slice(0, 2);
 		<span class="post-row__thumb">
 			{
 				post.data.featured_image ? (
-					<Image image={post.data.featured_image} sizes="(min-width: 720px) 440px, 76vw" />
+					<Image image={post.data.featured_image} sizes="(min-width: 720px) 440px, 76vw" priority={priority} />
 				) : (
 					<img src="/brand/banner.svg" alt="" loading="lazy" />
 				)

@@ -1,0 +1,21 @@
+---
+import type { BlockProps } from "astro-portabletext/types";
+
+type Props = Omit<BlockProps, "node"> & {
+	node: BlockProps["node"] & { style?: string };
+};
+
+const { node, index: _index, isInline: _isInline, ...attrs } = Astro.props as Props;
+---
+
+{
+	node.style === "leadBoxHeading" ? (
+		<p class="prose-lead-heading" {...attrs}>
+			<slot />
+		</p>
+	) : (
+		<h3 class="prose-check-h3" {...attrs}>
+			<slot />
+		</h3>
+	)
+}
