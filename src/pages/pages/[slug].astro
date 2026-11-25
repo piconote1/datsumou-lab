@@ -31,6 +31,26 @@ const seo = getSeoMeta(page, {
 	siteUrl: pageOrigin,
 	path: Astro.url.pathname.replace(/\/$/, ""),
 });
+const PAGE_META: Record<string, { title: string; description: string }> = {
+	operator: {
+		title: "運営者情報・編集方針とサイトの目的",
+		description:
+			"脱毛研究室の運営者情報（まいか）、運営開始時期、お問い合わせ先、情報の収集方法や医療従事者・医療機関ではない旨の編集方針について記載しています。",
+	},
+	privacy: {
+		title: "プライバシーポリシー・個人情報の取り扱い",
+		description:
+			"脱毛研究室における個人情報の取得と利用目的、アクセス解析ツールやCookieの取り扱い、第三者への提供に関するプライバシーポリシーを定めています。",
+	},
+	disclaimer: {
+		title: "広告（PR）の扱いと医療情報の免責について",
+		description:
+			"脱毛研究室におけるアフィリエイト広告の表記方針、公式情報に基づく比較スタンス、および医療・健康に関する情報の免責事項について詳しく説明しています。",
+	},
+};
+const pageMeta = PAGE_META[slug];
+const resolvedTitle = pageMeta?.title ?? seo.title;
+const resolvedDescription = pageMeta?.description ?? seo.description;
 const pageSchema: Record<string, unknown> =
 	slug === "operator"
 		? {
@@ -38,7 +58,7 @@ const pageSchema: Record<string, unknown> =
 				"@type": "ProfilePage",
 				"@id": `${pageUrl}#webpage`,
 				url: pageUrl,
-				name: seo.title,
+				name: `${resolvedTitle} | ${siteShortTitle}`,
 				inLanguage: "ja",
 				isPartOf: { "@id": `${pageOrigin}/#website` },
 				about: { "@id": `${pageOrigin}/#organization` },
@@ -57,7 +77,7 @@ const pageSchema: Record<string, unknown> =
 				"@type": "WebPage",
 				"@id": `${pageUrl}#webpage`,
 				url: pageUrl,
-				name: seo.title,
+				name: `${resolvedTitle} | ${siteShortTitle}`,
 				inLanguage: "ja",
 				isPartOf: { "@id": `${pageOrigin}/#website` },
 				about: { "@id": `${pageOrigin}/#organization` },
@@ -66,9 +86,9 @@ const pageSchema: Record<string, unknown> =
 ---
 
 <Base
-	title={seo.title}
+	title={resolvedTitle}
 	pageTitle={seo.ogTitle}
-	description={seo.description}
+	description={resolvedDescription}
 	canonical={seo.canonical}
 	robots={seo.robots}
 	content={{ collection: "pages", id: page.data.id, slug }}

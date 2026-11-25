@@ -31,7 +31,7 @@ export const GET: APIRoute = async ({ url }) => {
 	} catch {
 		// 日付なしで出す
 	}
-	const paths = ["/", ...slugs.map((s) => `/category/${s}`)];
+	const paths = ["/", "/posts", ...slugs.map((s) => `/category/${s}`)];
 	const lines = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'];
 	for (const p of paths) {
 		lines.push("  <url>");

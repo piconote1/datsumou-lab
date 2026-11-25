@@ -32,3 +32,28 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           # まいかの Cloudflare アカウントID（秘密の値ではない）
           CLOUDFLARE_ACCOUNT_ID: d3c846e856f149ff7b1c12256aa1d70a
+
+      - name: Notify IndexNow
+        if: success()
+        continue-on-error: true
+        run: |
+          node -e '
+            (async () => {
+              const origin = "https://datsumou-lab.com";
+              const key = "4f8b2e91c3a74d608e5b19f2a7c4d038";
+              const idx = await (await fetch(`${origin}/sitemap.xml`)).text();
+              const maps = [...idx.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+              const urls = [];
+              for (const m of maps) {
+                const xml = await (await fetch(m)).text();
+                for (const u of xml.matchAll(/<loc>([^<]+)<\/loc>/g)) urls.push(u[1]);
+              }
+              if (!urls.length) return;
+              const res = await fetch("https://api.indexnow.org/indexnow", {
+                method: "POST",
+                headers: { "Content-Type": "application/json; charset=utf-8" },
+                body: JSON.stringify({ host: "datsumou-lab.com", key, keyLocation: `${origin}/${key}.txt`, urlList: urls }),
+              });
+              console.log("IndexNow status:", res.status, "urls:", urls.length);
+            })();
+          '

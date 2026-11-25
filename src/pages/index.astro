@@ -10,6 +10,7 @@ const { siteTitle } = resolveBlogSiteIdentity(settings);
 
 // トップ専用の説明文・SNS用の画像・正規URL（2026-11-14 SEO対応）。
 // サイト設定のキャッチフレーズが空で、説明文が出ていなかったため、ここで指定する。
+const HOME_TITLE = "脱毛研究室｜医療脱毛クリニックの選び方・料金・脱毛機を公式情報で比較";
 const HOME_DESCRIPTION =
 	"医療脱毛クリニックを選ぶときの確認ポイントを、公式に公開されている情報をもとに整理するサイト。料金・追加費用・契約と解約・脱毛機・通い方まで、決める順番に沿って解説します。";
 const homeCanonical = `${Astro.url.origin}/`;
@@ -78,7 +79,7 @@ const labelsOf = (id: string) =>
 	(termsByEntry.get(id) ?? []).map((t: any) => ({ slug: t.slug, label: t.label }));
 ---
 
-<Base title={siteTitle} description={HOME_DESCRIPTION} canonical={homeCanonical} image={homeImage}>
+<Base title={HOME_TITLE} description={HOME_DESCRIPTION} canonical={homeCanonical} image={homeImage}>
 	<section class="band hero" aria-roledescription="carousel" aria-label="医療脱毛クリニックのイメージ" data-hero>
 		<div class="hero__wrap">
 			<div class="hero__stage">
