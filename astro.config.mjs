@@ -24,14 +24,6 @@ export default defineConfig({
 	fonts: [
 		{
 			provider: fontProviders.google(),
-			name: "Noto Sans JP",
-			cssVariable: "--font-body",
-			// 500 は使わない（2026-11-21）。太さを減らすと、ページに入る @font-face（約286KB）が、約3分の1減る。
-			weights: [400, 700],
-			fallbacks: ["Hiragino Sans", "Yu Gothic", "Meiryo", "sans-serif"],
-		},
-		{
-			provider: fontProviders.google(),
 			name: "JetBrains Mono",
 			cssVariable: "--font-mono",
 			weights: [400, 500],

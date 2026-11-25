@@ -225,8 +225,7 @@ const year = new Date().getFullYear();
 				if (opened && !(t && t.closest && t.closest('.site-nav li.has-sub'))) opened.classList.remove('open');
 			});
 		</script>
-		<!-- フォントの先読み（preload）は付けない。日本語フォントは、文字の範囲ごとに約120個に分かれていて、先読みすると全部（約5MB）を毎回読み込んでしまう（2026-11-21）。使う文字の分だけ、ブラウザが読み込む。 -->
-		<Font cssVariable="--font-body" />
+		<!-- 日本語本文は端末標準ゴシック（theme.css）を使い、Noto Sans JP の約120個・~190KB のインライン @font-face を省く -->
 		<Font cssVariable="--font-mono" />
 		<script>import "../scripts/table-fullscreen";</script>
 		<script>import "../scripts/map-facade";</script>

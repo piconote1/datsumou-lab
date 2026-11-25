@@ -76,6 +76,15 @@ body {
 	line-break: strict;
 	word-break: auto-phrase;
 }
+/* 比較表や一覧のオフスクリーン領域は初期レイアウト負荷を抑える */
+.home-group + .home-group {
+	content-visibility: auto;
+	contain-intrinsic-size: auto 420px;
+}
+.prose > .emdash-html-block:nth-of-type(n+4) {
+	content-visibility: auto;
+	contain-intrinsic-size: auto 480px;
+}
 /* 見出し・タイトルは、文節ではなく、行いっぱいに文字を詰めて折り返す */
 h1,
 h2,
