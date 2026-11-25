@@ -48,6 +48,7 @@ for (const root of roots) {
 	};
 
 	const show = (index: number) => {
+		if (index !== 0) ensureEqualized();
 		panels.forEach((panel, k) => {
 			panel.hidden = k !== index;
 			buttons[k].setAttribute("aria-selected", String(k === index));
@@ -56,11 +57,9 @@ for (const root of roots) {
 		if (panels[index]) hydrateMaps(panels[index]);
 	};
 
-	root.insertBefore(bar, panels[0]);
-	show(0);
-
 	// 表の高さを、3つのタブで同じにする。タブを切り替えても、下の本文が上下に動かない。
-	// 高さは、いちばん高い行にそろえる。読み取りと書き込みを分離して強制リフローを防ぐ。
+	// 初回表示の強制リフローを避けるため、タブを初めて操作したタイミングで1回だけ計測・調整する。
+	let equalized = false;
 	const equalize = () => {
 		const rowSets = panels.map((panel) => Array.from(panel.querySelectorAll<HTMLElement>("tr")));
 		const rowCount = Math.max(0, ...rowSets.map((rows) => rows.length));
@@ -99,10 +98,20 @@ for (const root of roots) {
 			panel.hidden = k !== current;
 		});
 	};
-	requestAnimationFrame(equalize);
-	window.addEventListener("load", equalize);
+	const ensureEqualized = () => {
+		if (equalized) return;
+		equalized = true;
+		equalize();
+	};
+
+	root.insertBefore(bar, panels[0]);
+	show(0);
+	for (const ev of ["pointerdown", "touchstart", "focusin"] as const) {
+		bar.addEventListener(ev, ensureEqualized, { once: true, passive: true });
+	}
 	let timer: number | undefined;
 	window.addEventListener("resize", () => {
+		if (!equalized) return;
 		window.clearTimeout(timer);
 		timer = window.setTimeout(equalize, 150);
 	});

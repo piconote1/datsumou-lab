@@ -33,6 +33,23 @@ export default {
 		if (url.pathname === "/sitemap-index.xml") {
 			return new Response("Not found", { status: 404, headers: { "Content-Type": "text/plain; charset=utf-8" } });
 		}
+		const isPublicGetHtml =
+			request.method === "GET" &&
+			!LOCAL_HOST.test(url.hostname) &&
+			!url.pathname.startsWith("/_emdash/") &&
+			!url.pathname.startsWith("/search") &&
+			!request.headers.get("cookie");
+		const edgeCache = isPublicGetHtml ? (caches as unknown as { default: Cache }).default : null;
+		const edgeCacheKey = isPublicGetHtml ? new Request(url.toString(), { method: "GET" }) : null;
+		if (edgeCache && edgeCacheKey) {
+			const cached = await edgeCache.match(edgeCacheKey);
+			if (cached) {
+				const hitHeaders = new Headers(cached.headers);
+				hitHeaders.set("Cache-Control", "public, max-age=0, s-maxage=300, stale-while-revalidate=86400");
+				hitHeaders.set("X-Worker-Cache", "HIT");
+				return new Response(cached.body, { status: cached.status, statusText: cached.statusText, headers: hitHeaders });
+			}
+		}
 		const res = await (handler as { fetch: (r: Request, e: unknown, c: ExecutionContext) => Promise<Response> }).fetch(
 			request,
 			env,
@@ -148,6 +165,14 @@ export default {
 			// srcset がない画像（記事の画像・サムネイル）には、こちらで、幅ごとの縮小版を指す srcset を付ける。
 			rewriter.on("img", {
 				element(el) {
+					const src0 = el.getAttribute("src") ?? "";
+					if (
+						(src0.includes("01M84B4RJ0AY1GNY24TSYR3A1E") || src0.includes("01M84B74DWJZ83Z1J4S9NQPT2C")) &&
+						el.getAttribute("width") === "112" &&
+						el.getAttribute("height") === "27"
+					) {
+						el.setAttribute("height", "34");
+					}
 					const MEDIA = "/_emdash/api/media/file/";
 					const srcset = el.getAttribute("srcset");
 					if (!srcset) {
@@ -192,7 +217,18 @@ export default {
 					el.setAttribute("srcset", [...extra, ...next].join(", "));
 				},
 			});
-			return rewriter.transform(out);
+			const transformed = rewriter.transform(out);
+			if (edgeCache && edgeCacheKey && !headers.has("set-cookie")) {
+				const ch = new Headers(transformed.headers);
+				ch.set("Cache-Control", "public, max-age=300");
+				const forCache = new Response(transformed.clone().body, {
+					status: transformed.status,
+					statusText: transformed.statusText,
+					headers: ch,
+				});
+				ctx.waitUntil(edgeCache.put(edgeCacheKey, forCache));
+			}
+			return transformed;
 		}
 		return out;
 	},
