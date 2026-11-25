@@ -31,19 +31,45 @@ for (const root of roots) {
 		return btn;
 	});
 
+	let mapsActivated = false;
+	const mountMapFrame = (link: HTMLAnchorElement, href: string) => {
+		const frame = document.createElement("iframe");
+		frame.src = href;
+		frame.title = link.textContent?.trim() || "Googleマップ";
+		frame.width = "100%";
+		frame.height = "420";
+		frame.loading = "lazy";
+		frame.referrerPolicy = "no-referrer-when-downgrade";
+		frame.allowFullscreen = true;
+		return frame;
+	};
 	const hydrateMaps = (panel: HTMLElement) => {
 		for (const link of panel.querySelectorAll<HTMLAnchorElement>('a.dt-map-embed[href*="google.com/maps"]')) {
 			const href = link.getAttribute("href");
 			if (!href) continue;
-			const frame = document.createElement("iframe");
-			frame.src = href;
-			frame.title = link.textContent?.trim() || "Googleマップ";
-			frame.width = "100%";
-			frame.height = "420";
-			frame.loading = "lazy";
-			frame.referrerPolicy = "no-referrer-when-downgrade";
-			frame.allowFullscreen = true;
-			link.replaceWith(frame);
+			if (mapsActivated) {
+				link.replaceWith(mountMapFrame(link, href));
+				continue;
+			}
+			const box = link.parentElement;
+			if (!box || box.querySelector(".dt-map-btn")) continue;
+			const label = link.textContent?.trim() || "地図";
+			const wrap = document.createElement("div");
+			wrap.className = "dt-map-facade";
+			const btn = document.createElement("button");
+			btn.type = "button";
+			btn.className = "dt-map-btn";
+			btn.textContent = "地図を表示する";
+			btn.setAttribute("aria-label", `${label}を表示する`);
+			wrap.appendChild(btn);
+			link.hidden = true;
+			box.appendChild(wrap);
+			btn.addEventListener("click", () => {
+				mapsActivated = true;
+				wrap.remove();
+				link.hidden = false;
+				link.replaceWith(mountMapFrame(link, href));
+			});
 		}
 	};
 

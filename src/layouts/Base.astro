@@ -233,6 +233,14 @@ const year = new Date().getFullYear();
 		<script>import "../scripts/map-facade";</script>
 		<script>import "../scripts/dt-tabs";</script>
 		<title>{fullTitle}</title>
+		<script
+			type="speculationrules"
+			is:inline
+			set:html={JSON.stringify({
+				prefetch: [{ where: { and: [{ href_matches: "/*" }, { not: { href_matches: "/_emdash/*" } }, { not: { href_matches: "/search*" } }] }, eagerness: "moderate" }],
+				prerender: [{ where: { and: [{ href_matches: "/posts/*" }, { not: { href_matches: "/_emdash/*" } }] }, eagerness: "moderate" }],
+			})}
+		/>
 		<link rel="icon" href="/favicon.png" type="image/png" />
 		<EmDashHead page={pageCtx} />
 		<meta property="og:locale" content="ja_JP" />
@@ -307,7 +315,13 @@ const year = new Date().getFullYear();
 							resultsClass="site-search-results"
 							resultClass="site-search-result"
 							collections={["posts", "pages"]}
-						/>
+						>
+							<a slot="result" class="emdash-live-search-result site-search-result" href="">
+								<span class="emdash-live-search-result-title">検索結果</span>
+								<span class="emdash-live-search-result-collection"></span>
+								<span class="emdash-live-search-result-snippet"></span>
+							</a>
+						</LiveSearch>
 						<kbd class="site-search__kbd" aria-hidden="true"
 							><span dir="ltr">⌘K</span></kbd
 						>
