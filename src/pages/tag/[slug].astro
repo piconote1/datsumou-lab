@@ -55,6 +55,7 @@ const filteredPosts = posts.map((post) => ({
 <Base
 	title={`タグ「${term.label}」の記事`}
 	description={`タグ「${term.label}」の記事一覧`}
+	canonical={cursor ? `${Astro.url.origin}/tag/${term.slug}?cursor=${encodeURIComponent(cursor)}` : `${Astro.url.origin}/tag/${term.slug}`}
 >
 	<header class="band intro">
 		<div class="frame archive-intro">

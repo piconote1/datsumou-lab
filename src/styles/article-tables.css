@@ -87,9 +87,9 @@
 /* タブ切り替えの比較表（.dt-tabs）。ロゴを行頭に置く。2026-11-23。スクリプトは src/scripts/dt-tabs.ts */
 .dt-tabs{margin:1.25em 0}
 .dt-tabs__tabs{display:flex;gap:4px;margin:0;border-bottom:2px solid #1f8a6e;position:relative}
-.dt-tabs__tab{flex:1 1 0;padding:11px 8px;border:1px solid #7cdaba;border-bottom:0;border-radius:10px 10px 0 0;background:#7cdaba;color:#fff;font-weight:700;font-size:15px;line-height:1.4;cursor:pointer;font-family:inherit}
+.dt-tabs__tab{flex:1 1 0;padding:11px 8px;border:1px solid #7cdaba;border-bottom:0;border-radius:10px 10px 0 0;background:#7cdaba;color:#172641;font-weight:700;font-size:15px;line-height:1.4;cursor:pointer;font-family:inherit}
 .dt-tabs__tab:hover{background:#6bcfae;border-color:#6bcfae}
-.dt-tabs__tab[aria-selected="true"]{background:#1f8a6e;border-color:#1f8a6e;color:#fff}
+.dt-tabs__tab[aria-selected="true"]{background:#176d56;border-color:#176d56;color:#fff}
 .dt-tabs__tab:focus-visible{outline:2px solid #7cdaba;outline-offset:2px}
 .dt-tabs [hidden]{display:none}
 .dt-tabs .dt-root{margin:0}
@@ -142,14 +142,14 @@
 /* 脱毛機の方式バッジ（熱破壊／蓄熱／併用）と、表の下の注釈 */
 .dt-m{margin:0 0 3px;line-height:1.55}
 .dt-tag{display:inline-block;margin-right:4px;padding:0 6px;border-radius:999px;font-size:10px;font-weight:700;line-height:17px;color:#fff;vertical-align:1px;white-space:nowrap}
-.dt-tag--heat{background:#e0733a}
-.dt-tag--store{background:#2f97d3}
-.dt-tag--both{background:linear-gradient(90deg,#e0733a 50%,#2f97d3 50%)}
-.dt-notes{margin:8px 2px 0;color:#6b7785;line-height:1.7}
+.dt-tag--heat{background:#b54812}
+.dt-tag--store{background:#176da1}
+.dt-tag--both{background:linear-gradient(90deg,#b54812 50%,#176da1 50%)}
+.dt-notes{margin:8px 2px 0;color:#525e6b;line-height:1.7}
 .dt-notes small{display:block;font-size:11px}
 .dt-p span{display:block}
 
-.dt-r{display:inline;font-size:11px;font-weight:400;color:#6b7785}
+.dt-r{display:inline;font-size:11px;font-weight:400;color:#525e6b}
 /* 脱毛機：バッジと機種名を横に並べる（名前が長いときは名前だけ折り返す） */
 .dt-m{display:flex;align-items:flex-start;justify-content:flex-start;gap:4px}
 .dt-m .dt-tag{flex:none;margin-right:0;margin-top:2px}
@@ -185,7 +185,7 @@
 .dt-tabs [data-tab-title="サービス"] .dt-tag{font-size:9px;line-height:14px;padding:0 5px;margin-top:0}
 .dt-tabs [data-tab-title^="料金"] td{padding-top:5px;padding-bottom:5px}
 .dt-tabs [data-tab-title^="料金"] .dt-p{font-size:13px;line-height:1.4}
-.dt-tabs .dt-root td small.dt-r{display:inline;margin:0 0 0 2px;font-size:11px;line-height:inherit;color:#6b7785}
+.dt-tabs .dt-root td small.dt-r{display:inline;margin:0 0 0 2px;font-size:11px;line-height:inherit;color:#525e6b}
 /* クリニック列と詳細列の幅は、3つのタブで同じ（固定） */
 .dt-tabs .dt-root thead th:last-child{width:96px;min-width:96px;max-width:96px}
 .dt-tabs .dt-root tbody tr>td:last-child{width:96px;min-width:96px;max-width:96px}
@@ -210,10 +210,10 @@
 .dt-root table.dt-spec.dt-p4 td{text-align:center;vertical-align:middle}
 .dt-root table.dt-spec.dt-p4 .dt-g strong{font-size:15px}
 .dt-root table.dt-goal tbody th{width:128px;min-width:128px;max-width:128px}
-.dt-root table.dt-goal tbody th small{display:block;margin-top:2px;font-size:11px;font-weight:400;color:#6b7785}
+.dt-root table.dt-goal tbody th small{display:block;margin-top:2px;font-size:11px;font-weight:400;color:#525e6b}
 @media (max-width:640px){.dt-root table.dt-goal tbody th{width:104px;min-width:104px;max-width:104px;font-size:12px}.dt-root table.dt-goal td{font-size:12px}}
 .dt-root table.dt-spec .dt-m{margin:0 0 3px}
-.dt-root table.dt-spec small.dt-r{font-size:11px;color:#6b7785}
+.dt-root table.dt-spec small.dt-r{font-size:11px;color:#525e6b}
 
 /* おすすめポイント（枠つきカード）の上下余白を引き締める（2026-11-25） */
 .emdash-html-block:has(> .dt-pts){margin-top:4px!important;margin-bottom:12px!important}
@@ -223,7 +223,7 @@
 .dt-pt__n{flex:none;width:24px;height:24px;border-radius:50%;background:#7cdaba;color:#172641;font-weight:700;font-size:13px;line-height:24px;text-align:center}
 .dt-pt__b strong{display:block;margin:0 0 2px;font-size:14px;color:#172641}
 .dt-pt__b p{margin:0;font-size:13px;line-height:1.55;color:#33404c}
-.dt-root table.dt-spec .dt-k{display:inline-block;flex:none;width:7.2em;color:#6b7785;font-size:12px}
+.dt-root table.dt-spec .dt-k{display:inline-block;flex:none;width:7.2em;color:#525e6b;font-size:12px}
 .dt-root table.dt-spec .dt-v{font-weight:700}
 
 
@@ -238,7 +238,7 @@
 .dt-map-desc{margin:0 0 10px;font-size:13px;line-height:1.65;color:#33404c}
 .dt-map-box{width:100%;min-height:420px;border:1px solid #d8dee4;border-radius:8px;overflow:hidden;background:#f3f5f7}
 .dt-map-box iframe{display:block;width:100%;height:420px;border:0}
-.dt-map-box a.dt-map-embed{display:flex;align-items:center;justify-content:center;width:100%;height:420px;font-weight:700;color:#1f8a6e;text-decoration:underline}
+.dt-map-box a.dt-map-embed{display:flex;align-items:center;justify-content:center;width:100%;height:420px;font-weight:700;color:#176d56;text-decoration:underline}
 .dt-map-list{margin:12px 0 2px;padding-left:20px}
 .dt-map-list li{margin:6px 0;font-size:14px;line-height:1.6}
 .dt-map-list a{color:#172641;text-decoration:underline}

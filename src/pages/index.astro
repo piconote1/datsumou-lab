@@ -186,29 +186,31 @@ const labelsOf = (id: string) =>
 		position: absolute;
 		left: 0;
 		right: 0;
-		bottom: 12px;
+		bottom: 4px;
 		display: flex;
 		justify-content: center;
-		gap: 10px;
+		gap: 4px;
 	}
 	.hero__dot {
 		position: relative;
-		width: 10px;
-		height: 10px;
+		display: grid;
+		place-items: center;
+		width: 28px;
+		height: 28px;
 		padding: 0;
 		border: 0;
+		background: transparent;
+		cursor: pointer;
+	}
+	.hero__dot::before {
+		content: "";
+		width: 10px;
+		height: 10px;
 		border-radius: 50%;
 		background: rgba(255, 255, 255, 0.65);
 		box-shadow: 0 0 0 1px rgba(31, 41, 51, 0.25);
-		cursor: pointer;
 	}
-	/* 見た目は小さいまま、押せる範囲を 44px 四方にする */
-	.hero__dot::after {
-		content: "";
-		position: absolute;
-		inset: -17px;
-	}
-	.hero__dot.is-active {
+	.hero__dot.is-active::before {
 		background: #1f2933;
 		box-shadow: 0 0 0 1px #fff;
 	}

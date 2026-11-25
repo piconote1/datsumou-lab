@@ -60,28 +60,46 @@ for (const root of roots) {
 	show(0);
 
 	// 表の高さを、3つのタブで同じにする。タブを切り替えても、下の本文が上下に動かない。
-	// 高さは、いちばん高い表にそろえる（min-height）。ウィンドウ幅や画像の読み込みで変わるので、測り直す。
+	// 高さは、いちばん高い行にそろえる。読み取りと書き込みを分離して強制リフローを防ぐ。
 	const equalize = () => {
+		const rowSets = panels.map((panel) => Array.from(panel.querySelectorAll<HTMLElement>("tr")));
+		const rowCount = Math.max(0, ...rowSets.map((rows) => rows.length));
+		if (rowCount === 0) return;
+
 		const current = buttons.findIndex((b) => b.getAttribute("aria-selected") === "true");
+		// 1) 一括リセット書き込み
 		for (const panel of panels) {
 			panel.style.minHeight = "";
 			panel.hidden = false;
 			for (const tr of panel.querySelectorAll<HTMLElement>("tr")) tr.style.height = "";
 		}
-		// 行（見出し行・各クリニックの行）の高さを、3つのタブでそろえる。同じ順番の行は、いちばん高い行にそろえる。
-		const rowSets = panels.map((panel) => Array.from(panel.querySelectorAll<HTMLElement>("tr")));
-		const rowCount = Math.max(...rowSets.map((rows) => rows.length));
+		// 2) 一括読み取り（強制リフローは最大1回のみ）
+		const heights: number[] = [];
 		for (let i = 0; i < rowCount; i++) {
-			const rows = rowSets.map((set) => set[i]).filter((row): row is HTMLElement => Boolean(row));
-			const h = Math.max(...rows.map((row) => row.getBoundingClientRect().height));
-			for (const row of rows) row.style.height = `${h}px`;
+			let maxH = 0;
+			for (const set of rowSets) {
+				const row = set[i];
+				if (row) {
+					const h = row.getBoundingClientRect().height;
+					if (h > maxH) maxH = h;
+				}
+			}
+			heights.push(maxH);
 		}
-		// 表の下の注釈は、タブごとに長さが違う。注釈の分まで高さをそろえると、下に大きな空白ができるので、そろえない。
+		// 3) 一括高さ書き込みとパネル復元
+		for (let i = 0; i < rowCount; i++) {
+			const h = heights[i];
+			if (!h) continue;
+			for (const set of rowSets) {
+				const row = set[i];
+				if (row) row.style.height = `${h}px`;
+			}
+		}
 		panels.forEach((panel, k) => {
 			panel.hidden = k !== current;
 		});
 	};
-	equalize();
+	requestAnimationFrame(equalize);
 	window.addEventListener("load", equalize);
 	let timer: number | undefined;
 	window.addEventListener("resize", () => {

@@ -55,12 +55,12 @@ const sizes = {
 		}
 	</a>
 	<div class="post__body">
-		<a href={href} class="post__link" aria-labelledby={titleId}>
+		<div class="post__link">
 			<span class="post__meta">
 				<span>{readingTime}</span>
 			</span>
 			<Heading class="post__title" id={titleId} {...post.edit.title}>
-				{title}
+				<a href={href} class="post__anchor">{title}</a>
 			</Heading>
 			{
 				post.data.excerpt && (
@@ -87,7 +87,7 @@ const sizes = {
 					</span>
 				)
 			}
-		</a>
+		</div>
 		{
 			visibleTags.length > 0 && (
 				<div class="post__footer">
@@ -119,13 +119,13 @@ const sizes = {
 			outline-color var(--transition-fast);
 	}
 
-	.post:has(.post__link:focus-visible) {
+	.post:has(.post__anchor:focus-visible) {
 		outline: 2px solid var(--color-brand);
 		outline-offset: 2px;
 	}
 
 	@supports selector(:has(*)) {
-		.post__link:focus-visible {
+		.post__anchor:focus-visible {
 			outline: none;
 		}
 	}
@@ -163,7 +163,7 @@ const sizes = {
 		transition: scale 500ms var(--ease-out);
 	}
 
-	.post:has(.post__link:hover, .post__media:hover) .post__image :global(img) {
+	.post:has(.post__anchor:hover, .post__media:hover) .post__image :global(img) {
 		scale: 1.03;
 	}
 
@@ -193,6 +193,17 @@ const sizes = {
 		gap: var(--spacing-2);
 		color: inherit;
 		text-decoration: none;
+	}
+
+	.post__anchor {
+		color: inherit;
+		text-decoration: inherit;
+	}
+
+	.post__anchor::after {
+		content: "";
+		position: absolute;
+		inset: 0;
 	}
 
 	.post__meta {
@@ -258,6 +269,11 @@ const sizes = {
 		gap: var(--spacing-1);
 	}
 
+	.post__tags a {
+		position: relative;
+		z-index: 1;
+	}
+
 	/* Card: grid tile with inset media */
 	.post--card {
 		padding: var(--card-padding);
@@ -266,11 +282,11 @@ const sizes = {
 		box-shadow: var(--shadow-card);
 	}
 
-	.post--card:has(.post__link:hover, .post__media:hover) {
+	.post--card:has(.post__anchor:hover, .post__media:hover) {
 		box-shadow: var(--shadow-card-hover);
 	}
 
-	.post--card:has(.post__link:focus-visible) {
+	.post--card:has(.post__anchor:focus-visible) {
 		outline-offset: 3px;
 	}
 
@@ -307,11 +323,11 @@ const sizes = {
 		box-shadow: var(--shadow-card);
 	}
 
-	.post--feature:has(.post__link:hover, .post__media:hover) {
+	.post--feature:has(.post__anchor:hover, .post__media:hover) {
 		box-shadow: var(--shadow-card-hover);
 	}
 
-	.post--feature:has(.post__link:focus-visible) {
+	.post--feature:has(.post__anchor:focus-visible) {
 		outline-offset: 3px;
 	}
 
@@ -350,11 +366,11 @@ const sizes = {
 		color: var(--color-text);
 	}
 
-	.post--feature:has(.post__link:hover) .post__cta :global(svg) {
+	.post--feature:has(.post__anchor:hover) .post__cta :global(svg) {
 		translate: 2px 0;
 	}
 
-	.post--feature:has(.post__link:hover) .post__cta :global(svg:dir(rtl)) {
+	.post--feature:has(.post__anchor:hover) .post__cta :global(svg:dir(rtl)) {
 		translate: -2px 0;
 	}
 
@@ -395,7 +411,7 @@ const sizes = {
 		font-size: var(--font-size-base);
 	}
 
-	.post--row:has(.post__link:hover) .post__title {
+	.post--row:has(.post__anchor:hover) .post__title {
 		text-decoration-color: currentColor;
 	}
 

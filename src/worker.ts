@@ -85,7 +85,7 @@ export default {
 			// 公開ページの HTML（2026-11-21）。ログインしている人（Cookie あり）の画面は対象外。
 			// ブラウザは毎回確認し、エッジ（Cloudflare）は60秒だけ保存してよい、という指定。記事を直したら、すぐ反映される。
 			if (res.status === 200 && !request.headers.get("cookie") && !headers.has("cache-control")) {
-				headers.set("Cache-Control", "public, max-age=0, s-maxage=60");
+				headers.set("Cache-Control", "public, max-age=0, s-maxage=300, stale-while-revalidate=86400");
 			}
 			// CSP は、まず「報告だけ」の形で付ける（表示は止めない）。違反があればブラウザのコンソールに出るので、後で本番の形にできる。
 			headers.set(
@@ -101,6 +101,13 @@ export default {
 			const isPost = url.pathname.startsWith("/posts/");
 			let buf = "";
 			const rewriter = new HTMLRewriter();
+			rewriter.on("input.emdash-live-search-input", {
+				element(el) {
+					if (!el.getAttribute("aria-label")) {
+						el.setAttribute("aria-label", "サイト内を検索");
+					}
+				},
+			});
 			if (isPost) {
 				rewriter.on('script[type="application/ld+json"]', {
 					text(chunk) {

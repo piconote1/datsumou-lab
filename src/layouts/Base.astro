@@ -76,6 +76,9 @@ const menuItems = menu?.items ?? [];
 const footerMenuResult = await getMenuWithCacheHint("footer");
 const footerMenuItems = footerMenuResult.data?.items ?? menuItems;
 
+const siteOrigin = Astro.url.origin;
+const resolvedImage = image ?? `${siteOrigin}/brand/og-default.png`;
+
 // Build public page context for plugin contributions
 // SEO data is passed here and rendered securely by EmDashHead
 const pageCtx = createPublicPageContext({
@@ -86,16 +89,15 @@ const pageCtx = createPublicPageContext({
 	pageTitle: pageTitle ?? title,
 	description,
 	canonical,
-	image,
+	image: resolvedImage,
 	content,
-	seo: { ogImage: image, robots },
+	seo: { ogImage: resolvedImage, robots },
 	articleMeta: { publishedTime, modifiedTime, author },
 	siteName: siteTitle,
 });
 
 // 構造化データ（2026-11-20 追加）: 運営者（Organization、ロゴつき）と、パンくず（BreadcrumbList）。
 // 記事の BlogPosting は EmDash の本体が出すので、ここでは重ねない。
-const siteOrigin = Astro.url.origin;
 const extraJsonLd: Record<string, unknown>[] = [
 	{
 		"@context": "https://schema.org",
@@ -255,6 +257,8 @@ const year = new Date().getFullYear();
 								src={siteLogo.url}
 								alt={siteLogo.alt || siteTitle}
 								class="brand__logo"
+								width="312"
+								height="104"
 							/>
 						) : (
 							<>
@@ -264,7 +268,7 @@ const year = new Date().getFullYear();
 					}
 				</a>
 				<div class="site-header__actions">
-					<div class="site-search" role="search" aria-label="Site">
+					<div class="site-search" role="search" aria-label="サイト内検索">
 						<svg
 							class="site-search__icon"
 							viewBox="0 0 24 24"
@@ -366,17 +370,15 @@ const year = new Date().getFullYear();
 			</div>
 		</header>
 		<script is:inline>
-			// Inline, so the height is set before the browser scrolls to a URL fragment
+			// ResizeObserver でヘッダー高さを反映（初回同期 offsetHeight による強制リフローを回避）
 			(function () {
 				var header = document.querySelector(".site-header");
-				function setHeight() {
-					document.documentElement.style.setProperty(
-						"--header-height",
-						header.offsetHeight + "px",
-					);
-				}
-				setHeight();
-				new ResizeObserver(setHeight).observe(header);
+				if (!header) return;
+				new ResizeObserver(function (entries) {
+					var entry = entries[0];
+					var h = (entry && entry.borderBoxSize && entry.borderBoxSize[0] && entry.borderBoxSize[0].blockSize) || header.offsetHeight;
+					document.documentElement.style.setProperty("--header-height", Math.round(h) + "px");
+				}).observe(header);
 			})();
 		</script>
 

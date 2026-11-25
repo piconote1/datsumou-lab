@@ -1103,4 +1103,9 @@ header.site-header .site-nav[class] li.has-sub > a[href][aria-current] {
 @media (max-width: 640px) {
 	article.post .post-hero[class] { margin-bottom: 1rem; }
 	article.post .post-layout[class] { gap: 1rem; }
+	article.post h1.post-header__title[class] {
+		font-size: 1.25rem;
+		line-height: 1.55;
+		padding-inline: 0.25rem;
+	}
 }
