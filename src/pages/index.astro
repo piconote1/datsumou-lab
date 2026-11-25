@@ -6,7 +6,7 @@ import PickupCard from "../components/PickupCard.astro";
 import { resolveBlogSiteIdentity } from "../utils/site-identity";
 
 const settings = await getSiteSettings();
-const { siteTitle } = resolveBlogSiteIdentity(settings);
+const { siteShortTitle } = resolveBlogSiteIdentity(settings);
 
 // トップ専用の説明文・SNS用の画像・正規URL（2026-11-14 SEO対応）。
 // サイト設定のキャッチフレーズが空で、説明文が出ていなかったため、ここで指定する。
@@ -88,7 +88,7 @@ const labelsOf = (id: string) =>
 				<div class="hero__scrim" aria-hidden="true"></div>
 				<div class="hero__content">
 					<p class="hero__eyebrow">公式情報ベース・医療脱毛ガイド</p>
-					<h1 class="hero__title">{siteTitle}</h1>
+					<h1 class="hero__title">{siteShortTitle}</h1>
 					<p class="hero__lead">全身・VIOの料金総額、麻酔・剃毛の追加費用、脱毛機、通いやすさを公式情報で比較</p>
 					<div class="hero__actions">
 						<a href="/posts/datsumo-price-compare" class="hero__cta">料金・条件を比較する</a>
