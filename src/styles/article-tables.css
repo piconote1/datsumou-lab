@@ -215,12 +215,14 @@
 .dt-root table.dt-spec .dt-m{margin:0 0 3px}
 .dt-root table.dt-spec small.dt-r{font-size:11px;color:#6b7785}
 
-/* おすすめポイント（枠つきカード）と、詳細表の料金行 */
-.dt-pts{display:grid;gap:10px;margin:8px 0 18px}
-.dt-pt{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid #cdeee2;border-left:4px solid #7cdaba;border-radius:10px;background:#f3fbf8}
-.dt-pt__n{flex:none;width:28px;height:28px;border-radius:50%;background:#7cdaba;color:#172641;font-weight:700;font-size:14px;line-height:28px;text-align:center}
-.dt-pt__b strong{display:block;margin:0 0 2px;font-size:15px;color:#172641}
-.dt-pt__b p{margin:0;font-size:13px;line-height:1.7;color:#33404c}
+/* おすすめポイント（枠つきカード）の上下余白を引き締める（2026-11-25） */
+.emdash-html-block:has(> .dt-pts){margin-top:4px!important;margin-bottom:12px!important}
+.prose p:has(+ .emdash-html-block > .dt-pts),article p:has(+ .emdash-html-block > .dt-pts){margin-bottom:4px!important}
+.dt-pts{display:grid;gap:6px;margin:0!important}
+.dt-pt{display:flex;gap:10px;align-items:flex-start;padding:8px 12px;border:1px solid #cdeee2;border-left:4px solid #7cdaba;border-radius:8px;background:#f3fbf8}
+.dt-pt__n{flex:none;width:24px;height:24px;border-radius:50%;background:#7cdaba;color:#172641;font-weight:700;font-size:13px;line-height:24px;text-align:center}
+.dt-pt__b strong{display:block;margin:0 0 2px;font-size:14px;color:#172641}
+.dt-pt__b p{margin:0;font-size:13px;line-height:1.55;color:#33404c}
 .dt-root table.dt-spec .dt-k{display:inline-block;flex:none;width:7.2em;color:#6b7785;font-size:12px}
 .dt-root table.dt-spec .dt-v{font-weight:700}
 
