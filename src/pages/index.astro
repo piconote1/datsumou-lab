@@ -1,8 +1,12 @@
 ---
-import { getEmDashEntry, getTermsForEntries } from "emdash";
+import { getEmDashEntry, getTermsForEntries, getSiteSettings } from "emdash";
 import Base from "../layouts/Base.astro";
 import PostRow from "../components/PostRow.astro";
 import PickupCard from "../components/PickupCard.astro";
+import { resolveBlogSiteIdentity } from "../utils/site-identity";
+
+const settings = await getSiteSettings();
+const { siteTitle } = resolveBlogSiteIdentity(settings);
 
 // トップ専用の説明文・SNS用の画像・正規URL（2026-11-14 SEO対応）。
 // サイト設定のキャッチフレーズが空で、説明文が出ていなかったため、ここで指定する。
@@ -76,28 +80,25 @@ const labelsOf = (id: string) =>
 ---
 
 <Base title={HOME_TITLE} description={HOME_DESCRIPTION} canonical={homeCanonical} image={homeImage}>
-	<section class="band hero">
-		<div class="frame">
-			<div class="hero__card">
-				<div class="hero__copy">
-					<p class="hero__eyebrow">公式情報だけで比較する医療脱毛ガイド</p>
-					<h1 class="hero__title">医療脱毛クリニックの料金・脱毛機・条件を公式情報で比較</h1>
-					<p class="hero__lead">
-						総額と追加費用、使われている脱毛機、契約・解約の注意点まで、各クリニック公式サイトの公開情報をもとに中立に整理しています。
-					</p>
+	<section class="band hero" aria-roledescription="carousel" aria-label="医療脱毛クリニックのイメージ" data-hero>
+		<div class="hero__wrap">
+			<div class="hero__stage">
+				<img class="hero__img is-active" src="/hero/hero-1.webp" srcset="/hero/hero-1-640.webp 640w, /hero/hero-1-960.webp 960w, /hero/hero-1-1280.webp 1280w, /hero/hero-1.webp 1672w" sizes="100vw" alt="医療クリニックの受付" width="1600" height="900" fetchpriority="high" decoding="async" />
+				<img class="hero__img hero__img--machine" src="/hero/hero-2.webp" srcset="/hero/hero-2-640.webp 640w, /hero/hero-2-960.webp 960w, /hero/hero-2-1280.webp 1280w, /hero/hero-2.webp 1600w" sizes="100vw" alt="医療脱毛の施術室と脱毛機" width="1600" height="1067" loading="lazy" decoding="async" />
+				<div class="hero__scrim" aria-hidden="true"></div>
+				<div class="hero__content">
+					<p class="hero__eyebrow">公式情報ベース・医療脱毛ガイド</p>
+					<h1 class="hero__title">{siteTitle}</h1>
+					<p class="hero__lead">全身・VIOの料金総額、麻酔・剃毛の追加費用、脱毛機、通いやすさを公式情報で比較</p>
 					<div class="hero__actions">
-						<a href="/posts/datsumo-price-compare" class="hero__btn hero__btn--primary">全身5回の料金を比較する</a>
-						<a href="/category/region" class="hero__btn hero__btn--mint">地域別クリニック</a>
-						<a href="/posts/datsumo-selection-guide" class="hero__btn hero__btn--ghost">選び方ガイド</a>
+						<a href="/posts/datsumo-price-compare" class="hero__cta">料金・条件を比較する</a>
+						<a href="/posts/datsumo-selection-guide" class="hero__cta hero__cta--sub">選び方ガイド</a>
+						<a href="/category/region" class="hero__cta hero__cta--sub">地域別で探す</a>
 					</div>
 				</div>
-				<div class="hero__stage" role="region" aria-roledescription="carousel" aria-label="医療脱毛クリニックのイメージ" data-hero>
-					<img class="hero__img is-active" src="/hero/hero-1-960.webp" srcset="/hero/hero-1-640.webp 640w, /hero/hero-1-960.webp 960w, /hero/hero-1-1280.webp 1280w, /hero/hero-1.webp 1672w" sizes="(min-width: 900px) 600px, 92vw" alt="医療クリニックの受付" width="1600" height="900" fetchpriority="high" decoding="async" />
-					<img class="hero__img hero__img--machine" src="/hero/hero-2-960.webp" srcset="/hero/hero-2-640.webp 640w, /hero/hero-2-960.webp 960w, /hero/hero-2-1280.webp 1280w, /hero/hero-2.webp 1600w" sizes="(min-width: 900px) 600px, 92vw" alt="医療脱毛の施術室と脱毛機" width="1600" height="1067" loading="lazy" decoding="async" />
-					<div class="hero__dots" role="group" aria-label="表示する画像を選ぶ">
-						<button type="button" class="hero__dot is-active" aria-label="1枚目を表示" aria-current="true"></button>
-						<button type="button" class="hero__dot" aria-label="2枚目を表示"></button>
-					</div>
+				<div class="hero__dots" role="group" aria-label="表示する画像を選ぶ">
+					<button type="button" class="hero__dot is-active" aria-label="1枚目を表示" aria-current="true"></button>
+					<button type="button" class="hero__dot" aria-label="2枚目を表示"></button>
 				</div>
 			</div>
 		</div>
@@ -119,6 +120,11 @@ const labelsOf = (id: string) =>
 			<section class="band section home-wrap">
 				<div class="frame">
 					<div class="home-panel">
+						<div class="home-intro">
+							<p>
+								脱毛研究室は、公式に公開されている情報をもとに、医療脱毛クリニックの料金・脱毛機・条件を並べて比べるサイトです。選び方の基本から、地域別の比較、料金と契約の見方まで、記事ごとに整理しています。
+							</p>
+						</div>
 						{groups.map((g) => (
 							<section class="home-group" aria-label={g.title}>
 								<h2 class="home-section-title">{g.title}</h2>
@@ -151,101 +157,94 @@ const labelsOf = (id: string) =>
 
 <style>
 	.hero {
-		padding: clamp(1rem, 2.5vw, 1.75rem) 0 0;
+		/* 写真のまわりに白い余白を残す（左右・上・下）。下の余白で、1画面目の終わりが分かる */
+		padding: 20px clamp(16px, 2.4vw, 48px) 0;
 	}
-	.hero__card {
-		display: grid;
-		grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
-		gap: clamp(1rem, 2.5vw, 2rem);
-		align-items: center;
-		padding: clamp(1.25rem, 3vw, 2rem);
-		background: #fff;
-		border: 1px solid #e3e6e9;
-		border-radius: 16px;
-		box-shadow: 0 1px 2px rgb(16 24 40 / 0.04);
-	}
-	.hero__copy {
-		display: flex;
-		flex-direction: column;
-		align-items: flex-start;
-		gap: 0.9rem;
-		min-width: 0;
-	}
-	.hero__eyebrow {
-		margin: 0;
-		padding: 0.25rem 0.75rem;
-		border-radius: 999px;
-		background: #e4f6ef;
-		color: #0c5442;
-		font-size: 0.8125rem;
-		font-weight: 700;
-		letter-spacing: 0.03em;
-	}
-	.hero__title {
-		margin: 0;
-		color: #172641;
-		font-size: clamp(1.375rem, 1.1rem + 1.25vw, 1.95rem);
-		font-weight: 800;
-		line-height: 1.4;
-		letter-spacing: 0.01em;
-	}
-	.hero__lead {
-		margin: 0;
-		color: #3a4862;
-		font-size: 0.9375rem;
-		line-height: 1.75;
-	}
-	.hero__actions {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.65rem;
-		margin-top: 0.2rem;
-	}
-	.hero__btn {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		min-height: 44px;
-		padding: 0.6rem 1.15rem;
-		border-radius: 999px;
-		font-size: 0.9375rem;
-		font-weight: 700;
-		line-height: 1.3;
-		text-decoration: none;
-		transition: background 0.15s ease, transform 0.15s ease;
-	}
-	.hero__btn--primary {
-		background: #172641;
-		color: #fff;
-	}
-	.hero__btn--primary:hover {
-		background: #2a3d63;
-		transform: translateY(-1px);
-	}
-	.hero__btn--mint {
-		background: #d7f2e8;
-		border: 1px solid #8bd4ba;
-		color: #0c5442;
-	}
-	.hero__btn--mint:hover {
-		background: #c3ebd9;
-	}
-	.hero__btn--ghost {
-		background: #fff;
-		border: 1px solid #c2cfdb;
-		color: #172641;
-	}
-	.hero__btn--ghost:hover {
-		background: #f3f6f9;
+	.hero__wrap {
+		width: 100%;
 	}
 	.hero__stage {
 		position: relative;
 		overflow: hidden;
-		border-radius: 12px;
-		aspect-ratio: 16 / 10;
-		width: 100%;
-		min-height: 240px;
-		background: #eef1f4;
+		display: flex;
+		align-items: flex-end;
+		border-radius: 16px;
+		height: clamp(320px, 52svh, 480px);
+		background: #172641;
+	}
+	.hero__scrim {
+		position: absolute;
+		inset: 0;
+		z-index: 1;
+		background: linear-gradient(
+			95deg,
+			rgba(14, 26, 46, 0.82) 0%,
+			rgba(14, 26, 46, 0.56) 42%,
+			rgba(14, 26, 46, 0) 68%
+		);
+		pointer-events: none;
+	}
+	.hero__content {
+		position: relative;
+		z-index: 2;
+		max-width: 640px;
+		padding: clamp(1.25rem, 3.2vw, 2.5rem) clamp(1.25rem, 3.2vw, 2.5rem) clamp(2.4rem, 4vw, 3rem);
+		color: #fff;
+	}
+	.hero__eyebrow {
+		display: inline-block;
+		margin: 0 0 0.6rem;
+		padding: 3px 10px;
+		border-radius: 6px;
+		background: #7cdaba;
+		color: #172641;
+		font-size: 0.75rem;
+		font-weight: 800;
+		letter-spacing: 0.03em;
+	}
+	.hero__title {
+		margin: 0 0 0.55rem;
+		color: #fff;
+		font-size: clamp(1.5rem, 1.1rem + 2vw, 2.35rem);
+		font-weight: 800;
+		line-height: 1.3;
+	}
+	.hero__lead {
+		margin: 0 0 1.1rem;
+		color: #e6eff8;
+		font-size: clamp(0.875rem, 0.82rem + 0.35vw, 1rem);
+		line-height: 1.65;
+	}
+	.hero__actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.6rem;
+	}
+	.hero__cta {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 40px;
+		padding: 0.55rem 1.25rem;
+		border-radius: 999px;
+		background: #7cdaba;
+		color: #172641;
+		font-size: 0.875rem;
+		font-weight: 800;
+		text-decoration: none;
+		transition: background-color 0.15s ease, transform 0.15s ease;
+	}
+	.hero__cta:hover {
+		background: #a5e8d0;
+		transform: translateY(-1px);
+	}
+	.hero__cta--sub {
+		background: rgba(14, 26, 46, 0.72);
+		color: #fff;
+		border: 1px solid rgba(255, 255, 255, 0.6);
+	}
+	.hero__cta--sub:hover {
+		background: rgba(255, 255, 255, 0.16);
 	}
 	.hero__img {
 		position: absolute;
@@ -271,6 +270,7 @@ const labelsOf = (id: string) =>
 		left: 0;
 		right: 0;
 		bottom: 4px;
+		z-index: 2;
 		display: flex;
 		justify-content: center;
 		gap: 4px;
@@ -298,38 +298,26 @@ const labelsOf = (id: string) =>
 		background: #1f2933;
 		box-shadow: 0 0 0 1px #fff;
 	}
-	@media (max-width: 860px) {
-		.hero__card {
-			grid-template-columns: minmax(0, 1fr);
-			gap: 1rem;
-		}
-		.hero__stage {
-			aspect-ratio: 16 / 9;
-			min-height: 190px;
-		}
-	}
 	@media (max-width: 640px) {
 		.hero {
 			padding-top: 12px;
 		}
-		.hero__card {
-			padding: 1rem;
-			border-radius: 14px;
+		.hero__stage {
+			border-radius: 12px;
+			height: auto;
+			min-height: 310px;
 		}
-		.hero__title {
-			font-size: 1.25rem;
+		.hero__scrim {
+			background: linear-gradient(
+				180deg,
+				rgba(14, 26, 46, 0) 0%,
+				rgba(14, 26, 46, 0.48) 28%,
+				rgba(14, 26, 46, 0.86) 58%,
+				rgba(14, 26, 46, 0.94) 100%
+			);
 		}
-		.hero__actions {
-			width: 100%;
-		}
-		.hero__btn--primary {
-			flex: 1 1 100%;
-		}
-		.hero__btn--mint,
-		.hero__btn--ghost {
-			flex: 1 1 calc(50% - 0.35rem);
-			padding-inline: 0.75rem;
-			font-size: 0.875rem;
+		.hero__content {
+			padding: 4.5rem 1rem 2.5rem;
 		}
 		.hero__img:not(.hero__img--machine) {
 			object-position: 88% 50%;
@@ -339,6 +327,17 @@ const labelsOf = (id: string) =>
 		.hero__img {
 			transition: none;
 		}
+	}
+	.home-intro {
+		margin-bottom: 1.6rem;
+		padding-bottom: 1.4rem;
+		border-bottom: 1px solid #e6e9ed;
+	}
+	.home-intro p {
+		margin: 0;
+		font-size: 0.9375rem;
+		line-height: 1.85;
+		color: #374151;
 	}
 </style>
 
@@ -352,6 +351,7 @@ const labelsOf = (id: string) =>
 		let paused = false;
 		const show = (i: number) => {
 			cur = (i + imgs.length) % imgs.length;
+			if (imgs[cur]) imgs[cur].removeAttribute("loading");
 			imgs.forEach((el, k) => el.classList.toggle("is-active", k === cur));
 			dots.forEach((el, k) => {
 				el.classList.toggle("is-active", k === cur);
@@ -359,7 +359,6 @@ const labelsOf = (id: string) =>
 				else el.removeAttribute("aria-current");
 			});
 		};
-		imgs.forEach((el) => el.removeAttribute("loading"));
 		dots.forEach((el, k) => el.addEventListener("click", () => show(k)));
 		// マウスを乗せている間だけ止める。スマホ（タッチ）では、触れても止めない
 		root.addEventListener("pointerenter", (e) => {

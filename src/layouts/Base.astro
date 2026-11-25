@@ -162,7 +162,7 @@ function navCurrent(url: string): "page" | "true" | undefined {
 
 const lang = getSiteLocale() ?? "ja";
 // 広告（アフィリエイト）リンクを置くときに true にする。A8・afb の「広告表示」の条件。
-const SHOW_PR_NOTICE = true;
+const SHOW_PR_NOTICE = false;
 const monogram = [...siteTitle.trim()][0]?.toUpperCase() ?? "";
 const year = new Date().getFullYear();
 ---
