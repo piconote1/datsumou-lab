@@ -260,12 +260,6 @@ const postBreadcrumbs = [
 					}
 					<div class="post-header__meta">
 						<p class="post-header__dateline">
-							{publishDate && publishedAt && (
-								<span>公開: <time datetime={publishedAt.toISOString()}>{publishDate}</time></span>
-							)}
-							{updatedDate && updatedAt && updatedDate !== publishDate && (
-								<span>更新: <time datetime={updatedAt.toISOString()}>{updatedDate}</time></span>
-							)}
 							<span>約{readingTime}分で読めます</span>
 							<span><a href="/pages/operator">運営: 脱毛研究室</a></span>
 						</p>
@@ -294,18 +288,6 @@ const postBreadcrumbs = [
 			<div class="frame post-layout">
 				<div class="post-meta">
 					<dl class="post-facts">
-						{publishDate && publishedAt && (
-							<div class="post-fact">
-								<dt class="eyebrow">公開日</dt>
-								<dd><time datetime={publishedAt.toISOString()}>{publishDate}</time></dd>
-							</div>
-						)}
-						{updatedDate && updatedAt && updatedDate !== publishDate && (
-							<div class="post-fact">
-								<dt class="eyebrow">更新日</dt>
-								<dd><time datetime={updatedAt.toISOString()}>{updatedDate}</time></dd>
-							</div>
-						)}
 						<div class="post-fact">
 							<dt class="eyebrow">読む時間</dt>
 							<dd>約{readingTime}分</dd>
